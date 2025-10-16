@@ -2,7 +2,7 @@ import { FiBell, FiUser } from "react-icons/fi";
 
 export default function Navbar({ pageTitle }) {
   return (
-    <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-md mb-6">
+    <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-md mb-4">
       {/* Page Title */}
       <h1 className="text-2xl font-bold">{pageTitle}</h1>
 

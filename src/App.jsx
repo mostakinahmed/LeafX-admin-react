@@ -14,7 +14,7 @@ function App() {
     <Router>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 p-6 bg-gray-100 overflow-auto">
+        <div className="flex-1 px-6 pb-6 pt-5 bg-gray-100 overflow-auto">
           <Routes>
             <Route path="/" element={<Dashboard />} />
 
