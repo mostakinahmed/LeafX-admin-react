@@ -6,6 +6,7 @@ import {
   FiShoppingCart,
   FiUsers,
   FiFileText,
+  FiTrendingUp, // new icon for Sales
 } from "react-icons/fi";
 
 export default function Sidebar() {
@@ -16,6 +17,7 @@ export default function Sidebar() {
     { name: "Products", path: "/products", icon: <FiBox /> },
     { name: "Stock", path: "/stock", icon: <FiArchive /> },
     { name: "Orders", path: "/orders", icon: <FiShoppingCart /> },
+    { name: "Sales", path: "/sales", icon: <FiTrendingUp /> }, 
     { name: "Users", path: "/users", icon: <FiUsers /> },
     { name: "Receipt", path: "/receipt", icon: <FiFileText /> },
   ];
