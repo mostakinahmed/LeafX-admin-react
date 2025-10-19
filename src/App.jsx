@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
@@ -11,35 +16,134 @@ import AddProduct from "./components/Products/AddProduct";
 import Sales from "./pages/Sales";
 import AllSales from "./components/Sales/AllSales";
 import NewSales from "./components/Sales/NewSales";
+import Login from "./components/Authentication/Login";
+import { AuthProvider } from "./Context Api/AuthContext";
+import PrivateRoute from "./components/private routes/PrivateRoute";
 
-function App() {
+function AppLayout() {
+  const location = useLocation();
+
+  // Check if current route is /login
+  const hideSidebar = location.pathname === "/login";
 
   return (
-    <Router>
-      <div className="flex h-screen">
-        <Sidebar />
-        <div className="flex-1 px-6 pb-6 pt-5 bg-gray-100 overflow-auto">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
+    <div className="flex h-screen">
+      {!hideSidebar && <Sidebar />}
+      <div
+        className={`flex-1 ${
+          hideSidebar ? "p-0" : "px-6 pb-6 pt-5 bg-gray-100 overflow-auto"
+        }`}
+      >
+        <Routes>
+          <Route path="/login" element={<Login />} />
 
-            {/* //All product route */}
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/add-product" element={<AddProduct />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
 
-            <Route path="/category" element={<Category />} />
-            <Route path="/stock" element={<Stock />} />
-            <Route path="/orders" element={<Orders />} />
+          {/* Product routes */}
+          <Route
+            path="/products"
+            element={
+              <PrivateRoute>
+                <Products />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/products/add-product"
+            element={
+              <PrivateRoute>
+                <AddProduct />
+              </PrivateRoute>
+            }
+          />
 
-            {/* Sale route */}
-            <Route path="/sales" element={<Sales />} />
-            <Route path="/sales/all-sales" element={<AllSales />} />
-            <Route path="/sales/new" element={<NewSales />} />
+          {/* Other routes */}
+          <Route
+            path="/category"
+            element={
+              <PrivateRoute>
+                <Category />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/stock"
+            element={
+              <PrivateRoute>
+                <Stock />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <PrivateRoute>
+                <Orders />
+              </PrivateRoute>
+            }
+          />
 
-            <Route path="/users" element={<Users />} />
-            <Route path="/receipt" element={<Receipt />} />
-          </Routes>
-        </div>
+          {/* Sales routes */}
+          <Route
+            path="/sales"
+            element={
+              <PrivateRoute>
+                <Sales />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/sales/all-sales"
+            element={
+              <PrivateRoute>
+                <AllSales />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/sales/new"
+            element={
+              <PrivateRoute>
+                <NewSales />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <Users />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/receipt"
+            element={
+              <PrivateRoute>
+                <Receipt />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
       </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppLayout />
+      </AuthProvider>
     </Router>
   );
 }

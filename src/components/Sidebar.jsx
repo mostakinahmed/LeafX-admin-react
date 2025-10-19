@@ -6,7 +6,8 @@ import {
   FiShoppingCart,
   FiUsers,
   FiFileText,
-  FiTrendingUp, // new icon for Sales
+  FiTrendingUp,
+  FiGrid,
 } from "react-icons/fi";
 
 export default function Sidebar() {
@@ -15,9 +16,10 @@ export default function Sidebar() {
   const links = [
     { name: "Dashboard", path: "/", icon: <FiHome /> },
     { name: "Products", path: "/products", icon: <FiBox /> },
+    { name: "Category", path: "/category", icon: <FiGrid /> },
     { name: "Stock", path: "/stock", icon: <FiArchive /> },
     { name: "Orders", path: "/orders", icon: <FiShoppingCart /> },
-    { name: "Sales", path: "/sales", icon: <FiTrendingUp /> }, 
+    { name: "Sales", path: "/sales", icon: <FiTrendingUp /> },
     { name: "Users", path: "/users", icon: <FiUsers /> },
     { name: "Receipt", path: "/receipt", icon: <FiFileText /> },
   ];
@@ -25,7 +27,7 @@ export default function Sidebar() {
   return (
     <div className="w-50 bg-white h-full shadow-lg p-4 flex border-3 border-gray-200 flex-col">
       <h1 className="text-2xl font-bold mb-6 text-blue-600">Admin Panel</h1>
-      <nav className="flex flex-col gap-4">
+      <nav className="flex flex-col gap-2">
         {links.map((link) => {
           const isActive =
             location.pathname === link.path ||

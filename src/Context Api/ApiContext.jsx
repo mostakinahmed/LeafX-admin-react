@@ -32,6 +32,8 @@ export const ApiContext = ({ children }) => {
     fetchData();
   }, []);
 
+
+
   const contextValue = {
     productData,
     categoryData,
