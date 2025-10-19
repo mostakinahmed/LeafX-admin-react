@@ -23,7 +23,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-64 bg-white h-full shadow-lg p-4 flex flex-col">
+    <div className="w-50 bg-white h-full shadow-lg p-4 flex border-3 border-gray-200 flex-col">
       <h1 className="text-2xl font-bold mb-6 text-blue-600">Admin Panel</h1>
       <nav className="flex flex-col gap-4">
         {links.map((link) => {

@@ -77,7 +77,7 @@ export default function Products() {
   // };
 
   return (
-    <div className="pb-24">
+    <div className="pb-10">
       <Navbar pageTitle="Product Management" />
 
       {/* Filter & Search */}
@@ -146,19 +146,19 @@ export default function Products() {
             {currentProducts.length > 0 ? (
               currentProducts.map((product, index) => (
                 <tr key={product._id || index} className="text-center border-b">
-                  <td className="px-4 py-2">{sn++}</td>
-                  <td className="px-4 py-2">{product.pID}</td>
-                  <td className="px-4 py-2">{product.name}</td>
-                  <td className="px-4 py-2">{product.brandName}</td>
-                  <td className="px-4 py-2">{product.category}</td>
-                  <td className="px-4 py-2">${product.price}</td>
-                  <td className="px-4 py-2">{product.stock}</td>
-                  <td className="px-4 py-2">
+                  <td className="px-4 ">{sn++}</td>
+                  <td className="px-4">{product.pID}</td>
+                  <td className="px-4 line-clamp-1">{product.name}</td>
+                  <td className="px-4 ">{product.brandName}</td>
+                  <td className="px-4 ">{product.category}</td>
+                  <td className="px-4 ">${product.price}</td>
+                  <td className="px-4 ">{product.stock}</td>
+                  <td className="xl:pl-25 px-4">
                     {product.images[0] ? (
                       <img
                         src={product.images}
                         alt={product.name}
-                        className="w-12 h-12 object-cover rounded"
+                        className="w-10 h-10 object-cover rounded"
                       />
                     ) : (
                       "No image"
@@ -166,11 +166,11 @@ export default function Products() {
                   </td>
 
                   <td className="px-4 py-2 flex justify-center gap-2">
-                    <button className="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">
+                    <button className="bg-yellow-400 px-2  rounded hover:bg-yellow-500">
                       Edit
                     </button>
                     <button
-                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                      className="bg-red-500 text-white px-2 rounded hover:bg-red-600"
                       onClick={() => handleDeleteProduct(product._id)}
                     >
                       Delete
