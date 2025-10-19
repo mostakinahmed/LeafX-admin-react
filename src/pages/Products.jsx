@@ -9,11 +9,29 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [searchId, setSearchId] = useState("");
+  const [catList, setCatList] = useState([]);
 
   const productsPerPage = 10;
   const navigate = useNavigate();
+  let sn = 1;
+  //for filter
+  useEffect(() => {
+    if (productData.length && categoryData.length) {
+      const formattedData = productData.map((element) => {
+        const category = categoryData.find((c) => c.catID === element.category);
+        if (category) {
+          return element.category + " - " + category.catName;
+        } else {
+          return element.category; // fallback if no category found
+        }
+      });
 
-  // ✅ Handle both object or array types from backend
+      const uniqueCatList = [...new Set(formattedData)];
+      setCatList(uniqueCatList); //  only runs once per data change
+    }
+  }, [productData, categoryData]); // dependencies
+
+  //  Handle both object or array types from backend
   useEffect(() => {
     if (productData) {
       const formatted = Array.isArray(productData) ? productData : [];
@@ -31,15 +49,17 @@ export default function Products() {
       </div>
     );
 
-  console.log("Products:", products);
-
   // ✅ Filtering + Searching
   const filteredProducts = products
+    .filter((p) => {
+      if (categoryFilter === "All") return true;
+
+      // extract the ID from categoryFilter
+      const filterID = categoryFilter.split(" - ")[0];
+      return p.category === filterID;
+    })
     .filter((p) =>
-      categoryFilter === "All" ? true : p.category === categoryFilter
-    )
-    .filter((p) =>
-      searchId ? p._id?.toString().includes(searchId.toString()) : true
+      searchId ? p.pID?.toString().includes(searchId.toString()) : true
     );
 
   // ✅ Pagination logic
@@ -51,10 +71,10 @@ export default function Products() {
     indexOfLastProduct
   );
 
-  // ✅ Handle delete locally (optional)
-  const handleDeleteProduct = (id) => {
-    setProducts(products.filter((p) => p._id !== id));
-  };
+  // // ✅ Handle delete locally (optional)
+  // const handleDeleteProduct = (id) => {
+  //   setProducts(products.filter((p) => p._id !== id));
+  // };
 
   return (
     <div className="pb-24">
@@ -70,8 +90,13 @@ export default function Products() {
           }}
           className="p-2 border rounded"
         >
-          <option value="All">All Categories</option>
+          {/* <option value="All">All Categories</option>
           {[...new Set(products.map((p) => p.category))].map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option> */}
+          <option value="All">All Categories</option>
+          {catList.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>
@@ -84,7 +109,10 @@ export default function Products() {
             placeholder="Search by ID"
             value={searchId}
             onChange={(e) => {
-              setSearchId(e.target.value);
+              const ID = e.target.value;
+              const upperCaseID = ID.toUpperCase(e);
+
+              setSearchId(upperCaseID);
               setCurrentPage(1);
             }}
             className="p-2 border rounded"
@@ -103,11 +131,14 @@ export default function Products() {
         <table className="min-w-full table-auto">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
+              <th className="px-4 py-2">S/N</th>
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
+              <th className="px-4 py-2">Brand Name</th>
               <th className="px-4 py-2">Category</th>
               <th className="px-4 py-2">Price</th>
               <th className="px-4 py-2">Stock</th>
+              <th className="px-4 py-2">Images</th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -115,11 +146,25 @@ export default function Products() {
             {currentProducts.length > 0 ? (
               currentProducts.map((product, index) => (
                 <tr key={product._id || index} className="text-center border-b">
-                  <td className="px-4 py-2">{product._id || index + 1}</td>
+                  <td className="px-4 py-2">{sn++}</td>
+                  <td className="px-4 py-2">{product.pID}</td>
                   <td className="px-4 py-2">{product.name}</td>
+                  <td className="px-4 py-2">{product.brandName}</td>
                   <td className="px-4 py-2">{product.category}</td>
                   <td className="px-4 py-2">${product.price}</td>
                   <td className="px-4 py-2">{product.stock}</td>
+                  <td className="px-4 py-2">
+                    {product.images[0] ? (
+                      <img
+                        src={product.images}
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                    ) : (
+                      "No image"
+                    )}
+                  </td>
+
                   <td className="px-4 py-2 flex justify-center gap-2">
                     <button className="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500">
                       Edit
