@@ -42,7 +42,7 @@ const CategoryList = ({ data }) => {
   return (
     <div className="bg-white w-full ">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2 gap-3">
-        <h2 className="text-xl font-semibold text-gray-700">All Category</h2>
+        <h2 className="text-xl mt-4 lg:mt-0 font-semibold text-gray-700">All Category</h2>
 
         {/* 🔍 Search Box */}
         <div className="relative w-full md:w-64">
