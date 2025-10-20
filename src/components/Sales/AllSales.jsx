@@ -118,9 +118,9 @@ export default function Sales() {
       </div>
 
       {/* Sales Table */}
-      <div className="bg-white shadow-md rounded p-4 border border-gray-100 mt-5">
+      <div className="bg-white shadow-md rounded p-4 border border-gray-100 mt-5 overflow-x-auto">
         {/* <h2 className="text-lg font-semibold mb-4 text-gray-700">All Sales</h2> */}
-        <table className="min-w-full text-sm text-left border-t border-gray-200">
+        <table className="min-w-full text-sm text-left border-t border-gray-200 whitespace-nowrap">
           <thead>
             <tr className="bg-gray-50 text-gray-700">
               <th className="p-3">Order ID</th>

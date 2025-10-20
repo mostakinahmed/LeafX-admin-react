@@ -35,7 +35,7 @@ function AppLayout() {
       {!hideSidebar && <Sidebar />}
       <div
         className={`flex-1 ${
-          hideSidebar ? "p-0" : "px-6 pb-6 pt-5 bg-gray-100 overflow-auto"
+          hideSidebar ? "p-0" : "px-3 lg:px-6 pb-6 pt-5 bg-gray-100 overflow-auto"
         }`}
       >
         <Routes>

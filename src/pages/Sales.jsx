@@ -40,9 +40,9 @@ export default function Sales() {
     <div className=" space-y-6">
       <Navbar pageTitle="Sales Overview" />
       <div className="flex flex-col sm:flex-row mb-4">
-        <div>
+        <div className="flex">
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 transition sm:mt-0"
+            className="bg-blue-600 text-white px-7 py-2 rounded hover:bg-blue-800 transition sm:mt-0"
             onClick={() => Navigate(`/sales/all-sales`)}
           >
             All Sales
@@ -118,13 +118,13 @@ export default function Sales() {
       </div>
 
       {/* Table */}
-      <div className="bg-white shadow-md rounded p-4 border border-gray-100">
+      <div className="bg-white shadow-md rounded p-4 border border-gray-100 overflow-x-auto">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
           Recent Sales
         </h2>
-        <table className="min-w-full text-sm text-left border-t border-gray-200">
+        <table className="min-w-full text-sm text-left border-t border-gray-200 table-auto whitespace-nowrap">
           <thead>
-            <tr className="bg-gray-50 text-gray-700">
+            <tr className="bg-gray-100 text-gray-700">
               <th className="p-3">Order ID</th>
               <th className="p-3">Customer</th>
               <th className="p-3">Amount</th>

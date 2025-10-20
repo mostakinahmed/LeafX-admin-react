@@ -17,15 +17,17 @@ export default function Navbar({ pageTitle }) {
     setShowPopup((prev) => !prev);
   };
 
+  console.log(user);
+  
   return (
     <div className="flex justify-between items-center bg-white px-4 py-1 shadow-md rounded mb-4">
       {/* Page Title */}
-      <h1 className="text-2xl font-bold">{pageTitle}</h1>
+      <h1 className="text-2xl font-bold line-clamp-1">{pageTitle}</h1>
 
       {/* Right side: Search, Notifications, User */}
       <div className="flex items-center gap-4">
         {/* Notification Icon */}
-        <button className="relative p-2 rounded hover:bg-gray-100">
+        <button className=" relative p-2 rounded hover:bg-gray-100">
           <FiBell size={20} />
           <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
@@ -35,9 +37,9 @@ export default function Navbar({ pageTitle }) {
           className="flex items-center gap-2 cursor-pointer"
           onClick={toggleAdminPopup}
         >
-          <span className="font-bold text-lg hover:text-blue-600">Admin</span>
+          <span className=" hidden lg:flex  -bold text-lg hover:text-blue-600">Admin</span>
           <img
-            className="w-13 h-13 rounded-full border-2"
+            className="w-10 h-10 lg:w-13 lg:h-13 rounded-full border-2"
             src={
               user.images
                 ? user.images
@@ -55,7 +57,7 @@ export default function Navbar({ pageTitle }) {
           <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
 
           {/* Popup content */}
-          <div className="relative bg-white rounded-2xl shadow-2xl w-96 max-w-full text-left z-10 overflow-hidden">
+          <div className="relative bg-white rounded-xl shadow-xl lg:w-96 w-85 max-w-full text-left z-10 overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between bg-blue-600 text-white p-4">
               <h2 className="text-lg font-semibold">Admin Profile</h2>

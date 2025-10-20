@@ -78,47 +78,53 @@ export default function Products() {
 
   return (
     <div className="pb-10">
-      <Navbar pageTitle="Product Management" />
+      <Navbar pageTitle="Product Section" />
 
       {/* Filter & Search */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-4 bg-white shadow rounded">
-        <select
-          value={categoryFilter}
-          onChange={(e) => {
-            setCategoryFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="p-2 border rounded"
-        >
-          {/* <option value="All">All Categories</option>
+      <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-4 bg-white shadow rounded">
+        <div className="flex gap-2 lg:w-[50rem]">
+          <div className="flex lg:w-[30rem]">
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              {/* <option value="All">All Categories</option>
           {[...new Set(products.map((p) => p.category))].map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option> */}
-          <option value="All">All Categories</option>
-          {catList.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+              <option value="All">All Categories</option>
+              {catList.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="Search by ID"
-            value={searchId}
-            onChange={(e) => {
-              const ID = e.target.value;
-              const upperCaseID = ID.toUpperCase(e);
+          <div className="flex items-center justify-center w-[11rem] lg:w-[40rem]">
+            <input
+              type="text"
+              placeholder="Search by ID"
+              value={searchId}
+              onChange={(e) => {
+                const ID = e.target.value;
+                const upperCaseID = ID.toUpperCase();
+                setSearchId(upperCaseID);
+                setCurrentPage(1);
+              }}
+              className="p-2 border rounded w-full sm:w-64 md:w-80 max-w-xs sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+          </div>
+        </div>
 
-              setSearchId(upperCaseID);
-              setCurrentPage(1);
-            }}
-            className="p-2 border rounded"
-          />
+        <div className=" w-full lg:w-60">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-4"
+            className="bg-blue-500 w-full  text-white py-2 rounded hover:bg-blue-600"
             onClick={() => navigate("/products/add-product")}
           >
             Add Product
@@ -128,7 +134,7 @@ export default function Products() {
 
       {/* Products Table */}
       <div className="overflow-x-auto bg-white rounded shadow p-4">
-        <table className="min-w-full table-auto">
+        <table className="min-w-full table-auto whitespace-nowrap">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
               <th className="px-4 py-2">S/N</th>

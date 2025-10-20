@@ -40,7 +40,7 @@ export default function Sidebar() {
           {isOpen ? <FiX /> : <FiMenu />}
         </button>
 
-         <nav className="flex flex-col gap-3 mt-10">
+        <nav className="flex flex-col gap-3 mt-6">
           {links.map((link) => {
             const isActive =
               location.pathname === link.path ||
@@ -71,12 +71,14 @@ export default function Sidebar() {
       >
         <button
           onClick={() => navigate("/")}
-          className="text-2xl font-bold mb-6 text-blue-600 hidden sm:block"
+          className=" text-2xl font-bold text-blue-600 hidden sm:block"
         >
           Admin Panel
         </button>
-
-        <nav className="flex flex-col gap-2">
+        <h1 className=" sm:hidden text-xl font-bold text-blue-600">
+          Admin Panel
+        </h1>
+        <nav className="flex flex-col lg:gap-2 mt-9 lg:mt-12 gap-1">
           {links.map((link) => {
             const isActive =
               location.pathname === link.path ||
