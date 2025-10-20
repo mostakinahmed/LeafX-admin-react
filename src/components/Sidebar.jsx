@@ -32,12 +32,12 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Toggle Button */}
-      <div className="sm:hidden  mt-3 bg-white p-2 shadow-md">
+      <div className="sm:hidden bg-gray-800 text-white p-2 shadow-md">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-3xl text-blue-600"
+          className="text-3xl mt-3 text-blue-600"
         >
-          {isOpen ? <FiX /> : <FiMenu />}
+          {isOpen ? <FiX /> :  <FiMenu />}
         </button>
 
         <nav className="flex flex-col gap-3 mt-6">
@@ -50,10 +50,8 @@ export default function Sidebar() {
                 key={link.name}
                 to={link.path}
                 onClick={() => setIsOpen(false)} // auto close on mobile click
-                className={`flex items-center gap-2 p-2 rounded hover:bg-blue-100 hover:text-blue-600 transition ${
-                  isActive
-                    ? "bg-blue-100 text-blue-600 font-semibold"
-                    : "text-gray-700"
+                className={`flex items-center gap-2 p-2 rounded hover:bg-white hover:text-blue-600 transition ${
+                  isActive ? "bg-white text-blue-600 font-semibold" : ""
                 }`}
               >
                 {link.icon}
@@ -61,12 +59,11 @@ export default function Sidebar() {
             );
           })}
         </nav>
-        {/* <h1 className="text-xl font-bold text-blue-600">Admin Panel</h1> */}
       </div>
 
       {/* Sidebar */}
       <div
-        className={`fixed sm:static top-0 left-0 h-full w-50 bg-white shadow-lg p-4 flex flex-col transition-transform duration-300 z-50
+        className={`fixed sm:static top-0 left-0 h-full w-50 bg-gray-900 text-white shadow-lg p-4 flex flex-col transition-transform duration-300 z-50
         ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
       >
         <button
@@ -88,10 +85,8 @@ export default function Sidebar() {
                 key={link.name}
                 to={link.path}
                 onClick={() => setIsOpen(false)} // auto close on mobile click
-                className={`flex items-center gap-2 p-2 rounded hover:bg-blue-100 hover:text-blue-600 transition ${
-                  isActive
-                    ? "bg-blue-100 text-blue-600 font-semibold"
-                    : "text-gray-700"
+                className={`flex items-center gap-2 p-2 rounded hover:bg-white hover:text-blue-600 transition ${
+                  isActive ? "bg-white text-blue-600 font-semibold" : ""
                 }`}
               >
                 {link.icon} {link.name}

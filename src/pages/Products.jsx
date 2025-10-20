@@ -200,9 +200,9 @@ export default function Products() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-4 gap-2 fixed bottom-0 left-0 w-full bg-white p-4 shadow-inner">
+        <div className="flex justify-center mt-4 gap-3 fixed bottom-0 left-0 w-full bg-white p-2 shadow-inner">
           <button
-            className="px-3 py-1 border rounded hover:bg-gray-200"
+            className="lg:px-3 lg:py-1 px-4 border rounded bg-gray-200 hover:bg-gray-400"
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
@@ -212,10 +212,10 @@ export default function Products() {
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i + 1}
-              className={`px-3 py-1 border rounded ${
+              className={`px-3 py-1 border rounded hidden lg:flex ${
                 currentPage === i + 1
                   ? "bg-blue-500 text-white"
-                  : "hover:bg-gray-100"
+                  : "hover:bg-gray-200"
               }`}
               onClick={() => setCurrentPage(i + 1)}
             >
@@ -224,7 +224,7 @@ export default function Products() {
           ))}
 
           <button
-            className="px-3 py-1 border rounded hover:bg-gray-200"
+            className="lg:px-3 lg:py-1 px-4 border rounded hover:bg-gray-400 bg-gray-200"
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }

@@ -29,7 +29,7 @@ export default function Login() {
     }
   };
 
-  // ✅ Initial auth check loading
+  // Initial auth check loading
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -41,7 +41,7 @@ export default function Login() {
     );
   }
 
-  // ✅ Login submission loading
+  //  Login submission loading
 
   if (loginLoading) {
     return (
@@ -57,12 +57,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
+    <div className=" p-5 min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 border border-gray-100"
+        className="w-full max-w-md bg-white rounded-xl shadow-xl p-8 border border-gray-100"
       >
         {/* Header */}
         <div className="text-center mb-8">

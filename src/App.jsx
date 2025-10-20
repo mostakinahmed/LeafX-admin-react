@@ -20,10 +20,10 @@ import Login from "./components/Authentication/Login";
 import { AuthContext, AuthProvider } from "./Context Api/AuthContext";
 import PrivateRoute from "./components/private routes/PrivateRoute";
 import { useContext } from "react";
+import ScrollToTop from "./components/ScrollToTop";
 
 function AppLayout() {
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   const location = useLocation();
 
@@ -35,9 +35,12 @@ function AppLayout() {
       {!hideSidebar && <Sidebar />}
       <div
         className={`flex-1 ${
-          hideSidebar ? "p-0" : "px-3 lg:px-6 pb-6 pt-5 bg-gray-100 overflow-auto"
+          hideSidebar
+            ? "p-0"
+            : "px-2 lg:px-2 pb-6 pt-2 bg-gray-100 overflow-auto scroll-container"
         }`}
       >
+        <ScrollToTop />
         <Routes>
           <Route path="/login" element={<Login />} />
 

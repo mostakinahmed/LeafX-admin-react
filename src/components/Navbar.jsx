@@ -17,15 +17,18 @@ export default function Navbar({ pageTitle }) {
     setShowPopup((prev) => !prev);
   };
 
-  console.log(user);
-  
   return (
-    <div className="flex justify-between items-center bg-white px-4 py-1 shadow-md rounded mb-4">
+    <div className="flex justify-between items-center bg-gray-800 text-white px-4 py-2 shadow-5xl rounded mb-4">
       {/* Page Title */}
-      <h1 className="text-2xl font-bold line-clamp-1">{pageTitle}</h1>
+      <div className="hidden lg:flex justify-between items-center bg- text-2xl text-white px-4 rounded ">
+        {pageTitle}
+      </div>
+      <div className="lg:hidden flex justify-between items-center text-xl font-semibold py-2 rounded truncate">
+        {pageTitle}
+      </div>
 
       {/* Right side: Search, Notifications, User */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
         {/* Notification Icon */}
         <button className=" relative p-2 rounded hover:bg-gray-100">
           <FiBell size={20} />
@@ -34,12 +37,14 @@ export default function Navbar({ pageTitle }) {
 
         {/* User */}
         <div
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-3 cursor-pointer"
           onClick={toggleAdminPopup}
         >
-          <span className=" hidden lg:flex  -bold text-lg hover:text-blue-600">Admin</span>
+          <span className=" hidden lg:flex  -bold text-lg hover:text-blue-600">
+            Admin
+          </span>
           <img
-            className="w-10 h-10 lg:w-13 lg:h-13 rounded-full border-2"
+            className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2"
             src={
               user.images
                 ? user.images
