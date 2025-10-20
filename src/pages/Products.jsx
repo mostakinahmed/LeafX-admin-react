@@ -81,7 +81,7 @@ export default function Products() {
       <Navbar pageTitle="Product Section" />
 
       {/* Filter & Search */}
-      <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-4 bg-white shadow rounded">
+      <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-2 bg-white shadow rounded">
         <div className="flex gap-2 lg:w-[50rem]">
           <div className="flex lg:w-[30rem]">
             <select

@@ -16,9 +16,9 @@ export default function Users() {
         <div className="flex justify-center  lg:mb-0 mb-2">
           <button
             onClick={() => setActiveTab("admin")}
-            className={`lg:px-16 px-4  text-md ${
+            className={`lg:px-19 px-4  text-md ${
               activeTab === "admin"
-                ? "bg-blue-500 text-white"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -26,9 +26,9 @@ export default function Users() {
           </button>
           <button
             onClick={() => setActiveTab("customer")}
-            className={`lg:px-12 px-2  lg:py-2 py-1  font-medium ${
+            className={`lg:px-15 px-2  lg:py-2 py-1  font-medium ${
               activeTab === "customer"
-                ? "bg-blue-500 text-white"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -36,9 +36,9 @@ export default function Users() {
           </button>
           <button
             onClick={() => setActiveTab("addAdmin")}
-            className={` lg:px-6 px-1   font-medium line-clamp-1 ${
+            className={` lg:px-9 px-1   font-medium line-clamp-1 ${
               activeTab === "addAdmin"
-                ? "bg-blue-500 text-white"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -47,7 +47,7 @@ export default function Users() {
         </div>
 
         {/* Conditional Content */}
-        <div className="overflow-x-auto min-h-screen">
+        <div className=" min-h-screen">
           {activeTab === "admin" && <AdminList />}
 
           {activeTab === "customer" && <CustomerList />}

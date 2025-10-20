@@ -10,7 +10,7 @@ const order = [
 // Props: user (object), orders (array)
 export default function CustomerView({ user, goBack }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       <div className="w-full flex justify-between h-10 py-1 px-2 mt-5 text-xl bg-gray-200">
         <h1>Customer Info</h1>
         <button
@@ -22,7 +22,7 @@ export default function CustomerView({ user, goBack }) {
       </div>
 
       {/* User Info Card */}
-      <div className="bg-white w-full mx-auto flex flex-col sm:flex-row gap-6">
+      <div className="bg-white w-full mx-auto flex flex-col sm:flex-row gap-2">
         {/* Left: Avatar & Username */}
         <div className="flex flex-col items-center sm:items-start sm:w-1/3">
           {user.images ? (
@@ -40,7 +40,7 @@ export default function CustomerView({ user, goBack }) {
         </div>
 
         {/* Right: User Info */}
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4 whitespace-break-spaces">
+        <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-6 whitespace-break-spaces">
           <div>
             <p className="text-gray-500 font-semibold">Username</p>
             <p>@{user.username}</p>

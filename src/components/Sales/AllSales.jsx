@@ -78,38 +78,38 @@ export default function Sales() {
       </div>
 
       {/* Filter Section */}
-      <div className="bg-white shadow-md rounded p-4 border border-gray-100">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="bg-white shadow-md rounded p-2 border border-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
           <input
             type="text"
             placeholder="Order ID"
             value={filter.orderId}
             onChange={(e) => setFilter({ ...filter, orderId: e.target.value })}
-            className="border rounded-lg px-3 py-2 focus:outline-blue-500"
+            className="border rounded px-3 py-2 focus:outline-blue-500"
           />
           <input
             type="text"
             placeholder="Product ID"
             value={filter.pid}
             onChange={(e) => setFilter({ ...filter, pid: e.target.value })}
-            className="border rounded-lg px-3 py-2 focus:outline-blue-500"
+            className="border rounded px-3 py-2 focus:outline-blue-500"
           />
           <input
             type="date"
             value={filter.date}
             onChange={(e) => setFilter({ ...filter, date: e.target.value })}
-            className="border rounded-lg px-3 py-2 focus:outline-blue-500"
+            className="border rounded px-3 py-2 focus:outline-blue-500"
           />
           <div className="flex gap-2 justify-end">
             <button
               onClick={handleFilter}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+              className="bg-blue-600 text-white px-8 py-1 rounded hover:bg-blue-700"
             >
               Filter
             </button>
             <button
               onClick={handleReset}
-              className="bg-gray-200 text-gray-800 px-6 py-2 ml-2 rounded-md hover:bg-gray-300"
+              className="bg-red-500 text-white px-8 py-2 ml-2 rounded hover:bg-red-600"
             >
               Reset
             </button>

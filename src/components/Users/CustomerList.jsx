@@ -29,7 +29,7 @@ const CustomerList = () => {
   );
 
   return (
-    <div className="bg-white rounded  overflow-x-auto">
+    <div className="bg-white rounded  ">
       {/* Header + Search */}
       {activeTab === "list" && (
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2 gap-3">
@@ -47,80 +47,81 @@ const CustomerList = () => {
         </div>
       )}
 
-      {/* Admin Table */}
-      {activeTab === "list" && (
-        <table className="w-full border border-gray-200 text-sm text-left whitespace-nowrap">
-          <thead className="bg-gray-200 text-gray-700 uppercase text-xs whitespace-nowrap">
-            <tr>
-              <th className="py-3 px-4 border-b">User ID</th>
-              <th className="py-3 px-4 border-b">Full Name</th>
-              <th className="py-3 px-4 border-b">Username</th>
-              <th className="py-3 px-4 border-b">Email</th>
-              <th className="py-3 px-4 border-b">Phone</th>
-              <th className="py-3 px-4 border-b">Role</th>
-              <th className="py-3 px-4 border-b">Status</th>
-              <th className="py-3 px-4 border-b">Created</th>
-              <th className="py-3 px-4 border-b">Last Login</th>
-              <th className="py-3 px-4 border-b text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAdmins.length > 0 ? (
-              filteredAdmins.map((admin) => (
-                <tr
-                  key={admin.id}
-                  className="hover:bg-gray-50 transition duration-150"
-                >
-                  <td className="py-3 px-4 border-b">{admin.id}</td>
-                  <td className="py-3 px-4 border-b">{admin.fullName}</td>
-                  <td className="py-3 px-4 border-b">{admin.username}</td>
-                  <td className="py-3 px-4 border-b">{admin.email}</td>
-                  <td className="py-3 px-4 border-b">{admin.phone}</td>
-                  <td className="py-3 px-4 border-b">{admin.role}</td>
-                  <td
-                    className={`py-3 px-4 border-b font-medium ${
-                      admin.status === "Active"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
+      <div className="overflow-x-auto">
+        {/* Admin Table */}
+        {activeTab === "list" && (
+          <table className="w-full border border-gray-200 text-sm text-left whitespace-nowrap">
+            <thead className="bg-gray-200 text-gray-700 uppercase text-xs whitespace-nowrap">
+              <tr>
+                <th className="py-3 px-4 border-b">User ID</th>
+                <th className="py-3 px-4 border-b">Full Name</th>
+                <th className="py-3 px-4 border-b">Username</th>
+                <th className="py-3 px-4 border-b">Email</th>
+                <th className="py-3 px-4 border-b">Phone</th>
+                <th className="py-3 px-4 border-b">Role</th>
+                <th className="py-3 px-4 border-b">Status</th>
+                <th className="py-3 px-4 border-b">Created</th>
+                <th className="py-3 px-4 border-b">Last Login</th>
+                <th className="py-3 px-4 border-b text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAdmins.length > 0 ? (
+                filteredAdmins.map((admin) => (
+                  <tr
+                    key={admin.id}
+                    className="hover:bg-gray-50 transition duration-150"
                   >
-                    {admin.status}
-                  </td>
-                  <td className="py-3 px-4 border-b">{admin.createdAt}</td>
-                  <td className="py-3 px-4 border-b">{admin.lastLogin}</td>
-                  <td className="py-1 px-4 border-b text-center space-x-3">
-                    <button
-                      onClick={() => {
-                        setSelectedAdmin(admin); // <-- set selected admin
-                        setActiveTab("view"); // <-- switch tab
-                        
-                      }}
-                      className="text-blue-500 hover:text-blue-700 text-xl"
+                    <td className="py-3 px-4 border-b">{admin.id}</td>
+                    <td className="py-3 px-4 border-b">{admin.fullName}</td>
+                    <td className="py-3 px-4 border-b">{admin.username}</td>
+                    <td className="py-3 px-4 border-b">{admin.email}</td>
+                    <td className="py-3 px-4 border-b">{admin.phone}</td>
+                    <td className="py-3 px-4 border-b">{admin.role}</td>
+                    <td
+                      className={`py-3 px-4 border-b font-medium ${
+                        admin.status === "Active"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
                     >
-                      <FaEye />
-                    </button>
-                    <button className="text-yellow-500 hover:text-yellow-700 text-xl">
-                      <FaEdit />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700 text-xl">
-                      <FaTrash />
-                    </button>
+                      {admin.status}
+                    </td>
+                    <td className="py-3 px-4 border-b">{admin.createdAt}</td>
+                    <td className="py-3 px-4 border-b">{admin.lastLogin}</td>
+                    <td className="py-1 px-4 border-b text-center space-x-3">
+                      <button
+                        onClick={() => {
+                          setSelectedAdmin(admin); // <-- set selected admin
+                          setActiveTab("view"); // <-- switch tab
+                        }}
+                        className="text-blue-500 hover:text-blue-700 text-xl"
+                      >
+                        <FaEye />
+                      </button>
+                      <button className="text-yellow-500 hover:text-yellow-700 text-xl">
+                        <FaEdit />
+                      </button>
+                      <button className="text-red-500 hover:text-red-700 text-xl">
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="10"
+                    className="text-center py-4 text-gray-500 italic"
+                  >
+                    No matching admins found
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="10"
-                  className="text-center py-4 text-gray-500 italic"
-                >
-                  No matching admins found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
 
       {/* CustomerView */}
       {activeTab === "view" && (

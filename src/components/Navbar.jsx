@@ -62,7 +62,7 @@ export default function Navbar({ pageTitle }) {
           <div className="absolute inset-0 bg-white/40 backdrop-blur-md"></div>
 
           {/* Popup content */}
-          <div className="relative bg-white rounded-xl shadow-xl lg:w-96 w-85 max-w-full text-left z-10 overflow-hidden">
+          <div className="relative bg-white rounded shadow-xl lg:w-96 w-85 max-w-full text-left z-10 overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between bg-blue-600 text-white p-4">
               <h2 className="text-lg font-semibold">Admin Profile</h2>
@@ -130,7 +130,7 @@ export default function Navbar({ pageTitle }) {
               <div className="flex justify-center mt-6">
                 <button
                   onClick={() => logout()}
-                  className="bg-red-500 text-white text-lg px-6 py-2 rounded-full hover:bg-red-600 transition-all"
+                  className="bg-red-500 text-white text-lg px-6 py-1 rounded-sm hover:bg-red-600 transition-all"
                 >
                   Logout
                 </button>

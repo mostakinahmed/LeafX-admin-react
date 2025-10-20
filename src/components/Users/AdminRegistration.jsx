@@ -26,8 +26,8 @@ export default function AdminRegistration() {
   };
 
   return (
-    <div className="w-full lg:max-w-xl mx-auto lg:mt-3 p-1 bg-white">
-      <h2 className="text-2xl font-bold mb-6 text-center">
+    <div className="w-full lg:max-w-xl mx-auto lg:mt-3  bg-white">
+      <h2 className="text-2xl p-2 font-bold mb-4 text-center lg:mt-12 bg-gray-200">
         Register New Admin
       </h2>
 
