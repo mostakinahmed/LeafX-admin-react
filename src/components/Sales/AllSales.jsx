@@ -117,7 +117,7 @@ export default function Sales() {
         </div>
       </div>
 
-      {/* Sales Table */}
+      {/* Sales Table dsa */}
       <div className="bg-white shadow-md rounded p-4 border border-gray-100 mt-5 overflow-x-auto">
         {/* <h2 className="text-lg font-semibold mb-4 text-gray-700">All Sales</h2> */}
         <table className="min-w-full text-sm text-left border-t border-gray-200 whitespace-nowrap">
