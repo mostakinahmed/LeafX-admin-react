@@ -57,7 +57,7 @@ const AdminList = () => {
       <div className=" overflow-x-auto">
         {/* 🧾 Admin Table */}
         <table className="w-full border border-gray-200 text-sm text-left whitespace-nowrap ">
-          <thead className="bg-gray-100 text-gray-700 uppercase text-xs whitespace-nowrap">
+          <thead className="bg-gray-200 text-gray-700 uppercase text-xs whitespace-nowrap">
             <tr>
               <th className="py-3 px-4 border-b">User ID</th>
               <th className="py-3 px-4 border-b">Full Name</th>

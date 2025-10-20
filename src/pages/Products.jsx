@@ -133,11 +133,11 @@ export default function Products() {
       </div>
 
       {/* Products Table */}
-      <div className="overflow-x-auto bg-white rounded shadow p-4">
+      <div className="overflow-x-auto bg-white rounded shadow ">
         <table className="min-w-full table-auto whitespace-nowrap">
           <thead>
-            <tr className="bg-gray-100 text-gray-700">
-              <th className="px-4 py-2">S/N</th>
+            <tr className="bg-gray-200 text-gray-700 text-xs uppercase">
+              <th className="px-4 py-3">S/N</th>
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Brand Name</th>

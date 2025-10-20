@@ -1,12 +1,47 @@
+import { useContext, useState } from "react";
 import Navbar from "../components/Navbar";
+import CategoryList from "../components/Category/CategoryList";
+import { DataContext } from "../Context Api/ApiContext";
 
 export default function Category() {
+  const { categoryData, productData, loading } = useContext(DataContext);
+  console.log(categoryData);
+
+  const [activeTab, setActiveTab] = useState("catList");
   return (
     <div>
       <Navbar pageTitle="Category Management" />
-      <div>
-      
-        <p className="text-gray-600">View and manage customer orders here.</p>
+      <div className="bg-white shadow-lg  p-3 w-full mx-auto">
+        {/* Buttons */}
+        <div className="flex justify-center  lg:mb-0 mb-2">
+          <button
+            onClick={() => setActiveTab("catList")}
+            className={`lg:px-15 px-4  text-md ${
+              activeTab === "catList"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Category List
+          </button>
+          <button
+            onClick={() => setActiveTab("addCat")}
+            className={`lg:px-15 px-2  lg:py-2 py-1  font-medium ${
+              activeTab === "addCat"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Add Category
+          </button>
+        </div>
+
+        {/* Conditional Content */}
+        <div className=" min-h-screen">
+          {activeTab === "catList" && <CategoryList data={categoryData} />}
+
+          {/* {activeTab === "customer" && <CustomerList />} */}
+        </div>
       </div>
     </div>
   );
