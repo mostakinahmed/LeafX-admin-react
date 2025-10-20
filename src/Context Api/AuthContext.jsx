@@ -3,6 +3,7 @@ import { createContext, use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { div } from "framer-motion/client";
 
 export const AuthContext = createContext();
 
@@ -14,6 +15,8 @@ export const AuthProvider = ({ children }) => {
   // Check login status once when app loads
   useEffect(() => {
     const checkAuth = async () => {
+
+     
       try {
         const token = Cookies.get("token");
 

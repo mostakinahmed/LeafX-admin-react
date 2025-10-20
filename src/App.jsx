@@ -17,14 +17,18 @@ import Sales from "./pages/Sales";
 import AllSales from "./components/Sales/AllSales";
 import NewSales from "./components/Sales/NewSales";
 import Login from "./components/Authentication/Login";
-import { AuthProvider } from "./Context Api/AuthContext";
+import { AuthContext, AuthProvider } from "./Context Api/AuthContext";
 import PrivateRoute from "./components/private routes/PrivateRoute";
+import { useContext } from "react";
 
 function AppLayout() {
+  const { user } = useContext(AuthContext);
+  console.log(user);
+
   const location = useLocation();
 
   // Check if current route is /login
-  const hideSidebar = location.pathname === "/login";
+  const hideSidebar = location.pathname === "/login" || !user;
 
   return (
     <div className="flex h-screen">
