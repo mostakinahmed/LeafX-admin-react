@@ -77,7 +77,7 @@ const AdminList = () => {
               filteredAdmins.map((admin) => (
                 <tr
                   key={admin.id}
-                  className="hover:bg-gray-50 transition duration-150"
+                  className="hover:bg-gray-100 transition duration-150"
                 >
                   <td className="py-3 px-4 border-b">{admin.id}</td>
                   <td className="py-3 px-4 border-b">{admin.fullName}</td>

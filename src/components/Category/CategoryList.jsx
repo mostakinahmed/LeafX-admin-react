@@ -52,7 +52,7 @@ const CategoryList = ({ data }) => {
             placeholder="Search by username or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-10 pr-3 py-2 border border-gray-400 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ const CategoryList = ({ data }) => {
             {data.map((cat) => (
               <tr
                 key={cat.catID}
-                className="hover:bg-gray-50 transition duration-150 border-b"
+                className="hover:bg-gray-100 transition duration-150 border-b"
               >
                 <td className="px-4 py-2">{sn++}</td>
                 <td className="px-4 py-2">{cat.catID}</td>

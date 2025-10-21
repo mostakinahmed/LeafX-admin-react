@@ -25,9 +25,14 @@ export default function CustomerView({ user, goBack }) {
       <div className="bg-white w-full mx-auto flex flex-col sm:flex-row gap-2">
         {/* Left: Avatar & Username */}
         <div className="flex flex-col items-center sm:items-start sm:w-1/3">
-          {user.images ? (
+          <img
+            src="https://i.ibb.co.com/RkQyDx1v/Untitled-design-1.png"
+            alt={user.fullName}
+            className="w-24 h-24 rounded-full object-cover mb-2"
+          />
+          {/* {user.images ? (
             <img
-              src={user.images}
+              src="https://i.ibb.co.com/RkQyDx1v/Untitled-design-1.png"
               alt={user.fullName}
               className="w-24 h-24 rounded-full object-cover mb-2"
             />
@@ -35,7 +40,7 @@ export default function CustomerView({ user, goBack }) {
             <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl mb-2">
               {user.fullName[0]}
             </div>
-          )}
+          )} */}
           <h2 className="text-2xl font-bold">{user.fullName}</h2>
         </div>
 

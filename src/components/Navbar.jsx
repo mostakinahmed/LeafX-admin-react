@@ -64,7 +64,7 @@ export default function Navbar({ pageTitle }) {
           {/* Popup content */}
           <div className="relative bg-white rounded shadow-xl lg:w-96 w-85 max-w-full text-left z-10 overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between bg-blue-600 text-white p-4">
+            <div className="flex items-center justify-between bg-gray-800 text-white p-4">
               <h2 className="text-lg font-semibold">Admin Profile</h2>
               <button
                 onClick={() => setShowPopup(false)}
@@ -105,7 +105,7 @@ export default function Navbar({ pageTitle }) {
                   <tr className="border-b py-2">
                     <td className="font-medium py-2">Role</td>
                     <td className="py-2 text-green-600 text-md font-bold">
-                      : {user.admin ? "Admin" : "User"}
+                      :{user.admin ? " Admin" : "User"}
                     </td>
                   </tr>
                   <tr className="border-b py-2">

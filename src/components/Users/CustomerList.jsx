@@ -8,7 +8,7 @@ const CustomerList = () => {
   const [selectedAdmin, setSelectedAdmin] = useState(null); // <-- store selected admin
 
   const adminData = [
-    {
+{
       id: "A001",
       fullName: "Mostakin Ahmed",
       username: "mostakin",
@@ -18,6 +18,105 @@ const CustomerList = () => {
       status: "Active",
       createdAt: "2025-10-01",
       lastLogin: "2025-10-18 14:32",
+    },
+    {
+      id: "A002",
+      fullName: "Rafiul Islam",
+      username: "rafiul",
+      email: "rafiul@example.com",
+      phone: "+8801790005678",
+      role: "Admin",
+      status: "Active",
+      createdAt: "2025-09-25",
+      lastLogin: "2025-10-20 09:15",
+    },
+    {
+      id: "A003",
+      fullName: "Nusrat Jahan",
+      username: "nusrat",
+      email: "nusrat@example.com",
+      phone: "+8801876003344",
+      role: "Moderator",
+      status: "Inactive",
+      createdAt: "2025-08-12",
+      lastLogin: "2025-09-30 18:45",
+    },
+    {
+      id: "A004",
+      fullName: "Sajid Hasan",
+      username: "sajid",
+      email: "sajid@example.com",
+      phone: "+8801754002233",
+      role: "Admin",
+      status: "Active",
+      createdAt: "2025-07-05",
+      lastLogin: "2025-10-19 21:10",
+    },
+    {
+      id: "A005",
+      fullName: "Farzana Akter",
+      username: "farzana",
+      email: "farzana@example.com",
+      phone: "+8801998007890",
+      role: "Editor",
+      status: "Active",
+      createdAt: "2025-09-14",
+      lastLogin: "2025-10-17 10:05",
+    },
+    {
+      id: "A006",
+      fullName: "Tareq Rahman",
+      username: "tareq",
+      email: "tareq@example.com",
+      phone: "+8801711005566",
+      role: "Support",
+      status: "Suspended",
+      createdAt: "2025-06-10",
+      lastLogin: "2025-08-29 12:30",
+    },
+    {
+      id: "A007",
+      fullName: "Mim Chowdhury",
+      username: "mimc",
+      email: "mimc@example.com",
+      phone: "+8801817009988",
+      role: "Admin",
+      status: "Active",
+      createdAt: "2025-08-30",
+      lastLogin: "2025-10-18 16:25",
+    },
+    {
+      id: "A008",
+      fullName: "Hasan Mahmud",
+      username: "hasan",
+      email: "hasan@example.com",
+      phone: "+8801788001112",
+      role: "Editor",
+      status: "Active",
+      createdAt: "2025-09-10",
+      lastLogin: "2025-10-19 19:50",
+    },
+    {
+      id: "A009",
+      fullName: "Sadia Khatun",
+      username: "sadiak",
+      email: "sadiak@example.com",
+      phone: "+8801979003344",
+      role: "Moderator",
+      status: "Inactive",
+      createdAt: "2025-07-18",
+      lastLogin: "2025-09-25 08:55",
+    },
+    {
+      id: "A010",
+      fullName: "Arif Hossain",
+      username: "arifh",
+      email: "arifh@example.com",
+      phone: "+8801702006677",
+      role: "Support",
+      status: "Active",
+      createdAt: "2025-10-02",
+      lastLogin: "2025-10-20 11:47",
     },
   ];
 
@@ -70,7 +169,7 @@ const CustomerList = () => {
                 filteredAdmins.map((admin) => (
                   <tr
                     key={admin.id}
-                    className="hover:bg-gray-50 transition duration-150"
+                    className="hover:bg-gray-100 transition duration-150"
                   >
                     <td className="py-3 px-4 border-b">{admin.id}</td>
                     <td className="py-3 px-4 border-b">{admin.fullName}</td>
