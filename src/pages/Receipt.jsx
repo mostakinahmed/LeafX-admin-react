@@ -132,16 +132,16 @@ export default function ReceiptGenerator() {
 
       <div className="max-w-4xl mx-auto p-4">
         {/* Order ID Input */}
-        <div className=" lg:flex mb-6">
+        <div className=" lg:flex mb-6 lg:gap-5">
           <input
             type="text"
             placeholder="Enter Order ID"
-            className="flex-1 p-2 mb-3 w-full border rounded focus:outline-none focus:ring focus:ring-blue-200"
+            className="flex-1 p-2 mb-2 lg:mb-0 w-full border rounded focus:outline-none focus:ring focus:ring-blue-200"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
           />
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2   lg:px-6 rounded hover:bg-blue-600"
             onClick={handleGenerate}
           >
             Generate

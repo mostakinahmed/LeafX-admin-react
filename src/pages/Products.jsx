@@ -81,8 +81,8 @@ export default function Products() {
       <Navbar pageTitle="Product Section" />
 
       {/* Filter & Search */}
-      <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 p-2 bg-white shadow rounded">
-        <div className="flex gap-2 lg:w-[50rem]">
+      <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 px-3 pt-3 bg-white shadow rounded">
+        <div className="flex gap-2 lg:gap-0 lg:w-[50rem]">
           <div className="flex lg:w-[30rem]">
             <select
               value={categoryFilter}
@@ -90,7 +90,7 @@ export default function Products() {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="p-1 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               {/* <option value="All">All Categories</option>
           {[...new Set(products.map((p) => p.category))].map((cat) => (
@@ -117,14 +117,14 @@ export default function Products() {
                 setSearchId(upperCaseID);
                 setCurrentPage(1);
               }}
-              className="p-2 border rounded w-full sm:w-64 md:w-80 max-w-xs sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="p-1 border rounded w-full sm:w-64 md:w-80 max-w-xs sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
           </div>
         </div>
 
         <div className=" w-full lg:w-60">
           <button
-            className="bg-blue-500 w-full  text-white py-2 rounded hover:bg-blue-600"
+            className="bg-blue-600 w-full  text-white py-2 rounded hover:bg-blue-700"
             onClick={() => navigate("/products/add-product")}
           >
             Add Product
@@ -133,8 +133,8 @@ export default function Products() {
       </div>
 
       {/* Products Table */}
-      <div className="overflow-x-auto bg-white rounded shadow ">
-        <table className="min-w-full table-auto whitespace-nowrap">
+      <div className="overflow-x-auto bg-white p-3 min-h-screen">
+        <table className="min-w-full table-auto whitespace-nowrap border border-gray-200">
           <thead>
             <tr className="bg-gray-200 text-gray-700 text-xs uppercase">
               <th className="px-4 py-3">S/N</th>
@@ -151,7 +151,7 @@ export default function Products() {
           <tbody>
             {currentProducts.length > 0 ? (
               currentProducts.map((product, index) => (
-                <tr key={product._id || index} className="text-center border-b">
+                <tr key={product._id || index} className="text-center border-b hover:bg-gray-100">
                   <td className="px-4 ">{sn++}</td>
                   <td className="px-4">{product.pID}</td>
                   <td className="px-4 line-clamp-1">{product.name}</td>

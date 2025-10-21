@@ -6,7 +6,7 @@ export default function Dashboard() {
     <div>
       <Navbar pageTitle="Dashboard" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-2">
         <DashboardCard title="Total Products" value={120} color="bg-blue-500" />
         <DashboardCard title="Total Orders" value={75} color="bg-green-500" />
         <DashboardCard title="Total Users" value={50} color="bg-yellow-500" />

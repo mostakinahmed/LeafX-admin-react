@@ -13,10 +13,10 @@ export default function Category() {
       <Navbar pageTitle="Category Management" />
       <div className="bg-white shadow-lg  p-3 w-full mx-auto">
         {/* Buttons */}
-        <div className="flex justify-center  lg:mb-0 mb-2">
+        <div className="flex w-full justify-center  lg:mb-0 mb-2">
           <button
             onClick={() => setActiveTab("catList")}
-            className={`lg:px-15 px-4  text-md ${
+            className={`lg:px-15 w-1/2 lg:w-auto   text-md ${
               activeTab === "catList"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -26,7 +26,7 @@ export default function Category() {
           </button>
           <button
             onClick={() => setActiveTab("addCat")}
-            className={`lg:px-15 px-2  lg:py-2 py-1  font-medium ${
+            className={`lg:px-15 w-1/2 lg:w-auto  lg:py-2 py-1  font-medium ${
               activeTab === "addCat"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"

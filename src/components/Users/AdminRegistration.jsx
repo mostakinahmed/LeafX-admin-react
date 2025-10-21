@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../Context Api/AuthContext.jsx";
+import { FiLoader } from "react-icons/fi";
 
 export default function AdminRegistration() {
+  const { loading } = useContext(AuthContext);
+  const [loginLoading, setLoginLoading] = useState(false); // spinner for login submit
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -22,8 +26,11 @@ export default function AdminRegistration() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Admin Data:", formData);
+    setLoginLoading(true);
     // Here you can send the data to your backend API
   };
+
+
 
   return (
     <div className="w-full lg:max-w-xl mx-auto lg:mt-3  bg-white">

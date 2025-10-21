@@ -37,9 +37,9 @@ const monthlyData = [
 export default function Sales() {
   const Navigate = useNavigate();
   return (
-    <div className=" space-y-6">
+    <div className=" space-y-2">
       <Navbar pageTitle="Sales Overview" />
-      <div className="flex flex-col sm:flex-row mb-4">
+      <div className="flex flex-col sm:flex-row mb-2">
         <div className="flex">
           <button
             className="bg-blue-600 text-white px-7 py-2 rounded hover:bg-blue-800 transition sm:mt-0"
@@ -48,7 +48,7 @@ export default function Sales() {
             All Sales
           </button>
           <button
-            className="bg-green-600 ml-5 text-white px-4 py-2 rounded hover:bg-emerald-700 transition sm:mt-0"
+            className="bg-green-600 ml-2 text-white px-4 py-2 rounded hover:bg-emerald-700 transition sm:mt-0"
             onClick={() => Navigate(`/sales/new`)}
           >
             + Create New Sale
@@ -57,7 +57,7 @@ export default function Sales() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <div className="bg-white shadow-md rounded p-5 border border-gray-100">
           <h3 className="text-gray-500 text-sm">Today's Sales</h3>
           <p className="text-2xl font-bold text-blue-600">৳ 2,100</p>
@@ -76,7 +76,7 @@ export default function Sales() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {/* Daily Line Chart */}
         <div className="bg-white shadow-md rounded p-4 border border-gray-100">
           <h2 className="text-lg font-semibold mb-3 text-gray-700">
