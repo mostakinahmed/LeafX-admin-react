@@ -164,7 +164,7 @@ export default function AdminRegistration() {
         <div className="text-center">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-all font-medium"
+            className="bg-blue-600 text-white px-6 w-full py-2 rounded hover:bg-blue-700 transition-all font-medium"
           >
             Register Admin
           </button>

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../Context Api/ApiContext";
+import { FaEye, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
 export default function Products() {
   const { categoryData, productData, loading } = useContext(DataContext);
@@ -90,7 +91,7 @@ export default function Products() {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="p-1 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="p-1 border rounded w-full border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               {/* <option value="All">All Categories</option>
           {[...new Set(products.map((p) => p.category))].map((cat) => (
@@ -117,7 +118,7 @@ export default function Products() {
                 setSearchId(upperCaseID);
                 setCurrentPage(1);
               }}
-              className="p-1 border rounded w-full sm:w-64 md:w-80 max-w-xs sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="p-1 border rounded w-full border-gray-300  sm:w-64 md:w-80 max-w-xs sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
           </div>
         </div>
@@ -151,7 +152,10 @@ export default function Products() {
           <tbody>
             {currentProducts.length > 0 ? (
               currentProducts.map((product, index) => (
-                <tr key={product._id || index} className="text-center border-b hover:bg-gray-100">
+                <tr
+                  key={product._id || index}
+                  className="text-center border-b hover:bg-gray-100"
+                >
                   <td className="px-4 ">{sn++}</td>
                   <td className="px-4">{product.pID}</td>
                   <td className="px-4 line-clamp-1">{product.name}</td>

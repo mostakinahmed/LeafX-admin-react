@@ -136,7 +136,7 @@ export default function ReceiptGenerator() {
           <input
             type="text"
             placeholder="Enter Order ID"
-            className="flex-1 p-2 mb-2 lg:mb-0 w-full border rounded focus:outline-none focus:ring focus:ring-blue-200"
+            className="flex-1 p-2 mb-2 lg:mb-0 w-full border-2 border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-600"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
           />

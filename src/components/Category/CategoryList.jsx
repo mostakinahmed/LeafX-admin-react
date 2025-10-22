@@ -1,58 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEye, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import { DataContext } from "../../Context Api/ApiContext";
+import { div } from "framer-motion/client";
+import { AuthContext } from "../../Context Api/AuthContext";
 
 const CategoryList = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [categories, setCategories] = useState([
-    {
-      catID: "C001",
-      catName: "Mobile",
-      specifications: [
-        "Hardware",
-        "CPU",
-        "GPU",
-        "Display",
-        "Battery",
-        "Network",
-        "Software",
-        "Ports",
-        "Audio",
-        "Dimensions",
-        "Color",
-      ],
-      createdAt: "2025-10-04T12:31:14.584Z",
-    },
-    {
-      catID: "C002",
-      catName: "Laptop",
-      specifications: [
-        "Processor",
-        "RAM",
-        "Storage",
-        "Display",
-        "Battery",
-        "Graphics",
-      ],
-      createdAt: "2025-10-10T15:00:00.000Z",
-    },
-  ]);
+  const [filteredData, setFilteredData] = useState(data);
+
+  useEffect(() => {
+    const filtered = data.filter(
+      (cat) =>
+        cat.catName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cat.catID.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+  }, [searchTerm, data]);
 
   let sn = 1;
 
   return (
     <div className="bg-white w-full ">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2 gap-3">
-        <h2 className="text-xl mt-4 lg:mt-0 font-semibold text-gray-700">All Category</h2>
+        <h2 className="text-xl mt-4 lg:mt-0 font-semibold text-gray-700">
+          All Category
+        </h2>
 
         {/* 🔍 Search Box */}
         <div className="relative w-full md:w-64">
-          <FaSearch className="absolute left-3 top-3 text-gray-400" />
+          <FaSearch className="absolute left-2 top-2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by username or phone..."
+            placeholder="Search by username or phone.."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 border border-gray-400 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-8 pr-3 py-1 border border-gray-400 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
       </div>
@@ -69,7 +51,7 @@ const CategoryList = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.map((cat) => (
+            {filteredData.map((cat) => (
               <tr
                 key={cat.catID}
                 className="hover:bg-gray-100 transition duration-150 border-b"

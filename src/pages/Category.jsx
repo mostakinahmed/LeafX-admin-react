@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import Navbar from "../components/Navbar";
 import CategoryList from "../components/Category/CategoryList";
 import { DataContext } from "../Context Api/ApiContext";
+import AddCategory from "../components/Category/AddCategory";
 
 export default function Category() {
   const { categoryData, productData, loading } = useContext(DataContext);
@@ -16,7 +17,7 @@ export default function Category() {
         <div className="flex w-full justify-center  lg:mb-0 mb-2">
           <button
             onClick={() => setActiveTab("catList")}
-            className={`lg:px-15 w-1/2 lg:w-auto   text-md ${
+            className={`lg:px-20 w-1/2 lg:w-auto   text-md ${
               activeTab === "catList"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -26,7 +27,7 @@ export default function Category() {
           </button>
           <button
             onClick={() => setActiveTab("addCat")}
-            className={`lg:px-15 w-1/2 lg:w-auto  lg:py-2 py-1  font-medium ${
+            className={`lg:px-20 w-1/2 lg:w-auto  lg:py-2 py-1  font-medium ${
               activeTab === "addCat"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -39,8 +40,7 @@ export default function Category() {
         {/* Conditional Content */}
         <div className=" min-h-screen">
           {activeTab === "catList" && <CategoryList data={categoryData} />}
-
-          {/* {activeTab === "customer" && <CustomerList />} */}
+          {activeTab === "addCat" && <AddCategory />}
         </div>
       </div>
     </div>
