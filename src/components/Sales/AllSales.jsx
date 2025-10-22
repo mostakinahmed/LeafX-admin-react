@@ -122,7 +122,7 @@ export default function Sales() {
         {/* <h2 className="text-lg font-semibold mb-4 text-gray-700">All Sales</h2> */}
         <table className="min-w-full  text-sm text-left border border-gray-200 whitespace-nowrap">
           <thead>
-            <tr className="bg-gray-50 text-gray-700">
+            <tr className="bg-gray-200 text-gray-700">
               <th className="p-3">Order ID</th>
               <th className="p-3">Product ID</th>
               <th className="p-3">Customer</th>
@@ -133,14 +133,14 @@ export default function Sales() {
           </thead>
           <tbody>
             {sales.map((sale) => (
-              <tr key={sale.id} className="border-b hover:bg-gray-50">
-                <td className="p-3 font-medium">{sale.id}</td>
-                <td className="p-3">{sale.pid}</td>
-                <td className="p-3">{sale.name}</td>
-                <td className="p-3 text-blue-600">৳ {sale.amount}</td>
-                <td className="p-3">{sale.date}</td>
+              <tr key={sale.id} className="border-b hover:bg-gray-100">
+                <td className="p-2 font-medium">{sale.id}</td>
+                <td className="p-2">{sale.pid}</td>
+                <td className="p-2">{sale.name}</td>
+                <td className="p-2 text-blue-600">৳ {sale.amount}</td>
+                <td className="p-2">{sale.date}</td>
                 <td
-                  className={`p-3 font-semibold ${
+                  className={`p-2 font-semibold ${
                     sale.status === "Paid"
                       ? "text-green-600"
                       : "text-yellow-500"
