@@ -67,10 +67,10 @@ export default function Sales() {
       {/* Header */}
       <Navbar pageTitle="All Sales List" />
 
-      <div className="flex gap-5">
+      <div className="flex gap-3">
         <BackButton />
         <button
-          className="bg-blue-600 text-white px-4 py-2 mb-4 rounded hover:bg-blue-700 transition sm:mt-0"
+          className="bg-blue-600 text-white px-4 py-2 mb-2 rounded hover:bg-blue-700 transition sm:mt-0"
           onClick={() => Navigate(`/sales/new`)}
         >
           + Create New Sale
@@ -78,27 +78,27 @@ export default function Sales() {
       </div>
 
       {/* Filter Section */}
-      <div className="bg-white shadow-md rounded p-2 border border-gray-100">
+      <div className="bg-white px-2 pt-2  ">
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
           <input
             type="text"
             placeholder="Order ID"
             value={filter.orderId}
             onChange={(e) => setFilter({ ...filter, orderId: e.target.value })}
-            className="border rounded px-3 py-2 focus:outline-blue-500"
+            className="border rounded px-3 py-1 focus:outline-blue-500"
           />
           <input
             type="text"
             placeholder="Product ID"
             value={filter.pid}
             onChange={(e) => setFilter({ ...filter, pid: e.target.value })}
-            className="border rounded px-3 py-2 focus:outline-blue-500"
+            className="border rounded px-3 py-1 focus:outline-blue-500"
           />
           <input
             type="date"
             value={filter.date}
             onChange={(e) => setFilter({ ...filter, date: e.target.value })}
-            className="border rounded px-3 py-2 focus:outline-blue-500"
+            className="border rounded px-3 py-1 focus:outline-blue-500"
           />
           <div className="flex gap-2 justify-end">
             <button
@@ -109,7 +109,7 @@ export default function Sales() {
             </button>
             <button
               onClick={handleReset}
-              className="bg-red-500 text-white px-8 py-2 ml-2 rounded hover:bg-red-600"
+              className="bg-red-500 text-white px-8 py-1 ml-2 rounded hover:bg-red-600"
             >
               Reset
             </button>
@@ -118,9 +118,9 @@ export default function Sales() {
       </div>
 
       {/* Sales Table dsa */}
-      <div className="bg-white shadow-md rounded p-4 border border-gray-100 mt-5 overflow-x-auto">
+      <div className="bg-white shadow rounded p-2 overflow-x-auto min-h-screen">
         {/* <h2 className="text-lg font-semibold mb-4 text-gray-700">All Sales</h2> */}
-        <table className="min-w-full text-sm text-left border-t border-gray-200 whitespace-nowrap">
+        <table className="min-w-full  text-sm text-left border border-gray-200 whitespace-nowrap">
           <thead>
             <tr className="bg-gray-50 text-gray-700">
               <th className="p-3">Order ID</th>

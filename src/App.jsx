@@ -15,7 +15,7 @@ import Category from "./pages/Category";
 import AddProduct from "./components/Products/AddProduct";
 import Sales from "./pages/Sales";
 import AllSales from "./components/Sales/AllSales";
-import NewSales from "./components/Sales/NewSales";
+import AdminSaleFull from "./components/Sales/NewSales";
 import Login from "./components/Authentication/Login";
 import { AuthContext, AuthProvider } from "./Context Api/AuthContext";
 import PrivateRoute from "./components/private routes/PrivateRoute";
@@ -118,7 +118,7 @@ function AppLayout() {
             path="/sales/new"
             element={
               <PrivateRoute>
-                <NewSales />
+                <AdminSaleFull />
               </PrivateRoute>
             }
           />

@@ -20,7 +20,7 @@ export default function Navbar({ pageTitle }) {
   return (
     <div className="flex justify-between items-center bg-gray-800 text-white px-4 py-2 shadow-5xl rounded mb-2">
       {/* Page Title */}
-      <div className="hidden lg:flex justify-between items-center bg- text-2xl text-white px-4 rounded ">
+      <div className="hidden lg:flex justify-between items-center bg- text-2xl text-white rounded ">
         {pageTitle}
       </div>
       <div className="lg:hidden flex justify-between items-center text-xl font-semibold py-2 rounded truncate">

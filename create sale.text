@@ -1,0 +1,28 @@
+{
+  "order_id": "ORD-2025-10045",
+  "customer_id": "CUS-0008",
+  "order_date": "2025-10-22T19:23:00Z",
+  "status": "processing",
+  Mode:"Online"
+  "subtotal": 800.00,
+  "shipping_cost": 50.00,
+  "discount": 0,
+  "total_amount": 890.00,
+  "payment": {
+    "method": "bkash",
+    "status": "completed"
+  },
+  "shipping_address": {
+    "recipient_name": "Rahim Uddin",
+    "phone": "017XXXXXXXX",
+    "address_line1": "House 12, Road 5"
+  },
+  "items": [
+    {
+      "product_id": "P001",
+      "product_name": "iPhone 15 Pro",
+      "quantity": 1,
+      "product_price": 820.00
+    }
+  ]
+}
