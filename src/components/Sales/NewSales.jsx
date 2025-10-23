@@ -49,7 +49,6 @@ const AdminSaleFull = () => {
     const customer = mockCustomers.find((c) => c.phone === phone);
     setOrder((prev) => ({
       ...prev,
-      shipping_address: { ...prev.shipping_address, phone },
       customer_id: customer ? customer.id : "",
       shipping_address: {
         ...prev.shipping_address,
