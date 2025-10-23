@@ -42,14 +42,14 @@ const AdminList = () => {
         <h2 className="text-xl font-semibold text-gray-700">Admin List</h2>
 
         {/* 🔍 Search Box */}
-        <div className="relative w-full md:w-64">
+        <div className="relative w-full md:w-72">
           <FaSearch className="absolute left-3 top-3 text-gray-400" />
           <input
             type="text"
             placeholder="Search by username or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-10 pr-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
       </div>

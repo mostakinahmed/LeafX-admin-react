@@ -1,12 +1,16 @@
+import OrderStatusCards from "@/components/Order/OrderStatusCards";
 import Navbar from "../components/Navbar";
+import OrderStatusDropdown from "@/components/Order/OrderStatusDropdown";
+import OrderList from "@/components/Order/OrdersList";
 
 export default function Orders() {
   return (
     <div>
       <Navbar pageTitle="Order Management" />
       <div>
-      
-        <p className="text-gray-600">View and manage customer orders here.</p>
+        <OrderStatusCards />
+        {/* <OrderStatusDropdown /> */}
+        <OrderList />
       </div>
     </div>
   );

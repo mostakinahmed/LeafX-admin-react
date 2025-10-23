@@ -85,20 +85,20 @@ export default function Sales() {
             placeholder="Order ID"
             value={filter.orderId}
             onChange={(e) => setFilter({ ...filter, orderId: e.target.value })}
-            className="border rounded px-3 py-1 focus:outline-blue-500"
+            className="border border-gray-300 rounded px-3 py-1 focus:outline-blue-500"
           />
           <input
             type="text"
             placeholder="Product ID"
             value={filter.pid}
             onChange={(e) => setFilter({ ...filter, pid: e.target.value })}
-            className="border rounded px-3 py-1 focus:outline-blue-500"
+            className="border border-gray-300 rounded px-3 py-1 focus:outline-blue-500"
           />
           <input
             type="date"
             value={filter.date}
             onChange={(e) => setFilter({ ...filter, date: e.target.value })}
-            className="border rounded px-3 py-1 focus:outline-blue-500"
+            className="border border-gray-300 rounded px-3 py-1 focus:outline-blue-500"
           />
           <div className="flex gap-2 justify-end">
             <button
