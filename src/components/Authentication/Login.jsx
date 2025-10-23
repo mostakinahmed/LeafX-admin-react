@@ -2,14 +2,14 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AuthContext } from "../../Context Api/AuthContext";
-import { FiLoader } from "react-icons/fi";
+import { FiLoader, FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function Login() {
   const { login, loading } = useContext(AuthContext);
-
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [loginLoading, setLoginLoading] = useState(false); // spinner for login submit
+  const [loginLoading, setLoginLoading] = useState(false);
   const [errorInfo, setErrorInfo] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -20,8 +20,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoginLoading(true);
+    setErrorInfo(false);
     try {
       await login(formData.email, formData.password);
+      navigate("/"); // redirect after success
     } catch (err) {
       setErrorInfo(true);
     } finally {
@@ -41,14 +43,11 @@ export default function Login() {
     );
   }
 
-  //  Login submission loading
-
+  // Login submission loading
   if (loginLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        {/* React Icon Spinner */}
         <FiLoader className="text-6xl text-blue-500 animate-spin" />
-
         <p className="mt-4 text-blue-600 text-lg font-semibold animate-pulse">
           Logging in...
         </p>
@@ -57,26 +56,38 @@ export default function Login() {
   }
 
   return (
-    <div className=" p-5 min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
+    <div className="p-5 min-h-screen flex items-center justify-center bg-gray-100 ">
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white rounded-xl shadow-xl p-8 border border-gray-100"
+        className="w-full max-w-sm bg-white rounded-md shadow border border-gray-100 overflow-hidden"
       >
+        <div className="bg-blue-600 text-center w-full">
+          <p className="text-white p-1 text-xl">Admin Panel</p>
+        </div>
+        {/* Logo Section */}
+        <div className="flex flex-col items-center justify-center py-2 pb-9 ">
+          <img
+            src="/logo victus full.png"
+            alt="Victus Byte Logo"
+            className="h-16 w-auto mb-2"
+          />
+          {/* <h1 className="text-2xl font-bold text-white tracking-tight">
+            Victus Byte
+          </h1> */}
+        </div>
+
         {/* Header */}
-        <div className="text-center mb-8">
-          <motion.h1
+        <div className="text-center mb-6 mt-4">
+          <motion.h2
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-3xl font-bold text-blue-700 tracking-tight"
+            className="text-xl font-semibold text-blue-700 tracking-tight"
           >
-            Admin: Mostakin
-          </motion.h1>
-          <p className="text-gray-500 mt-2 text-sm">
-            Please sign in to continue
-          </p>
+            {/* Sign in to continue */}
+          </motion.h2>
         </div>
 
         {/* Form */}
@@ -85,8 +96,9 @@ export default function Login() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="space-y-5"
+          className="space-y-5 px-8 pb-8"
         >
+          {/* Email Field */}
           <div>
             <label className="block text-gray-600 text-sm mb-1">Email</label>
             <input
@@ -94,40 +106,59 @@ export default function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="admin@example.com"
               required
             />
           </div>
 
+          {/* Password Field */}
           <div>
             <label className="block text-gray-600 text-sm mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="••••••••"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2.5 text-gray-500 hover:text-blue-600"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
           </div>
 
-          <div>
-            {errorInfo && (
-              <p className="text-red-500 text-sm mt-2 text-center">
-                ❌  Invalid email or password. Please try again.
-              </p>
-            )}
-          </div>
+          {/* Error Message */}
+          {errorInfo && (
+            <motion.p
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-red-500 text-sm mt-2 text-center"
+            >
+              ❌ Invalid email or password. Please try again.
+            </motion.p>
+          )}
 
+          {/* Login Button */}
           <motion.button
             type="submit"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all font-medium shadow-md"
+            disabled={loginLoading}
+            className={`w-full py-2 rounded font-medium shadow-md transition-all ${
+              loginLoading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            }`}
           >
-            Login
+            {loginLoading ? "Logging in..." : "Login"}
           </motion.button>
         </motion.form>
 
@@ -136,9 +167,9 @@ export default function Login() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="text-center text-gray-400 text-sm mt-6"
+          className="text-center text-gray-400 text-sm mb-4"
         >
-          © {new Date().getFullYear()} Admin Panel
+          © {new Date().getFullYear()} Victus Byte Admin Panel
         </motion.p>
       </motion.div>
     </div>

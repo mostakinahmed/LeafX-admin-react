@@ -11,6 +11,7 @@ import {
   FiGrid,
   FiMenu,
   FiX,
+  FiUser,
 } from "react-icons/fi";
 
 export default function Sidebar() {
@@ -25,6 +26,7 @@ export default function Sidebar() {
     { name: "Stock", path: "/stock", icon: <FiArchive /> },
     { name: "Orders", path: "/orders", icon: <FiShoppingCart /> },
     { name: "Sales", path: "/sales", icon: <FiTrendingUp /> },
+    { name: "Accounts", path: "/accounts", icon: <FiUser /> },
     { name: "Users", path: "/users", icon: <FiUsers /> },
     { name: "Receipt", path: "/receipt", icon: <FiFileText /> },
   ];
@@ -37,7 +39,7 @@ export default function Sidebar() {
           onClick={() => setIsOpen(!isOpen)}
           className="text-3xl mt-3 text-blue-600"
         >
-          {isOpen ? <FiX /> :  <FiMenu />}
+          {isOpen ? <FiX /> : <FiMenu />}
         </button>
 
         <nav className="flex flex-col gap-3 mt-6">
@@ -66,15 +68,19 @@ export default function Sidebar() {
         className={`fixed sm:static top-0 left-0 h-full w-50 bg-gray-900 text-white shadow-lg p-4 flex flex-col transition-transform duration-300 z-50
         ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
       >
-        <button
-          onClick={() => navigate("/")}
-          className=" text-2xl font-bold text-blue-600 hidden sm:block"
-        >
-          Admin Panel
-        </button>
-        <h1 className=" sm:hidden text-xl font-bold text-blue-600">
-          Admin Panel
-        </h1>
+        <div className="flex">
+          <img className="h-10 w-10" src="/logo.png" alt="Logo" />
+          <button
+            onClick={() => navigate("/")}
+            className=" text-xl mt-4 font-bold text-blue-600 hidden sm:block"
+          >
+            Admin Panel
+          </button>
+          <h1 className=" sm:hidden text-xl font-bold text-blue-600">
+            Admin Panel
+          </h1>
+        </div>
+
         <nav className="flex flex-col lg:gap-2 mt-9 lg:mt-12 gap-1">
           {links.map((link) => {
             const isActive =

@@ -21,8 +21,10 @@ import { AuthContext, AuthProvider } from "./Context Api/AuthContext";
 import PrivateRoute from "./components/private routes/PrivateRoute";
 import { useContext } from "react";
 import ScrollToTop from "./components/ScrollToTop";
+import Accounts from "./pages/Accounts";
 
 function AppLayout() {
+  
   const { user } = useContext(AuthContext);
 
   const location = useLocation();
@@ -106,6 +108,17 @@ function AppLayout() {
               </PrivateRoute>
             }
           />
+
+          {/* Accounts routes */}
+          <Route
+            path="/accounts"
+            element={
+              <PrivateRoute>
+                <Accounts />
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="/sales/all-sales"
             element={
