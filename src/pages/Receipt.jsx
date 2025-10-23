@@ -50,79 +50,155 @@ export default function ReceiptGenerator() {
   });
 
   // Download modern PDF
+  // --- Download beautifully designed PDF ---
   const handleDownload = () => {
     if (!order) return;
 
-    const doc = new jsPDF();
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4",
+    });
 
-    // --- Company Info ---
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 40;
+
+    // --- Logo Section ---
+    const logoWidth = 135;
+    const logoHeight = 60;
+
+    // If you have a logo, you can use Base64 or image URL like:
+    doc.addImage(
+      "/logo victus full.png",
+      "PNG",
+      margin,
+      30,
+      logoWidth,
+      logoHeight
+    );
+    // doc.setFillColor(0, 70, 140);
+    // doc.circle(margin + 30, 60, 25, "F"); // Placeholder circle logo
+    // doc.setFontSize(18);
+    // doc.setTextColor(0, 70, 140);
+    // doc.setFont("helvetica", "bold");
+    // doc.text("FabriBuzz", margin + 70, 65);
+    // doc.setFontSize(11);
+    // doc.setTextColor(100);
+    // doc.text("E-commerce", margin + 70, 80);
+
+    // --- Company Info (Right side) ---
+    const rightX = pageWidth - margin - 200;
+    doc.setFontSize(10);
+    doc.setTextColor(80);
+    doc.text("Victus-Byte HQ", rightX, 40);
+    doc.text("123 Market Street", rightX, 55);
+    doc.text("Dhaka, Bangladesh", rightX, 70);
+    doc.text("Email: support@victusbyte.com", rightX, 85);
+    doc.text("Phone: +880 1234 567890", rightX, 100);
+
+    // --- Horizontal Line ---
+    doc.setDrawColor(180);
+    doc.line(margin, 110, pageWidth - margin, 110);
+
+    // --- Title ---
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.setTextColor(0, 70, 140); // dark blue
-    doc.text("FabriBuzz E-commerce", 14, 20);
-
-    doc.setFontSize(11);
-    doc.setTextColor(50);
-    doc.text("Address: 123 Market Street, Dhaka, Bangladesh", 14, 28);
-    doc.text("Phone: +880 1234 567890", 14, 34);
-    doc.text("Email: support@fabribuzz.com", 14, 40);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Receipt / Invoice`, margin, 140);
 
     // --- Receipt Info ---
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Receipt for Order #${order.id}`, 14, 50);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Order ID: #${order.id}`, margin, 160);
+    doc.text(`Date: ${order.date}`, margin, 175);
 
-    // --- Customer Info ---
+    // --- Customer Info (Left) ---
+    const customerY = 200;
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.text(`Customer Name: ${order.customer}`, 14, 58);
-    doc.text(`Email: ${order.email || "customer@example.com"}`, 14, 64);
-    doc.text(`Phone: ${order.phone || "+880 0000 000000"}`, 14, 70);
-    doc.text(`Shipping Address: ${order.address || "Not Provided"}`, 14, 76);
-    doc.text(`Date: ${order.date}`, 14, 82);
+    doc.text("Bill To:", margin, customerY);
 
-    // --- Table of Items ---
-    const tableColumn = ["Item", "Quantity", "Price"];
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.text(`Name: ${order.customer}`, margin, customerY + 18);
+    doc.text(
+      `Email: ${order.email || "customer@example.com"}`,
+      margin,
+      customerY + 33
+    );
+    doc.text(
+      `Phone: ${order.phone || "+880 0000 000000"}`,
+      margin,
+      customerY + 48
+    );
+    doc.text(
+      `Address: ${order.address || "Not Provided"}`,
+      margin,
+      customerY + 63
+    );
+
+    // --- Table Header ---
+    const startTableY = customerY + 90;
+    const tableColumn = ["Item", "Quantity", "Price", "Total"];
     const tableRows = [];
 
     order.items.forEach((item) => {
-      tableRows.push([item.name, item.quantity.toString(), `$${item.price}`]);
+      const total = item.price * item.quantity;
+      tableRows.push([
+        item.name,
+        item.quantity.toString(),
+        `$${item.price.toFixed(2)}`,
+        `$${total.toFixed(2)}`,
+      ]);
     });
 
-    // Total row
+    const totalAmount = order.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
     tableRows.push([
       {
         content: "Total",
-        colSpan: 2,
+        colSpan: 3,
         styles: { halign: "right", fontStyle: "bold" },
       },
-      `$${order.items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      )}`,
+      `$${totalAmount.toFixed(2)}`,
     ]);
 
+    // --- Table Styling ---
     autoTable(doc, {
-      startY: 90,
+      startY: startTableY,
       head: [tableColumn],
       body: tableRows,
-      theme: "grid",
+      theme: "striped",
       headStyles: {
         fillColor: [0, 70, 140],
         textColor: 255,
         fontStyle: "bold",
       },
-      styles: { fontSize: 12 },
+      styles: {
+        fontSize: 11,
+        cellPadding: 6,
+      },
+      alternateRowStyles: { fillColor: [240, 240, 240] },
     });
 
     // --- Footer ---
+    const footerY = doc.internal.pageSize.height - 40;
+    doc.setDrawColor(180);
+    doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+
     doc.setFontSize(10);
-    doc.setTextColor(100);
+    doc.setTextColor(120);
     doc.text(
-      "Thank you for shopping with FabriBuzz!",
-      105,
-      doc.internal.pageSize.height - 10,
+      "Thank you for shopping with Victus-Byte! Visit us again at www.victusbyte.com",
+      pageWidth / 2,
+      footerY,
       { align: "center" }
     );
 
+    // Save file
     doc.save(`receipt_${order.id}.pdf`);
   };
 
