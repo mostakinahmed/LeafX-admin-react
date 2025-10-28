@@ -6,7 +6,6 @@ import AddCategory from "../components/Category/AddCategory";
 
 export default function Category() {
   const { categoryData, productData, loading } = useContext(DataContext);
-  console.log(categoryData);
 
   const [activeTab, setActiveTab] = useState("catList");
   return (

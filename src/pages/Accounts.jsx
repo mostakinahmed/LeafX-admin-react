@@ -27,13 +27,13 @@ const Accounts = () => {
  
 
       {/* ====== Account Summary Section ====== */}
-      <div className="px-6 py-4">
+      <div className=" py-2">
         
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           {/* Today’s Income */}
-          <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition">
+          <div className="bg-white shadow-sm border border-gray-100 rounded p-5 flex items-center gap-4 hover:shadow-md transition">
             <div className="p-3 bg-green-100 rounded-full">
               <FiDollarSign className="text-green-600 text-2xl" />
             </div>
@@ -44,7 +44,7 @@ const Accounts = () => {
           </div>
 
           {/* Total Orders */}
-          <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition">
+          <div className="bg-white shadow-sm border border-gray-100 rounded p-5 flex items-center gap-4 hover:shadow-md transition">
             <div className="p-3 bg-blue-100 rounded-full">
               <FiShoppingCart className="text-blue-600 text-2xl" />
             </div>
@@ -55,7 +55,7 @@ const Accounts = () => {
           </div>
 
           {/* Pending Orders */}
-          <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition">
+          <div className="bg-white shadow-sm border border-gray-100 rounded p-5 flex items-center gap-4 hover:shadow-md transition">
             <div className="p-3 bg-yellow-100 rounded-full">
               <FiClock className="text-yellow-600 text-2xl" />
             </div>
@@ -66,7 +66,7 @@ const Accounts = () => {
           </div>
 
           {/* Total Customers */}
-          <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition">
+          <div className="bg-white shadow-sm border border-gray-100 rounded p-5 flex items-center gap-4 hover:shadow-md transition">
             <div className="p-3 bg-purple-100 rounded-full">
               <FiUsers className="text-purple-600 text-2xl" />
             </div>

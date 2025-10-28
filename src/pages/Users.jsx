@@ -6,7 +6,7 @@ import AdminList from "../components/Users/AdminList";
 import CustomerList from "../components/Users/CustomerList";
 
 export default function Users() {
-  const [activeTab, setActiveTab] = useState("admin");
+  const [activeTab, setActiveTab] = useState("customer");
 
   return (
     <div>
@@ -14,16 +14,6 @@ export default function Users() {
       <div className="bg-white shadow-lg  p-3 w-full mx-auto">
         {/* Buttons */}
         <div className="flex justify-center  lg:mb-0 mb-2">
-          <button
-            onClick={() => setActiveTab("admin")}
-            className={`lg:px-19 px-4  text-md ${
-              activeTab === "admin"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            Admin
-          </button>
           <button
             onClick={() => setActiveTab("customer")}
             className={`lg:px-15 px-2  lg:py-2 py-1  font-medium ${
@@ -33,6 +23,17 @@ export default function Users() {
             }`}
           >
             Customer
+          </button>
+
+          <button
+            onClick={() => setActiveTab("admin")}
+            className={`lg:px-19 px-4  text-md ${
+              activeTab === "admin"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Admin
           </button>
           <button
             onClick={() => setActiveTab("addAdmin")}
