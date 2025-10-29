@@ -8,7 +8,7 @@ export default function Login() {
   const { login, loading } = useContext(AuthContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loginLoading, setLoginLoading] = useState(false);
-  const [errorInfo, setErrorInfo] = useState(false);
+  const [errorInfo, setErrorInfo] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -20,12 +20,26 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoginLoading(true);
-    setErrorInfo(false);
+    setErrorInfo("");
+
     try {
       await login(formData.email, formData.password);
       navigate("/"); // redirect after success
     } catch (err) {
-      setErrorInfo(true);
+      // Backend error handling
+      if (err.status) {
+        if (err.status === 403) {
+          setErrorInfo("suspended");
+        } else if (err.status === 404) {
+          setErrorInfo("❌ User not found.");
+        } else if (err.status === 401) {
+          setErrorInfo("⚠️ Invalid email or password.");
+        } else {
+          setErrorInfo("⚠️ Something went wrong. Please try again.");
+        }
+      } else {
+        setErrorInfo("⚠️ Network error. Please check your connection.");
+      }
     } finally {
       setLoginLoading(false);
     }
@@ -56,7 +70,7 @@ export default function Login() {
   }
 
   return (
-    <div className="p-5 min-h-screen flex items-center justify-center bg-gray-100 ">
+    <div className="p-5 min-h-screen flex items-center justify-center bg-gray-100">
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -66,28 +80,14 @@ export default function Login() {
         <div className="bg-blue-600 text-center w-full">
           <p className="text-white p-1 text-xl">Admin Panel</p>
         </div>
-        {/* Logo Section */}
-        <div className="flex flex-col items-center justify-center py-2 pb-9 ">
+
+        {/* Logo */}
+        <div className="flex flex-col items-center justify-center py-2 pb-9">
           <img
             src="/logo victus full.png"
             alt="Victus Byte Logo"
             className="h-16 w-auto mb-2"
           />
-          {/* <h1 className="text-2xl font-bold text-white tracking-tight">
-            Victus Byte
-          </h1> */}
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-6 mt-4">
-          <motion.h2
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl font-semibold text-blue-700 tracking-tight"
-          >
-            {/* Sign in to continue */}
-          </motion.h2>
         </div>
 
         {/* Form */}
@@ -136,14 +136,27 @@ export default function Login() {
           </div>
 
           {/* Error Message */}
-          {errorInfo && (
+          {errorInfo && errorInfo !== "suspended" && (
             <motion.p
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-red-500 text-sm mt-2 text-center"
+              className="text-red-500 text-md mt-2 text-center"
             >
-              ❌ Invalid email or password. Please try again.
+              {errorInfo}
             </motion.p>
+          )}
+
+          {/* Suspended Account */}
+          {errorInfo === "suspended" && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center mt-2"
+            >
+              <p className="text-red-600 text-md text-center mb-2">
+                Your account is suspended. <br /> Please contact Admin.
+              </p>
+            </motion.div>
           )}
 
           {/* Login Button */}

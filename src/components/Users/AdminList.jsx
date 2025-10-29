@@ -122,14 +122,14 @@ const AdminList = () => {
 
                       <td className="py-1 px-4 border-b text-center space-x-3">
                         <button
-                          onClick={() => setEditAdmin(admin)} // ✅ open update form
+                          onClick={() => setEditAdmin(admin)} // open update form
                           className="text-yellow-500 hover:text-yellow-700 text-xl"
                           title="Edit"
                         >
                           <FaEdit />
                         </button>
                         <button
-                          onClick={() => handleDelete(admin.adminID)}
+                          // onClick={() => handleDelete(admin.adminID)}
                           className="text-red-500 hover:text-red-700 text-xl"
                           title="Delete"
                         >

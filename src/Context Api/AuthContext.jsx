@@ -1,9 +1,8 @@
 // src/context/AuthContext.jsx
-import { createContext, use, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { div } from "framer-motion/client";
 
 export const AuthContext = createContext();
 
@@ -17,6 +16,12 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const token = Cookies.get("token");
+
+        if (!token) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
 
         const res = await axios.post(
           "https://fabribuzz.onrender.com/api/user/admin/check-auth",
@@ -32,55 +37,58 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  //  Login
+  // 🔹 Login
   const login = async (email, password) => {
-    const signuInData = {
-      email,
-      password,
-    };
+    try {
+      const res = await axios.post(
+        "https://fabribuzz.onrender.com/api/user/admin/signin",
+        { email, password }
+      );
 
-    //DATA SEND TO BACKEND
-    const res = await axios.post(
-      "https://fabribuzz.onrender.com/api/user/admin/signin",
-      signuInData
-    );
+      // Save token
+      Cookies.set("token", res.data.token);
 
-    //  console.log("login done", res);
-    Cookies.set("token", res.data.token);
+      // Verify user after login
+      const token = Cookies.get("token");
+      const res2 = await axios.post(
+        "https://fabribuzz.onrender.com/api/user/admin/check-auth",
+        { token }
+      );
 
-    // console.log(user);
-    const token = Cookies.get("token");
-    const res2 = await axios.post(
-      "https://fabribuzz.onrender.com/api/user/admin/check-auth",
-      { token }
-    );
-    // console.log("res 2 ", res2.data.user);
-
-    setUser(res2.data.user);
-    navigate("/");
+      setUser(res2.data.user);
+      return res2.data.user; // return user data to Login component
+    } catch (error) {
+      // 🔹 Throw error with response so Login.jsx can handle it
+      if (error.response) {
+        throw error.response;
+      } else {
+        throw { status: 500, data: { message: "Network or server error" } };
+      }
+    }
   };
 
   // 🔹 Signup
   const signup = async (data) => {
-    //DATA SEND TO BACKEND
-    // console.log(data);
+    try {
+      const res = await axios.post(
+        "https://fabribuzz.onrender.com/api/user/signup",
+        data
+      );
 
-    const res = await axios.post(
-      "https://fabribuzz.onrender.com/api/user/signup",
-      data
-    );
-    // console.log(res);
-    Cookies.set("token", res.data.tokenLast);
+      Cookies.set("token", res.data.tokenLast);
 
-    // console.log(user);
-    const token = Cookies.get("token");
-    const res2 = await axios.post(
-      "https://fabribuzz.onrender.com/api/user/check-auth",
-      { token }
-    );
-    console.log("res 2 ", res2.data.user);
-    setUser(res2.data.user);
-    navigate("/profile");
+      const token = Cookies.get("token");
+      const res2 = await axios.post(
+        "https://fabribuzz.onrender.com/api/user/check-auth",
+        { token }
+      );
+      setUser(res2.data.user);
+      navigate("/profile");
+    } catch (error) {
+      throw (
+        error.response || { status: 500, data: { message: "Signup error" } }
+      );
+    }
   };
 
   // 🔹 Logout
