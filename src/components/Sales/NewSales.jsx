@@ -114,12 +114,12 @@ const AdminSaleFull = () => {
   };
 
   return (
-    <div className="max-w-full mx-auto">
+    <div className="max-w-full  mx-auto">
       <Navbar pageTitle="Create New Sale" />
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-2 bg-white shadow rounded p-2"
+        className="space-y-2 min-h-screen bg-white shadow rounded p-2"
       >
         {/* Order Info */}
         <div className="space-y-2 rounded">

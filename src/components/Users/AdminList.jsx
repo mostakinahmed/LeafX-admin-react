@@ -28,25 +28,25 @@ const AdminList = () => {
   );
 
   // 🔹 Delete admin handler
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this admin?"
-    );
-    if (!confirmed) return;
+  // const handleDelete = async (id) => {
+  //   const confirmed = window.confirm(
+  //     "Are you sure you want to delete this admin?"
+  //   );
+  //   if (!confirmed) return;
 
-    try {
-      setLoading(true);
-      await axios.delete(
-        `https://fabribuzz.onrender.com/api/user/admin/delete/${id}`
-      );
-      await updateApi(); // Refresh admin list after delete
-    } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Failed to delete admin. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     setLoading(true);
+  //     await axios.delete(
+  //       `https://fabribuzz.onrender.com/api/user/admin/delete/${id}`
+  //     );
+  //     await updateApi(); // Refresh admin list after delete
+  //   } catch (err) {
+  //     console.error("Delete failed:", err);
+  //     alert("Failed to delete admin. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="bg-white rounded">
