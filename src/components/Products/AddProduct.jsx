@@ -1,11 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { DataContext } from "@/Context Api/ApiContext";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+  const navigate = useNavigate();
   const { categoryData, loading } = useContext(DataContext);
 
-  const [specification, setSpecification] = useState("");
+  const [specification, setSpecification] = useState([]); // spec names
+  const [specValues, setSpecValues] = useState({}); // { specName: [{key:'', value:''}, ...] }
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,49 +20,79 @@ const AddProduct = () => {
     category: "",
   });
 
-  // console.log(formData.category);
-  const updateCatSpec = () => {
+  // Update specifications when category changes
+  useEffect(() => {
     const selectedCat = formData.category;
-
     const category = categoryData.find((cat) => cat.catID === selectedCat);
     if (category) {
       setSpecification(category.specifications);
+      const newSpecs = {};
+      category.specifications.forEach((spec) => {
+        newSpecs[spec] = [{ key: "", value: "" }]; // default one row
+      });
+      setSpecValues(newSpecs);
     } else {
-      setSpecification("");
+      setSpecification([]);
+      setSpecValues({});
     }
-  };
+  }, [formData.category, categoryData]);
 
-  // Handle input change
+  // Handle general input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle key/value change for a spec row
+  const handleSpecChange = (spec, index, field, value) => {
+    setSpecValues((prev) => {
+      const updated = { ...prev };
+      updated[spec][index][field] = value;
+      return updated;
+    });
+  };
+
+  // Add a new key-value row for a spec
+  const addSpecRow = (spec) => {
+    setSpecValues((prev) => {
+      const updated = { ...prev };
+      updated[spec].push({ key: "", value: "" });
+      return updated;
+    });
+  };
+
+  // Remove a key-value row for a spec
+  const removeSpecRow = (spec, index) => {
+    setSpecValues((prev) => {
+      const updated = { ...prev };
+      updated[spec] = updated[spec].filter((_, i) => i !== index);
+      return updated;
+    });
   };
 
   // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("🧾 Product Data Submitted:", formData);
+    const finalData = {
+      ...formData,
+      specifications: specValues, // nested object
+    };
+    console.log("🧾 Product Data Submitted:", finalData);
   };
 
   return (
     <div>
-      <Navbar pageTitle="product" />
+      <Navbar pageTitle="Add New Product" />
       <div className="mx-auto flex flex-col md:flex-row min-h-screen">
-        {/* Product Form */}
         <div className="w-full mx-auto bg-white shadow">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="gap-3 lg:flex rounded space-y-6">
-              {/* 1st Section */}
+          <form onSubmit={handleSubmit} className="">
+            <div className="gap-3 lg:flex rounded">
+              {/* Left Section */}
               <div className="rounded lg:w-[800px] max-w-full h-auto">
                 <h2 className="text-lg p-2 mb-2 rounded-t bg-blue-600 text-white sm:text-xl font-semibold">
                   General Info
                 </h2>
-
-                <div className="pl-2 space-y-4">
-                  {/* Reusable Input Field */}
+                <div className="px-2 space-y-4">
                   {[
                     { label: "Product Name", name: "name", type: "text" },
                     { label: "Brand Name", name: "brandName", type: "text" },
@@ -90,7 +123,6 @@ const AddProduct = () => {
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
-                      onClick={updateCatSpec}
                       className="w-full text-center text-lg border border-gray-300 p-2 rounded focus:ring-2 focus:ring-indigo-400"
                       required
                     >
@@ -106,33 +138,80 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              {/* 2nd Section */}
-              <div className="min-h-[250px] rounded w-full">
+              {/* Right Section: Specifications */}
+              <div className=" rounded w-full mt-3 lg:mt-0 ">
                 <h2 className="text-lg sm:text-xl text-white py-2 px-2 rounded-t bg-blue-600 font-semibold">
                   Specification
                 </h2>
 
-                {/* Centered Category Notice */}
-                {specification ? (
-                  specification.map((spec, idx) => (
-                    <div
-                      key={idx}
-                      className="flex flex-col p-2 border-b last:border-0"
-                    >
-                      <label className="mb-1 font-medium text-gray-700">
-                        {spec}
-                      </label>
-                      <input
-                        type="text"
-                        name={spec}
-                        placeholder={`Enter ${spec.toLowerCase()}`}
-                        required
-                        className="p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  ))
+                {specification.length > 0 ? (
+                  <div className="px-3 py-2 rounded-b space-y-3">
+                    {specification.map((spec, idx) => (
+                      <div key={idx} className="flex flex-col gap-1">
+                        <div className="flex justify-between">
+                          <label className=" font-medium text-gray-700">
+                            {spec}
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => addSpecRow(spec)}
+                            className="text-sm bg-blue-100 text-blue-700 rounded px-3 py-1 w-fit hover:bg-blue-200 transition"
+                          >
+                            + Add another {spec}
+                          </button>
+                        </div>
+
+                        {specValues[spec]?.map((row, i) => (
+                          <div key={i} className="flex gap-3 items-center">
+                            <input
+                              type="text"
+                              value={row.key}
+                              onChange={(e) =>
+                                handleSpecChange(spec, i, "key", e.target.value)
+                              }
+                              placeholder="Key"
+                              className="px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
+                              required
+                            />
+                            <input
+                              type="text"
+                              value={row.value}
+                              onChange={(e) =>
+                                handleSpecChange(
+                                  spec,
+                                  i,
+                                  "value",
+                                  e.target.value
+                                )
+                              }
+                              placeholder="Value"
+                              className="px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
+                              required
+                            />
+                            {specValues[spec].length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeSpecRow(spec, i)}
+                                className="text-red-600 font-bold px-2 py-1 rounded hover:bg-red-100"
+                              >
+                                −
+                              </button>
+                            )}
+                          </div>
+                        ))}
+
+                        {/* <button
+                          type="button"
+                          onClick={() => addSpecRow(spec)}
+                          className="text-sm bg-blue-100 text-blue-700 rounded px-3 py-1 w-fit hover:bg-blue-200 transition"
+                        >
+                          + Add another {spec}
+                        </button> */}
+                      </div>
+                    ))}
+                  </div>
                 ) : (
-                  <div className="flex items-center justify-center h-40 bg-yellow-50 border border-yellow-300 rounded-b">
+                  <div className="flex items-center justify-center h-72 bg-yellow-50 border border-yellow-300 rounded-b">
                     <p className="text-yellow-700 font-semibold text-xl text-center">
                       ⚠ Please select category ⚠
                     </p>
@@ -142,10 +221,19 @@ const AddProduct = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="text-right mr-3 mb-3">
+            <div className="text-right flex lg:justify-end px-2 mb-3 mt-3 lg:mt-0">
+              <button
+                type="button"
+                onClick={() => {
+                  navigate(-1);
+                }}
+                className="px-2 py-1 mr-3 lg:w-40 w-full font-medium text-xl text-white bg-red-600 hover:bg-red-800 rounded"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
-                className="relative px-6 py-2 font-medium text-xl text-white bg-blue-600 hover:bg-blue-800 rounded"
+                className="px-3 py-1 w-full lg:w-40 font-medium text-xl text-white bg-blue-600 hover:bg-blue-800 rounded"
               >
                 Save Product
               </button>
