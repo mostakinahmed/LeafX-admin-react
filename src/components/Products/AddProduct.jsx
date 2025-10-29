@@ -126,7 +126,7 @@ const AddProduct = () => {
                       className="w-full text-center text-lg border border-gray-300 p-2 rounded focus:ring-2 focus:ring-indigo-400"
                       required
                     >
-                      <option value="">-- Select Category --</option>
+                      <option className="bg-gray-300" value="">-- Select Category --</option>
                       {!loading &&
                         categoryData?.map((cat, idx) => (
                           <option key={idx} value={cat.catID}>
