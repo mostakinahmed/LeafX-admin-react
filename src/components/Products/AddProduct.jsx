@@ -145,24 +145,27 @@ const AddProduct = () => {
                 </h2>
 
                 {specification.length > 0 ? (
-                  <div className="px-3 py-2 rounded-b space-y-3">
+                  <div className=" py-2 rounded-b space-y-3">
                     {specification.map((spec, idx) => (
                       <div key={idx} className="flex flex-col gap-1">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between bg-gray-200 pl-2 mx-2 lg:mr-2">
                           <label className=" font-medium text-gray-700">
                             {spec}
                           </label>
                           <button
                             type="button"
                             onClick={() => addSpecRow(spec)}
-                            className="text-sm bg-blue-100 text-blue-700 rounded px-3 py-1 w-fit hover:bg-blue-200 transition"
+                            className="text-sm bg-gray-400 text-black px-2  py-1 w-fit hover:bg-blue-400 transition"
                           >
-                            + Add another {spec}
+                            + Add more
                           </button>
                         </div>
 
                         {specValues[spec]?.map((row, i) => (
-                          <div key={i} className="flex gap-3 items-center">
+                          <div
+                            key={i}
+                            className="lg:flex gap-3 mx-2 lg:mr-2 items-center"
+                          >
                             <input
                               type="text"
                               value={row.key}
@@ -170,7 +173,7 @@ const AddProduct = () => {
                                 handleSpecChange(spec, i, "key", e.target.value)
                               }
                               placeholder="Key"
-                              className="px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
+                              className="px-2 w-full py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
                               required
                             />
                             <input
@@ -185,7 +188,7 @@ const AddProduct = () => {
                                 )
                               }
                               placeholder="Value"
-                              className="px-2 py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
+                              className="px-2 py-1 mt-1 lg:mt-0 w-full border rounded focus:ring-2 focus:ring-blue-500 flex-1"
                               required
                             />
                             {specValues[spec].length > 1 && (
@@ -227,13 +230,13 @@ const AddProduct = () => {
                 onClick={() => {
                   navigate(-1);
                 }}
-                className="px-2 py-1 mr-3 lg:w-40 w-full font-medium text-xl text-white bg-red-600 hover:bg-red-800 rounded"
+                className="px-2 py-1 mr-3 lg:w-40 w-full font-medium text-md text-white bg-red-600 hover:bg-red-800 rounded"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-3 py-1 w-full lg:w-40 font-medium text-xl text-white bg-blue-600 hover:bg-blue-800 rounded"
+                className="px-3 py-1 w-full lg:w-40 font-medium text-md text-white bg-blue-600 hover:bg-blue-800 rounded"
               >
                 Save Product
               </button>
