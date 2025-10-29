@@ -15,13 +15,11 @@ export const AuthProvider = ({ children }) => {
   // Check login status once when app loads
   useEffect(() => {
     const checkAuth = async () => {
-
-     
       try {
         const token = Cookies.get("token");
 
         const res = await axios.post(
-          "https://fabribuzz.onrender.com/api/user/check-auth",
+          "https://fabribuzz.onrender.com/api/user/admin/check-auth",
           { token }
         );
         setUser(res.data.user);
@@ -34,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // 🔹 Login
+  //  Login
   const login = async (email, password) => {
     const signuInData = {
       email,
@@ -43,17 +41,17 @@ export const AuthProvider = ({ children }) => {
 
     //DATA SEND TO BACKEND
     const res = await axios.post(
-      "https://fabribuzz.onrender.com/api/user/signin",
+      "https://fabribuzz.onrender.com/api/user/admin/signin",
       signuInData
     );
 
-    // console.log("login done", res);
+    //  console.log("login done", res);
     Cookies.set("token", res.data.token);
 
     // console.log(user);
     const token = Cookies.get("token");
     const res2 = await axios.post(
-      "https://fabribuzz.onrender.com/api/user/check-auth",
+      "https://fabribuzz.onrender.com/api/user/admin/check-auth",
       { token }
     );
     // console.log("res 2 ", res2.data.user);

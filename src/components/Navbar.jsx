@@ -100,12 +100,12 @@ export default function Navbar({ pageTitle }) {
                   </tr>
                   <tr className="border-b py-2">
                     <td className="font-medium py-2">ID</td>
-                    <td className="py-2">: {user.uID}</td>
+                    <td className="py-2">: {user.adminID}</td>
                   </tr>
                   <tr className="border-b py-2">
                     <td className="font-medium py-2">Role</td>
                     <td className="py-2 text-green-600 text-md font-bold">
-                      :{user.admin ? " Admin" : "User"}
+                      :{user.role ? " Admin" : "User"}
                     </td>
                   </tr>
                   <tr className="border-b py-2">
