@@ -12,7 +12,7 @@ export default function Products() {
   const [searchId, setSearchId] = useState("");
   const [catList, setCatList] = useState([]);
 
-  const productsPerPage = 10;
+  const productsPerPage = 12;
   const navigate = useNavigate();
   let sn = 1;
   //for filter
