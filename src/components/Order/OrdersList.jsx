@@ -45,7 +45,7 @@ const OrderList = () => {
   };
 
   return (
-    <div className="bg-white p-3">
+    <div className="bg-white min-h-screen p-3">
       {/* Filters */}
       <div className="w-full flex flex-col gap-3 lg:flex-row lg:items-center mb-3">
         {/* Status Dropdown */}
@@ -120,7 +120,7 @@ const OrderList = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="overflow-x-auto bg-white rounded shadow">
+      <div className="overflow-x-auto bg-white rounded-t">
         <table className="w-full text-sm text-left border-collapse border border-gray-200">
           <thead className="bg-gray-200">
             <tr>
