@@ -4,23 +4,23 @@ import { FaSpinner, FaCheckCircle } from "react-icons/fa";
 import axios from "axios";
 import { DataContext } from "@/Context Api/ApiContext.jsx";
 
-export default function AdminRegistration() {
-  const { updateApi } = useContext(DataContext);
+export default function UpdateAdmin({ back, user }) {
+  const { updateApi, adminData } = useContext(DataContext);
   const [loading, setLoading] = useState(false);
   const [formVisible, setFormVisible] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false); // new success state
-  const [formData, setFormData] = useState({
-    fullName: "",
-    userName: "",
-    email: "",
-    images: "",
-    phone: "",
-    password: "",
-    role: "Admin",
-    status: true,
-  });
 
+  const [formData, setFormData] = useState({
+    fullName: user.fullName || "",
+    userName: user.userName || "",
+    email: user.email || "",
+    images: user.images || "",
+    phone: user.phone || "",
+    password: user.password || "",
+    role: user.role || "Admin",
+    status: user.status !== undefined ? user.status : true,
+  });
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   // handle input changes
@@ -43,20 +43,22 @@ export default function AdminRegistration() {
       return;
     }
 
+    console.log(formData);
+
     try {
       setError("");
       setLoading(true);
       setFormVisible(false);
       const data = formData;
 
-      const res = await axios.post(
-        "https://fabribuzz.onrender.com/api/user/admin/signup",
+      const res = await axios.put(
+        `https://fabribuzz.onrender.com/api/user/admin/update/${user._id}`,
         data
       );
 
-      if (res.status === 201) {
+      if (res.status === 200) {
         updateApi(); // refresh admin list
-        console.log("Success:", res.data);
+        //console.log("Success:", res.data);
         setError("");
         setLoading(false);
         // setFormVisible(true);
@@ -91,9 +93,9 @@ export default function AdminRegistration() {
   };
 
   return (
-    <div className="w-full lg:max-w-xl mx-auto lg:mt-3 bg-white">
-      <h2 className="text-2xl font-bold mb-4 mt-10 text-center bg-gray-200 p-2 rounded">
-        Register New Admin
+    <div className="w-full min-h-screen lg:max-w-xl mx-auto lg:mt-3 bg-white">
+      <h2 className="text-2xl font-bold mb-4 md:mt-10 text-center bg-gray-200 p-2 rounded">
+        Update Admin
       </h2>
 
       {/* Loading Spinner */}
@@ -110,17 +112,17 @@ export default function AdminRegistration() {
 
       {/* Success Popup */}
       {success && (
-        <div className=" mt-30 inset-0  bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded shadow flex flex-col items-center animate-fadeIn">
+        <div className=" md:mt-30 mt-20 inset-0  bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white md:p-8 py-8 px-6 rounded shadow flex flex-col items-center animate-fadeIn">
             <FaCheckCircle className="text-green-500 text-6xl mb-4" />
-            <p className="text-gray-700 font-semibold text-lg">
-              Admin registered successfully!
+            <p className="text-gray-700 font-semibold md:text-lg">
+              Admin update successfully!
             </p>
             <button
               className="mt-4 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
               onClick={() => {
                 setSuccess(false);
-                setFormVisible(true);
+                back();
               }}
             >
               OK
@@ -165,7 +167,7 @@ export default function AdminRegistration() {
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
-                placeholder="admin@victusbyte.com"
+                placeholder="admin@example.com"
                 required
               />
             </div>
@@ -247,7 +249,7 @@ export default function AdminRegistration() {
               className="w-4 h-4"
             />
             <label htmlFor="confirmAdmin" className="text-gray-700">
-              I confirm that I want to create a new admin account
+              I confirm that I want to update an admin account
             </label>
           </div>
 
@@ -259,12 +261,19 @@ export default function AdminRegistration() {
           )}
 
           {/* Submit Button */}
-          <div className="text-center">
+          <div className="text-center flex gap-3">
+            <button
+              onClick={back}
+              type="button"
+              className="bg-red-600 text-white px-6 w-full py-2 rounded hover:bg-red-700 transition-all font-medium"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="bg-blue-600 text-white px-6 w-full py-2 rounded hover:bg-blue-700 transition-all font-medium"
             >
-              Register Admin
+              Update Admin
             </button>
           </div>
         </form>

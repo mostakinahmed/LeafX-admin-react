@@ -53,27 +53,7 @@ export default function Users() {
 
           {activeTab === "customer" && <CustomerList />}
 
-          {activeTab === "addAdmin" && (
-            <AdminRegistration />
-            // <form className="flex flex-col gap-3 max-w-sm mx-auto">
-            //   <input
-            //     type="text"
-            //     placeholder="Name"
-            //     className="border p-2 rounded focus:outline-blue-400"
-            //   />
-            //   <input
-            //     type="email"
-            //     placeholder="Email"
-            //     className="border p-2 rounded focus:outline-blue-400"
-            //   />
-            //   <button
-            //     type="submit"
-            //     className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-            //   >
-            //     Add Admin
-            //   </button>
-            // </form>
-          )}
+          {activeTab === "addAdmin" && <AdminRegistration />}
         </div>
       </div>
     </div>

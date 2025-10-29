@@ -1,44 +1,49 @@
-// context/UserContext.js
+// context/ApiContext.js
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
 
-//  Create context
 export const DataContext = createContext();
 
-// Context provider component
 export const ApiContext = ({ children }) => {
   const [productData, setProductData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-  const [loading, setLoading] = useState(true); // 🔧 added
+  const [adminData, setAdminData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // ✅ Fetch data from API
+
+  // ✅ Function to manually refresh API data when needed
+  const updateApi = async () => {
+    try {
+      setLoading(true);
+      const [productRes, categoryRes, adminRes] = await Promise.all([
+        axios.get("https://fabribuzz.onrender.com/api/product"),
+        axios.get("https://fabribuzz.onrender.com/api/category"),
+        axios.get("https://fabribuzz.onrender.com/api/user/admin/list"),
+      ]);
+
+      setProductData(productRes.data);
+      setCategoryData(categoryRes.data);
+      setAdminData(adminRes.data);
+    } catch (err) {
+      console.error("API fetch error:", err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Automatically fetch once when the component mounts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productRes, categoryRes] = await Promise.all([
-          axios.get("https://fabribuzz.onrender.com/api/product"),
-          axios.get("https://fabribuzz.onrender.com/api/category"),
-        ]);
-
-        setProductData(productRes.data);
-        setCategoryData(categoryRes.data);
-      } catch (err) {
-        console.error("API fetch error:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    updateApi();
   }, []);
-
-
 
   const contextValue = {
     productData,
     categoryData,
+    adminData,
     loading,
     error,
+    updateApi, // expose for manual refresh (like after adding product)
   };
 
   return (
