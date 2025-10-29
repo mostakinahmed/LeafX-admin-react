@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Navbar from "../components/Navbar";
 import { div } from "framer-motion/client";
 import AdminRegistration from "../components/Users/AdminRegistration";
 import AdminList from "../components/Users/AdminList";
 import CustomerList from "../components/Users/CustomerList";
+import { DataContext } from "@/Context Api/ApiContext";
 
 export default function Users() {
+  const { updateApi } = useContext(DataContext);
+  updateApi();
   const [activeTab, setActiveTab] = useState("customer");
 
   return (
