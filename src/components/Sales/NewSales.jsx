@@ -66,12 +66,10 @@ const AdminSaleFull = () => {
   const handleItemChange = (idx, field, value) => {
     const items = [...order.items];
 
-    if (field === "product_id" || field === "product_name") {
+    if (field === "product_id") {
       items[idx][field] = value;
 
-      const product = productData.find(
-        (p) => p.pID.toLowerCase() === value || p.name.toLowerCase() === value.toLowerCase()
-      );
+      const product = productData.find((p) => p.pID === value);
 
       if (product) {
         items[idx] = {
