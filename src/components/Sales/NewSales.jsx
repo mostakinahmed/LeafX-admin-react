@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import Navbar from "../Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
+import { DataContext } from "@/Context Api/ApiContext";
 
 // Mock DB data
 const mockCustomers = [
@@ -19,12 +20,14 @@ const mockCustomers = [
   },
 ];
 
-const mockProducts = [
-  { id: "P001", name: "iPhone 15 Pro", price: 820 },
-  { id: "P002", name: "Samsung Galaxy S25", price: 650 },
-];
+// const mockProducts = [
+//   { id: "P001", name: "iPhone 15 Pro", price: 820 },
+//   { id: "P002", name: "Samsung Galaxy S25", price: 650 },
+// ];
 
 const AdminSaleFull = () => {
+  const { productData } = useContext(DataContext);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -59,23 +62,29 @@ const AdminSaleFull = () => {
     }));
   };
 
+  // handle product
   const handleItemChange = (idx, field, value) => {
     const items = [...order.items];
+
     if (field === "product_id" || field === "product_name") {
       items[idx][field] = value;
-      const product = mockProducts.find(
-        (p) => p.id === value || p.name.toLowerCase() === value.toLowerCase()
+
+      const product = productData.find(
+        (p) => p.pID.toLowerCase() === value || p.name.toLowerCase() === value.toLowerCase()
       );
-      if (product)
+
+      if (product) {
         items[idx] = {
           ...items[idx],
-          product_id: product.id,
+          product_id: product.pID,
           product_name: product.name,
-          product_price: product.price,
+          product_price: product.price || 0,
         };
+      }
     } else if (field === "quantity" || field === "product_price") {
       items[idx][field] = Number(value);
     }
+
     setOrder({ ...order, items });
     calculateTotals(items, order.shipping_cost, order.discount);
   };
