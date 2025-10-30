@@ -2,6 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { DataContext } from "@/Context Api/ApiContext";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FaSpinner, FaCheckCircle } from "react-icons/fa";
+import { set } from "date-fns";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -9,6 +12,11 @@ const AddProduct = () => {
 
   const [specification, setSpecification] = useState([]); // spec names
   const [specValues, setSpecValues] = useState({}); // { specName: [{key:'', value:''}, ...] }
+  const [finalData, setFinalData] = useState([]);
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+  const [success, setSuccess] = useState(false); // new success state
+  const [formVisible, setFormVisible] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -73,18 +81,115 @@ const AddProduct = () => {
   // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSpinner(true);
+    setSubmitLoader(true);
+
+    // Clean up specValues → remove rows with empty key/value
+    const cleanedSpecs = {};
+    Object.keys(specValues).forEach((spec) => {
+      const validRows = specValues[spec].filter(
+        (row) => row.key.trim() !== "" && row.value.trim() !== ""
+      );
+
+      // Only include this spec if it has at least one valid row
+      if (validRows.length > 0) {
+        cleanedSpecs[spec] = validRows;
+      }
+    });
+
     const finalData = {
       ...formData,
-      specifications: specValues, // nested object
+      specifications: cleanedSpecs,
     };
-    console.log("🧾 Product Data Submitted:", finalData);
+
+    setFinalData(finalData);
+    saveData(finalData); // pass directly to saveData
+  };
+
+  //console.log(finalData);
+  const saveData = async (data) => {
+    //data sent to backend
+    const res = await axios
+      .post("https://fabribuzz.onrender.com/api/product", data)
+      .then((response) => {
+        setSpinner(false);
+        setSuccess(true);
+        console.log("Product saved successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error saving product:", error);
+      });
+    // Here you can implement the logic to save finalData to your backend or database
+  };
+
+  //reset form
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      brandName: "",
+      price: "",
+      stock: "",
+      images: "",
+      description: "",
+      category: "",
+    });
+    setSpecification([]);
+    setSpecValues({});
+    setFinalData([]);
   };
 
   return (
     <div>
       <Navbar pageTitle="Add New Product" />
       <div className="mx-auto flex flex-col md:flex-row min-h-screen">
-        <div className="w-full mx-auto bg-white shadow">
+        {/* ✅ Make this parent relative so the loader stays inside */}
+        <div className="relative w-full mx-auto bg-white shadow">
+          {/* ✅ Loader overlay */}
+          {submitLoader && (
+            <div className="absolute inset-0  flex items-center min-h-screen justify-center bg-white/30 backdrop-blur-sm z-20">
+              {!success ? (
+                <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center animate-fadeIn">
+                  <FaSpinner className="text-blue-500 text-6xl animate-spin mb-4" />
+                  <p className="text-gray-700 font-semibold text-lg">
+                    Please wait...
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-white p-8  rounded-lg shadow-lg flex flex-col items-center animate-fadeIn">
+                  <FaCheckCircle className="text-green-500 text-6xl mb-4" />
+                  <p className="text-gray-700 font-semibold text-lg mb-4">
+                    Product saved successfully!
+                  </p>
+                  <div className="flex w-full gap-2">
+                    <button
+                      className="flex-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                      onClick={() => {
+                        setSuccess(false);
+                        setSubmitLoader(false);
+                        resetForm();
+                        navigate(-1);
+                      }}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                      onClick={() => {
+                        resetForm();
+                        setSuccess(false);
+                        setSubmitLoader(false);
+                        navigate("/products/add-product");
+                      }}
+                    >
+                      Add more
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ✅ The rest of your form */}
           <form onSubmit={handleSubmit} className="">
             <div className="gap-3 lg:flex rounded">
               {/* Left Section */}
@@ -126,7 +231,9 @@ const AddProduct = () => {
                       className="w-full text-center text-lg border border-gray-300 p-2 rounded focus:ring-2 focus:ring-indigo-400"
                       required
                     >
-                      <option className="bg-gray-300" value="">-- Select Category --</option>
+                      <option className="bg-gray-300" value="">
+                        -- Select Category --
+                      </option>
                       {!loading &&
                         categoryData?.map((cat, idx) => (
                           <option key={idx} value={cat.catID}>
@@ -139,23 +246,23 @@ const AddProduct = () => {
               </div>
 
               {/* Right Section: Specifications */}
-              <div className=" rounded w-full mt-3 lg:mt-0 ">
+              <div className="rounded w-full mt-3 lg:mt-0">
                 <h2 className="text-lg sm:text-xl text-white py-2 px-2 rounded-t bg-blue-600 font-semibold">
                   Specification
                 </h2>
 
                 {specification.length > 0 ? (
-                  <div className=" py-2 rounded-b space-y-3">
+                  <div className="py-2 rounded-b space-y-3">
                     {specification.map((spec, idx) => (
                       <div key={idx} className="flex flex-col gap-1">
                         <div className="flex justify-between bg-gray-200 pl-2 mx-2 lg:mr-2">
-                          <label className=" font-medium text-gray-700">
+                          <label className="font-medium text-gray-700">
                             {spec}
                           </label>
                           <button
                             type="button"
                             onClick={() => addSpecRow(spec)}
-                            className="text-sm bg-gray-400 text-black px-2  py-1 w-fit hover:bg-blue-400 transition"
+                            className="text-sm bg-gray-400 text-black px-2 py-1 w-fit hover:bg-blue-400 transition"
                           >
                             + Add more
                           </button>
@@ -174,7 +281,6 @@ const AddProduct = () => {
                               }
                               placeholder="Key"
                               className="px-2 w-full py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
-                              required
                             />
                             <input
                               type="text"
@@ -189,7 +295,6 @@ const AddProduct = () => {
                               }
                               placeholder="Value"
                               className="px-2 py-1 mt-1 lg:mt-0 w-full border rounded focus:ring-2 focus:ring-blue-500 flex-1"
-                              required
                             />
                             {specValues[spec].length > 1 && (
                               <button
@@ -202,14 +307,6 @@ const AddProduct = () => {
                             )}
                           </div>
                         ))}
-
-                        {/* <button
-                          type="button"
-                          onClick={() => addSpecRow(spec)}
-                          className="text-sm bg-blue-100 text-blue-700 rounded px-3 py-1 w-fit hover:bg-blue-200 transition"
-                        >
-                          + Add another {spec}
-                        </button> */}
                       </div>
                     ))}
                   </div>
@@ -223,13 +320,11 @@ const AddProduct = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Buttons */}
             <div className="text-right flex lg:justify-end px-2 mb-3 mt-3 lg:mt-0">
               <button
                 type="button"
-                onClick={() => {
-                  navigate(-1);
-                }}
+                onClick={() => navigate("/products")}
                 className="px-2 py-1 mr-3 lg:w-40 w-full font-medium text-md text-white bg-red-600 hover:bg-red-800 rounded"
               >
                 Cancel
