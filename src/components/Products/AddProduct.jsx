@@ -1,12 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { DataContext } from "@/Context Api/ApiContext";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaSpinner, FaCheckCircle } from "react-icons/fa";
 import { set } from "date-fns";
 
 const AddProduct = () => {
+  const { updateApi } = useContext(DataContext);
   const navigate = useNavigate();
   const { categoryData, loading } = useContext(DataContext);
 
@@ -114,6 +115,7 @@ const AddProduct = () => {
       .then((response) => {
         setSpinner(false);
         setSuccess(true);
+        updateApi();
         console.log("Product saved successfully:", response.data);
       })
       .catch((error) => {
