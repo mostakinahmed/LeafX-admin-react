@@ -76,7 +76,7 @@ export default function Sidebar() {
           >
             Admin Panel
           </button>
-          <h1 className=" sm:hidden text-xl font-bold text-blue-600">
+          <h1 className=" sm:hidden mt-4 text-xl font-bold text-blue-600">
             Admin Panel
           </h1>
         </div>
