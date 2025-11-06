@@ -7,12 +7,6 @@ export default function Navbar({ pageTitle }) {
   const { user, logout } = useContext(AuthContext);
   const [showPopup, setShowPopup] = useState(false);
 
-  const adminInfo = {
-    name: "Mostakin",
-    role: "Administrator",
-    email: "admin@example.com",
-  };
-
   const toggleAdminPopup = () => {
     setShowPopup((prev) => !prev);
   };
@@ -40,9 +34,13 @@ export default function Navbar({ pageTitle }) {
           className="flex items-center gap-3 cursor-pointer"
           onClick={toggleAdminPopup}
         >
-          <span className=" hidden lg:flex  -bold text-lg hover:text-blue-600">
-            Admin
-          </span>
+          <div className="-mt-4 flex flex-col items-center hover:text-blue-600">
+            <span className="hidden -mb-1 lg:flex  -bold text-lg">Admin</span>
+            <span className="-mb-7 hidden lg:flex text-sm text-blue-400 ">
+              {user.userName}
+            </span>
+          </div>
+
           <img
             className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2"
             src={
@@ -82,7 +80,7 @@ export default function Navbar({ pageTitle }) {
                   "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
                 }
                 alt={user.fullName}
-                className="w-24 h-26 rounded-full border-4 border-white shadow-md"
+                className="w-26 h-26 rounded-full border-4 border-white shadow-md"
               />
             </div>
 
