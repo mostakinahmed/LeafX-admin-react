@@ -97,7 +97,7 @@ export default function CheckStock() {
         </h2>
 
         {selectedProduct ? (
-          <div className="grid grid-cols-3 gap-4 mb-3 md:px-2 mr-2 md:mr-0 ">
+          <div className="grid grid-cols-3 gap-3 mb-3 md:px-2 mr-2 md:mr-0 ">
             <div className="bg-blue-50 p-1 rounded text-center">
               <h4 className="text-gray-500 text-sm">Total Stock</h4>
               <p className="text-2xl font-bold text-blue-600">
@@ -132,26 +132,26 @@ export default function CheckStock() {
         {/* <h3 className="text-lg font-semibold mb-2">
           📋 SKU / Serial Number List
         </h3> */}
-        <div className="mr-4">
-          <table className="w-full min-w-auto border border-gray-200 rounded mx-2 overflow-hidden">
+        <div className="md:mr-4 mr-2">
+          <table className="w-full min-w-auto border border-gray-200 rounded md:mx-2 overflow-hidden">
             <thead className="bg-gray-100 text-left">
-              <tr>
+              <tr className="flex justify-between">
                 <th className="py-2 px-4">SKU</th>
-                <th className="py-2 px-4">Available</th>
+                <th className="py-2 px-4 md:mr-7 ">Available</th>
               </tr>
             </thead>
             <tbody>
               {mockProducts.map((prod) => (
                 <tr
                   key={prod.sku}
-                  className="cursor-pointer hover:bg-blue-50 transition"
+                  className="cursor-pointer hover:bg-blue-50 transition flex justify-between"
                   onClick={() => handleSelectSKU(prod.sku)}
                 >
                   <td className="py-2 px-4 text-blue-600 font-medium">
                     {prod.sku}
                   </td>
 
-                  <td className="py-2 px-4">{prod.available}</td>
+                  <td className="py-2 px-4 md:mr-15 font-semibold">YES</td>
                 </tr>
               ))}
             </tbody>
@@ -161,65 +161,39 @@ export default function CheckStock() {
 
       {/* Right Panel */}
       <div className="md:w-1/2 bg-white rounded">
-        <h2 className="text-xl p-1 bg-blue-100 font-semibold mb-3 ">
+        <h2 className="text-xl p-1 mt-3 md:mt-0 bg-blue-100 font-semibold mb-3 ">
           📦 Stock Overview
         </h2>
 
-        {selectedProduct ? (
-          <div className="grid grid-cols-3 gap-4 mb-6 px-2">
-            <div className="bg-blue-50 p-4 rounded-xl text-center">
-              <h4 className="text-gray-500 text-sm">Total Stock</h4>
-              <p className="text-2xl font-bold text-blue-600">
-                {" "}
-                0{selectedProduct.total}
-              </p>
+        <div class=" ml-2 bg-white rounded p-5">
+          <h3 class="text-lg text-center underline font-semibold text-gray-800 mb-4">
+            SKU Information
+          </h3>
+
+          <div class="space-y-2">
+            <div class="flex justify-between border-b">
+              <span class="text-gray-600 font-medium">SKU ID :</span>
+              <span class="text-gray-600 ">SKU0102032345</span>
             </div>
-            <div className="bg-green-50 p-4 rounded-xl text-center">
-              <h4 className="text-gray-500 text-sm">Available Stock</h4>
-              <p className="text-2xl font-bold text-green-600">
-                {selectedProduct.available}
-              </p>
+
+            <div class="flex justify-between border-b">
+              <span class="text-gray-600 font-medium">Status :</span>
+              <span class="text-green-600 font-semibold">True</span>
             </div>
-            <div className="bg-red-50 p-4 rounded-xl text-center">
-              <h4 className="text-gray-500 text-sm">Sold Stock</h4>
-              <p className="text-2xl font-bold text-red-600">
-                {selectedProduct.sold}
+
+            <div class="flex justify-between border-b">
+              <span class="text-gray-600 font-medium">OID :</span>
+              <span class=" text-gray-600 ">OID-1000967890</span>
+            </div>
+
+            <div className="border-b">
+              <span class="text-gray-600 font-medium block">Comment :</span>
+              <p class="text-gray-700 text-sm mt-1">
+                Item is in stock and ready to ship.
               </p>
             </div>
           </div>
-        ) : (
-          <p className="text-gray-500 mb-6">
-            Select a product to see stock details.
-          </p>
-        )}
-
-        <h3 className="text-lg font-semibold mb-2">
-          📋 SKU / Serial Number List
-        </h3>
-        <table className="w-full border border-gray-200 rounded-xl overflow-hidden">
-          <thead className="bg-gray-100 text-left">
-            <tr>
-              <th className="py-2 px-4">SKU</th>
-              <th className="py-2 px-4">Product Name</th>
-              <th className="py-2 px-4">Available</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockProducts.map((prod) => (
-              <tr
-                key={prod.sku}
-                className="cursor-pointer hover:bg-blue-50 transition"
-                onClick={() => handleSelectSKU(prod.sku)}
-              >
-                <td className="py-2 px-4 text-blue-600 font-medium">
-                  {prod.sku}
-                </td>
-                <td className="py-2 px-4">{prod.name}</td>
-                <td className="py-2 px-4">{prod.available}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </div>
       </div>
     </div>
   );
