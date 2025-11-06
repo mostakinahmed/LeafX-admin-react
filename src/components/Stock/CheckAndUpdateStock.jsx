@@ -4,7 +4,7 @@ const mockProducts = [
   {
     id: "P001",
     name: "Wireless Earbuds m",
-    sku: "SKU-001",
+    sku: "SKU0102032345",
     total: 120,
     available: 95,
     sold: 25,
@@ -13,7 +13,7 @@ const mockProducts = [
   {
     id: "P002",
     name: "Smart Watch",
-    sku: "SKU-002",
+    sku: "SKU0106032345",
     total: 80,
     available: 50,
     sold: 30,
@@ -22,7 +22,7 @@ const mockProducts = [
   {
     id: "P003",
     name: "Bluetooth Speaker",
-    sku: "SKU-003",
+    sku: "SKU0102032345",
     total: 200,
     available: 180,
     sold: 20,
@@ -30,7 +30,7 @@ const mockProducts = [
   },
 ];
 
-export default function CheckStock() {
+export default function CheckAndUpdateStock() {
   const [searchId, setSearchId] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(true);
 
@@ -51,7 +51,7 @@ export default function CheckStock() {
         <h2 className="text-xl p-1 bg-blue-100 font-semibold mb-3">
           🔍 Search Product
         </h2>
-        <div className="flex items-center gap-2 mb-4 mr-3">
+        <div className="flex items-center gap-2 md:mb-4 mb-3 mr-2">
           <input
             type="text"
             placeholder="Enter Product ID (e.g. P001)"
@@ -61,28 +61,77 @@ export default function CheckStock() {
           />
           <button
             onClick={handleSearch}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
           >
             Search
           </button>
         </div>
 
         {selectedProduct ? (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Product Details</h3>
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <p>
-                <strong>Name:</strong> {selectedProduct.name}
-              </p>
-              <p>
-                <strong>ID:</strong> {selectedProduct.id}
-              </p>
-              <p>
-                <strong>SKU:</strong> {selectedProduct.sku}
-              </p>
-              <p>
-                <strong>Description:</strong> {selectedProduct.description}
-              </p>
+          <div className="md:mt-8 mr-2">
+            <div className=" flex justify-between bg-gray-200">
+              <h3 className="text-lg mt-2  font-semibold px-2">
+                Product Details
+              </h3>
+              <button className=" justify- px-2 py-2 rounded text-white font-semibold bg-yellow-400 hover:bg-yellow-500">
+                Add Stock
+              </button>
+            </div>
+
+            {/* info div */}
+            <div class="bg-white w-full overflow-hidden">
+              <img
+                src="https://img.drz.lazcdn.com/static/bd/p/bf01ecf6cf24b6048d23bc175068e9d3.jpg_720x720q80.jpg"
+                alt="OnePlus Nord 3000"
+                class="w-45 h-45 object-cover ml-5"
+              />
+
+              <div class="px-6 mt-1 mb-2 md:mb-0 space-y-1">
+                <h2 class="text-xl font-bold text-gray-900">
+                  OnePlus Nord 3000
+                </h2>
+                <p class="text-sm text-gray-500">
+                  Product ID:{" "}
+                  <span class="font-medium text-gray-800">P000001</span>
+                </p>
+                <p class="text-sm text-gray-500">
+                  Brand: <span class="font-medium text-gray-800">OnePlus</span>
+                </p>
+                <p class="text-sm text-gray-500">
+                  Category: <span class="font-medium text-gray-800">C001</span>
+                </p>
+
+                <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                  <div>
+                    <p class="text-sm text-gray-500">Price</p>
+                    <p class="text-lg font-semibold text-green-600">$399</p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">Stock</p>
+                    <p class="text-lg font-semibold text-blue-600">50</p>
+                  </div>
+                </div>
+
+                <div class="pt-3 border-t border-gray-100">
+                  <p class="text-sm text-gray-500 mb-1">Specifications:</p>
+                  <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+                    <li>Example: 8GB RAM</li>
+                    <li>Example: 128GB Storage</li>
+                    <li>Example: 5000mAh Battery</li>
+                  </ul>
+                </div>
+
+                <div class="pt-3 border-t border-gray-100 text-xs text-gray-400">
+                  <p>
+                    Created:{" "}
+                    <span class="text-gray-600">2025-10-05 02:58:12</span>
+                  </p>
+                  <p>
+                    Updated:{" "}
+                    <span class="text-gray-600">2025-10-07 14:26:11</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -144,14 +193,16 @@ export default function CheckStock() {
               {mockProducts.map((prod) => (
                 <tr
                   key={prod.sku}
-                  className="cursor-pointer hover:bg-blue-50 transition flex justify-between"
+                  className="cursor-pointer border-b hover:bg-blue-50 transition flex justify-between"
                   onClick={() => handleSelectSKU(prod.sku)}
                 >
-                  <td className="py-2 px-4 text-blue-600 font-medium">
+                  <td className="py-1 px-4 text-blue-600 font-medium">
                     {prod.sku}
                   </td>
 
-                  <td className="py-2 px-4 md:mr-15 font-semibold">YES</td>
+                  <td className="py-2 px-4 md:mr-15 font-semibold text-xs">
+                    YES
+                  </td>
                 </tr>
               ))}
             </tbody>
