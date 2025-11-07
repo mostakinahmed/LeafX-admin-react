@@ -108,20 +108,55 @@ const AddProduct = () => {
   };
 
   //console.log(finalData);
+  // const saveData = async (data) => {
+  //   //data sent to backend
+  //   const res = await axios
+  //     .post("https://fabribuzz.onrender.com/api/product", data)
+  //     .then((response) => {
+  //       setSpinner(false);
+  //       setSuccess(true);
+  //       updateApi();
+  //       console.log("Product saved successfully:", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error saving product:", error);
+  //     });
+  //   // Here you can implement the logic to save finalData to your backend or database
+  // };
+
   const saveData = async (data) => {
-    //data sent to backend
-    const res = await axios
-      .post("https://fabribuzz.onrender.com/api/product", data)
-      .then((response) => {
-        setSpinner(false);
-        setSuccess(true);
-        updateApi();
-        console.log("Product saved successfully:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error saving product:", error);
-      });
-    // Here you can implement the logic to save finalData to your backend or database
+    try {
+      setSpinner(true);
+
+      // 1️⃣ Save product
+      const productRes = await axios.post(
+        "https://fabribuzz.onrender.com/api/product",
+        data
+      );
+
+      const { pID, sID } = productRes.data;
+
+      // 2️⃣ Update UI immediately
+      setSpinner(false);
+      setSuccess(true);
+      updateApi();
+
+      // 3️⃣ Fire stock API call (don't block UI)
+      axios
+        .post("https://fabribuzz.onrender.com/api/stock/create-stock", {
+          pID,
+          sID,
+        })
+        .then(() => {
+          console.log("Stock created successfully");
+        })
+        .catch((err) => {
+          console.error("Stock creation failed:", err);
+        });
+    } catch (error) {
+      setSpinner(false);
+      console.error("Error saving product:", error);
+    }
   };
 
   //reset form
@@ -150,29 +185,41 @@ const AddProduct = () => {
           {submitLoader && (
             <div className="absolute inset-0  flex items-center min-h-screen justify-center bg-white/30 backdrop-blur-sm z-20">
               {!success ? (
-                <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center animate-fadeIn">
+                <div className="bg-white p-8 md:mb-40 rounded-lg shadow-lg flex flex-col items-center animate-fadeIn">
                   <FaSpinner className="text-blue-500 text-6xl animate-spin mb-4" />
                   <p className="text-gray-700 font-semibold text-lg">
                     Please wait...
                   </p>
                 </div>
               ) : (
-                <div className="bg-white p-8  rounded-lg shadow-lg flex flex-col items-center animate-fadeIn">
+                <div className="bg-white md:p-8 p-5 md:w-[450px] md:mb-40 rounded-lg shadow-xl border-1 flex flex-col items-center animate-fadeIn">
                   <FaCheckCircle className="text-green-500 text-6xl mb-4" />
-                  <p className="text-gray-700 font-semibold text-lg mb-4">
+                  <p className="text-gray-700 font-semibold md:text-lg mb-4">
                     Product saved successfully!
                   </p>
-                  <div className="flex w-full gap-2">
+                  <div className="flex w-full gap-2 md:-mb-5">
                     <button
+                      className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                      onClick={() => {
+                        setSuccess(false);
+                        setSubmitLoader(false);
+                        resetForm();
+                        navigate("/products");
+                      }}
+                    >
+                       Product
+                    </button>
+
+                      <button
                       className="flex-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
                       onClick={() => {
                         setSuccess(false);
                         setSubmitLoader(false);
                         resetForm();
-                        navigate(-1);
+                        navigate("/stock");
                       }}
                     >
-                      Back
+                       Stock
                     </button>
                     <button
                       className="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
@@ -204,7 +251,6 @@ const AddProduct = () => {
                     { label: "Product Name", name: "name", type: "text" },
                     { label: "Brand Name", name: "brandName", type: "text" },
                     { label: "Price", name: "price", type: "number" },
-                    { label: "Stock Quantity", name: "stock", type: "number" },
                     { label: "Product Image", name: "images", type: "text" },
                     { label: "Description", name: "description", type: "text" },
                   ].map((input, idx) => (
