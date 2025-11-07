@@ -9,7 +9,7 @@ import CheckAndUpdateStock from "@/components/Stock/CheckAndUpdateStock";
 
 export default function Users() {
   const { updateApi } = useContext(DataContext);
-  updateApi();
+  // updateApi();
   const [activeTab, setActiveTab] = useState("checkStock");
 
   return (
@@ -29,9 +29,9 @@ export default function Users() {
             Check & Update
           </button>
 
-            <button
+          <button
             onClick={() => setActiveTab("customer")}
-            className={`lg:px-13 px-4  text-md ${
+            className={`lg:px-11 px-4  text-md ${
               activeTab === "customer"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -39,7 +39,6 @@ export default function Users() {
           >
             Out Of Stock & Alert
           </button>
-        
         </div>
 
         {/* Conditional Content */}
@@ -47,8 +46,6 @@ export default function Users() {
           {activeTab === "checkStock" && <CheckAndUpdateStock />}
 
           {activeTab === "customer" && <CustomerList />}
-
-        
         </div>
       </div>
     </div>

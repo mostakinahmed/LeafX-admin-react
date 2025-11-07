@@ -1,63 +1,66 @@
-import React, { useState } from "react";
-
-const mockProducts = [
-  {
-    id: "P001",
-    name: "Wireless Earbuds m",
-    sku: "SKU0102032345",
-    total: 120,
-    available: 95,
-    sold: 25,
-    description: "High-quality wireless earbuds with noise cancellation.",
-  },
-  {
-    id: "P002",
-    name: "Smart Watch",
-    sku: "SKU0106032345",
-    total: 80,
-    available: 50,
-    sold: 30,
-    description: "Fitness tracking smart watch with OLED display.",
-  },
-  {
-    id: "P003",
-    name: "Bluetooth Speaker",
-    sku: "SKU0102032345",
-    total: 200,
-    available: 180,
-    sold: 20,
-    description: "Portable Bluetooth speaker with deep bass.",
-  },
-];
+import { DataContext } from "@/Context Api/ApiContext";
+import React, { useContext, useState } from "react";
+import { FiSearch, FiList, FiBox } from "react-icons/fi"; // Feather search icon
+import { StockOverview } from "./StockOverview";
 
 export default function CheckAndUpdateStock() {
+  const { productData, stockData, updateApi } = useContext(DataContext);
+
   const [searchId, setSearchId] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(false);
+  const [currentStock, setCurrentStock] = useState(false);
+  const [currentSKU, setCurrentSKU] = useState(false);
+  const [toggle, setToggle] = useState(true);
 
+  //SHOW Product SKU LIST - search
   const handleSearch = () => {
-    const found = mockProducts.find((p) => p.id === searchId);
-    setSelectedProduct(found || null);
+    const foundProduct = productData.find((p) => p.pID === searchId);
+
+    //if found then sku List check
+    if (foundProduct) {
+      const foundStock = stockData.find(
+        (stock) => stock.pID === foundProduct.pID
+      ).SKU;
+
+      setCurrentStock(foundStock || false);
+      setSelectedProduct(foundProduct || false);
+    } else {
+      setCurrentStock(false);
+      setSelectedProduct(false);
+      setCurrentSKU(false);
+    }
   };
 
-  const handleSelectSKU = (sku) => {
-    const found = mockProducts.find((p) => p.sku === sku);
-    setSelectedProduct(found);
+  //Show SKU DATA - Search
+  const handleSelectSKU = (skuID) => {
+    const selectSKU = Object.values(currentStock).find(
+      (s) => s.skuID === skuID
+    );
+    setCurrentSKU(selectSKU);
   };
+
+  //find total, available, sold
+  const totalStock = Object.keys(currentStock).length;
+  const availableStock = Object.values(currentStock).filter(
+    (item) => item.status === true
+  ).length;
 
   return (
     <div className="md:flex border-t min-h-screen mt-3">
       {/* Left Panel */}
       <div className=" border-r md:w-1/2 bg-white rounded ">
-        <h2 className="text-xl p-1 bg-blue-100 font-semibold mb-3">
-          🔍 Search Product
+        <h2 className="relative text-xl p-1 bg-blue-100 font-semibold mb-3 flex items-center">
+          <FiSearch className="mr-2 text-gray-600" />
+          Search Product
         </h2>
+
         <div className="flex items-center gap-2 md:mb-4 mb-3 mr-2">
           <input
             type="text"
             placeholder="Enter Product-ID or SKU-ID"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-400 rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleSearch}
@@ -73,47 +76,72 @@ export default function CheckAndUpdateStock() {
               <h3 className="text-lg mt-2  font-semibold px-2">
                 Product Details
               </h3>
-              <button className=" justify- px-2 lg:w-[110px] py-2 rounded text-white font-semibold bg-yellow-400 hover:bg-yellow-500">
+              <button
+                onClick={() => {
+                  setToggle(false);
+                }}
+                className=" justify- px-2 lg:w-[110px] py-2 rounded text-white font-semibold bg-yellow-400 hover:bg-yellow-500"
+              >
                 Add Stock
               </button>
             </div>
 
             {/* info div */}
             <div class="bg-white w-full overflow-hidden">
-              <img
-                src="https://img.drz.lazcdn.com/static/bd/p/bf01ecf6cf24b6048d23bc175068e9d3.jpg_720x720q80.jpg"
-                alt="OnePlus Nord 3000"
-                class="w-45 h-45 object-cover ml-5"
-              />
-
-              <div class="px-6 mt-1 mb-2 md:mb-0 space-y-1">
-                <h2 class="text-xl font-bold text-gray-900">
-                  OnePlus Nord 3000
-                </h2>
-                <p class="text-sm text-gray-500">
-                  Product ID:{" "}
-                  <span class="font-medium text-gray-800">P000001</span>
-                </p>
-                <p class="text-sm text-gray-500">
-                  Brand: <span class="font-medium text-gray-800">OnePlus</span>
-                </p>
-                <p class="text-sm text-gray-500">
-                  Category: <span class="font-medium text-gray-800">C001</span>
-                </p>
-
-                <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                  <div>
-                    <p class="text-sm text-gray-500">Price</p>
-                    <p class="text-lg font-semibold text-green-600">$399</p>
-                  </div>
-                  <div>
-                    <p class="text-sm text-gray-500">Stock</p>
-                    <p class="text-lg font-semibold text-blue-600">50</p>
-                  </div>
+              <div className="w-full flex gap-4 bg-white p-2 rounded">
+                {/* Product Image */}
+                <div className="w-1/3 flex justify-center">
+                  <img
+                    src="https://img.drz.lazcdn.com/static/bd/p/bf01ecf6cf24b6048d23bc175068e9d3.jpg_720x720q80.jpg"
+                    alt={selectedProduct.name}
+                    className="w-40 h-40 p-2 object-cover rounded border"
+                  />
                 </div>
 
-                <div class="pt-3 border-t border-gray-100">
-                  <p class="text-sm text-gray-500 mb-1">Specifications:</p>
+                {/* Product Info */}
+                <div className="w-2/3 space-y-1">
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {selectedProduct.name}
+                  </h2>
+
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-gray-800">
+                      Product ID:
+                    </span>{" "}
+                    {selectedProduct.pID}
+                  </p>
+
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-gray-800">Brand:</span>{" "}
+                    {selectedProduct.brandName}
+                  </p>
+
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-gray-800">Category:</span>{" "}
+                    {selectedProduct.category}
+                  </p>
+
+                  {/* Divider bar */}
+                  <div className="w-full h-1 bg-blue-500 rounded mt-2">
+                    <div class="flex justify-between items-center pt-2">
+                      <div>
+                        <p class="text-sm text-gray-500">Price</p>
+                        <p class="text-lg font-semibold text-green-600">
+                          {selectedProduct.price}
+                        </p>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">Stock</p>
+                        <p class="text-lg font-semibold text-blue-600">50</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-6 mt-1 mb-2 md:mb-0 space-y-1">
+                <div class="mt-5 border-t border-gray-100">
+                  <p class=" text-gray-500 mb-1">Specifications:</p>
                   <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
                     <li>Example: 8GB RAM</li>
                     <li>Example: 128GB Storage</li>
@@ -135,116 +163,205 @@ export default function CheckAndUpdateStock() {
             </div>
           </div>
         ) : (
-          <p className="text-gray-500 mt-6">No product selected.</p>
+          <div className="mt-4 p-3 mr-2 h-50 flex justify-center items-center text-2xl bg-yellow-100 text-yellow-800 border border-yellow-300 rounded">
+            ⚠️ Product Info
+          </div>
         )}
       </div>
 
       {/* Middle Panel */}
       <div className="md:w-1/2 mt-2 md:mt-0 border-r bg-white rounded">
-        <h2 className="text-xl p-1 bg-blue-100 font-semibold mb-3">
-          📋 SKU List
+        <h2 className="flex items-center text-xl p-1 bg-blue-100 font-semibold mb-3">
+          <FiList className="mr-2 text-gray-600" size={24} />
+          SKU List
         </h2>
 
-        {selectedProduct ? (
+        {currentStock && (
           <div className="grid grid-cols-3 gap-3 mb-3 md:px-2 mr-2 md:mr-0 ">
             <div className="bg-blue-50 p-1 rounded text-center">
               <h4 className="text-gray-500 text-sm">Total Stock</h4>
-              <p className="text-2xl font-bold text-blue-600">
-                {" "}
-                10
-                {selectedProduct.total}
-              </p>
+              <p className="text-2xl font-bold text-blue-600"> {totalStock}</p>
             </div>
             <div className="bg-green-50 p-1 rounded text-center">
               <h4 className="text-gray-500 text-sm">Available Stock</h4>
               <p className="text-2xl font-bold text-green-600">
                 {" "}
-                20
-                {selectedProduct.available}
+                {availableStock}
               </p>
             </div>
             <div className="bg-red-50 p-1 rounded text-center">
-              <h4 className="text-gray-500 text-sm">Sold Stock</h4>
+              <h4 className="text-gray-500 text-sm">Sold Item</h4>
               <p className="text-2xl font-bold text-red-600">
                 {" "}
-                60
-                {selectedProduct.sold}
+                {totalStock - availableStock}
               </p>
             </div>
           </div>
-        ) : (
-          <p className="text-gray-500 mb-6">
-            Select a product to see stock details.
-          </p>
         )}
 
-        {/* <h3 className="text-lg font-semibold mb-2">
-          📋 SKU / Serial Number List
-        </h3> */}
         <div className="md:mr-4 mr-2">
           <table className="w-full min-w-auto border border-gray-200 rounded md:mx-2 overflow-hidden">
             <thead className="bg-gray-100 text-left">
               <tr className="flex justify-between">
-                <th className="py-2 px-4">SKU</th>
+                <th className="py-2 px-4">SKU-ID</th>
                 <th className="py-2 px-4 md:mr-7 ">Available</th>
               </tr>
             </thead>
             <tbody>
-              {mockProducts.map((prod) => (
+              {Object.values(currentStock).map((sku) => (
                 <tr
-                  key={prod.sku}
+                  key={sku.skuID}
                   className="cursor-pointer border-b hover:bg-blue-50 transition flex justify-between"
-                  onClick={() => handleSelectSKU(prod.sku)}
+                  onClick={() => {
+                    handleSelectSKU(sku.skuID);
+                    setToggle(true);
+                  }}
                 >
                   <td className="py-1 px-4 text-blue-600 font-medium">
-                    {prod.sku}
+                    {sku.skuID}
                   </td>
 
-                  <td className="py-2 px-4 md:mr-15 font-semibold text-xs">
-                    YES
-                  </td>
+                  {sku.status ? (
+                    <td className="py-2 px-4 md:mr-15 text-green-600 font-semibold text-xs">
+                      YES
+                    </td>
+                  ) : (
+                    <td className="py-2 px-4 md:mr-13 text-red-600 font-semibold text-xs">
+                      SOLD
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {!currentStock && (
+          <div className="mt-4 p-3 md:ml-2 mr-2 h-50 flex justify-center items-center text-2xl bg-yellow-100 text-yellow-800 border border-yellow-300 rounded">
+            ⚠️ SKU List
+          </div>
+        )}
       </div>
 
       {/* Right Panel */}
       <div className="md:w-1/2 bg-white rounded">
-        <h2 className="text-xl p-1 mt-3 md:mt-0 bg-blue-100 font-semibold mb-3 ">
-          📦 Stock Overview
-        </h2>
+        {toggle ? (
+          <>
+            <h2 className="flex items-center text-xl p-1 mt-3 md:mt-0 bg-blue-100 font-semibold mb-3">
+              <FiBox className="mr-2 text-gray-600" size={24} />
+              Stock Overview
+            </h2>
 
-        <div class=" ml-2 bg-white rounded p-5">
-          <h3 class="text-lg text-center underline font-semibold text-gray-800 mb-4">
-            SKU Information
-          </h3>
+            <div class=" md:ml-2 md:mt-5 bg-white rounded">
+              <h3 class="text-lg text-center underline font-semibold text-gray-800 mb-5">
+                SKU Information
+              </h3>
 
-          <div class="space-y-2">
-            <div class="flex justify-between border-b">
-              <span class="text-gray-600 font-medium">SKU ID :</span>
-              <span class="text-gray-600 ">SKU0102032345</span>
+              {currentSKU ? (
+                <div class="space-y-2 p-6">
+                  <div class="flex justify-between border-b">
+                    <span class="text-gray-600 font-medium">SKU ID :</span>
+                    <span class="text-gray-600 ">{currentSKU.skuID}</span>
+                  </div>
+
+                  <div class="flex justify-between border-b">
+                    <span class="text-gray-600 font-medium">Status :</span>
+
+                    {currentSKU.status ? (
+                      <span class="text-green-600 font-semibold">True</span>
+                    ) : (
+                      <span class="text-red-600 font-semibold">False</span>
+                    )}
+                  </div>
+
+                  <div class="flex justify-between border-b">
+                    <span class="text-gray-600 font-medium">OID :</span>
+
+                    {currentSKU.OID ? (
+                      <span class="text-green-600 font-semibold">
+                        {currentSKU.OID}
+                      </span>
+                    ) : (
+                      <span class="text-red-600 text-sm font-semibold">
+                        NULL
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="border-b">
+                    <span class="text-gray-600 font-medium block">
+                      Comment :
+                    </span>
+                    <p class="text-gray-700 text-sm mt-1">
+                      {currentSKU.comment}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-3 h-50 flex justify-center items-center text-2xl bg-yellow-100 text-yellow-800 border border-yellow-300 rounded">
+                  ⚠️ SKU Info
+                </div>
+              )}
             </div>
+          </>
+        ) : (
+          <>
+            <h2 className="flex items-center text-xl p-1 mt-3 md:mt-0 bg-blue-100 font-semibold mb-3">
+              <FiBox className="mr-2 text-gray-600" size={24} />
+              Update Stock
+            </h2>
+            <div className=" mt-3 ml-2 bg-blue-50 border border-blue-200 rounded p-4">
+              <h2 className="text-lg text-center font-semibold text-blue-700 mb-3 gap-2">
+                + Add New Stock
+              </h2>
 
-            <div class="flex justify-between border-b">
-              <span class="text-gray-600 font-medium">Status :</span>
-              <span class="text-green-600 font-semibold">True</span>
-            </div>
+              <form>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      SKU - ID
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter SKU ID"
+                      required
+                      className="w-full border border-gray-400 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    />
+                  </div>
 
-            <div class="flex justify-between border-b">
-              <span class="text-gray-600 font-medium">OID :</span>
-              <span class=" text-gray-600 ">OID-1000967890</span>
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Comment - primary info
+                    </label>
+                    <textarea
+                      placeholder="Enter comment"
+                      rows={5}
+                      required
+                      className="w-full border border-gray-400  rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    ></textarea>
+                  </div>
 
-            <div className="border-b">
-              <span class="text-gray-600 font-medium block">Comment :</span>
-              <p class="text-gray-700 text-sm mt-1">
-                Item is in stock and ready to ship.
-              </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        setToggle(true);
+                      }}
+                      className="flex items-center gap-2 bg-red-600 text-white px-5 py-2 rounded font-medium hover:bg-red-700 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded font-medium hover:bg-blue-700 transition"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

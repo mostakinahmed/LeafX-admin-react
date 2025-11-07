@@ -8,6 +8,7 @@ export const ApiContext = ({ children }) => {
   const [productData, setProductData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [adminData, setAdminData] = useState([]);
+  const [stockData, setStockData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -15,15 +16,17 @@ export const ApiContext = ({ children }) => {
   const updateApi = async () => {
     try {
       setLoading(true);
-      const [productRes, categoryRes, adminRes] = await Promise.all([
+      const [productRes, categoryRes, adminRes, stockRes] = await Promise.all([
         axios.get("https://fabribuzz.onrender.com/api/product"),
         axios.get("https://fabribuzz.onrender.com/api/category"),
         axios.get("https://fabribuzz.onrender.com/api/user/admin/list"),
+        axios.get("https://fabribuzz.onrender.com/api/stock"),
       ]);
 
       setProductData(productRes.data);
       setCategoryData(categoryRes.data);
       setAdminData(adminRes.data);
+      setStockData(stockRes.data);
     } catch (err) {
       console.error("API fetch error:", err);
       setError(err);
@@ -41,6 +44,7 @@ export const ApiContext = ({ children }) => {
     productData,
     categoryData,
     adminData,
+    stockData,
     loading,
     error,
     updateApi, // expose for manual refresh (like after adding product)
