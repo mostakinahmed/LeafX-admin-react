@@ -54,14 +54,14 @@ export default function CheckAndUpdateStock() {
         <div className="flex items-center gap-2 md:mb-4 mb-3 mr-2">
           <input
             type="text"
-            placeholder="Enter Product ID (e.g. P001)"
+            placeholder="Enter Product-ID or SKU-ID"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
             className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleSearch}
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white lg:w-[128px] w-[147px] px-6 py-2 rounded hover:bg-blue-700 transition"
           >
             Search
           </button>
@@ -73,7 +73,7 @@ export default function CheckAndUpdateStock() {
               <h3 className="text-lg mt-2  font-semibold px-2">
                 Product Details
               </h3>
-              <button className=" justify- px-2 py-2 rounded text-white font-semibold bg-yellow-400 hover:bg-yellow-500">
+              <button className=" justify- px-2 lg:w-[110px] py-2 rounded text-white font-semibold bg-yellow-400 hover:bg-yellow-500">
                 Add Stock
               </button>
             </div>

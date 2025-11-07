@@ -31,7 +31,7 @@ export default function Users() {
 
             <button
             onClick={() => setActiveTab("customer")}
-            className={`lg:px-19 px-4  text-md ${
+            className={`lg:px-13 px-4  text-md ${
               activeTab === "customer"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
