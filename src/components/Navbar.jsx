@@ -34,11 +34,20 @@ export default function Navbar({ pageTitle }) {
           className="flex items-center gap-3 cursor-pointer"
           onClick={toggleAdminPopup}
         >
-          <div className="-mt-4 flex flex-col items-center hover:text-blue-600">
+          {/* <div className="-mt-4 flex flex-col items-center hover:text-blue-600">
             <span className="hidden -mb-1 lg:flex  -bold text-lg">Admin</span>
             <span className="-mb-7 hidden lg:flex text-sm text-blue-400 ">
               {user.userName}
             </span>
+          </div> */}
+          <div
+            className="bg-gray-700 border border-gray-600  hover:bg-gray-800 transition-all duration-300 
+                flex justify-center items-center flex-col text-gray-300 h-9 w-32 rounded cursor-pointer"
+          >
+            <div className="font-semibold  text-sm mt-2 border-b border-gray-900 w-full text-center">
+              Admin
+            </div>
+            <div className="text-xs text-gray-400 mb-2">{user.userName}</div>
           </div>
 
           <img
