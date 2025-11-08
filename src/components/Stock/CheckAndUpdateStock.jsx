@@ -291,7 +291,7 @@ export default function CheckAndUpdateStock() {
                     <tr
                       key={sku.skuID}
                       className={`cursor-pointer border-b hover:bg-blue-100 transition flex justify-between ${
-                        currentSKU.skuID === sku.skuID ? "bg-blue-100" : ""
+                        currentSKU?.skuID === sku.skuID ? "bg-blue-100" : " "
                       }`}
                       onClick={() => {
                         handleSelectSKU(sku.skuID);
