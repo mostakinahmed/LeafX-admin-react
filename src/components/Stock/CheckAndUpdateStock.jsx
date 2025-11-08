@@ -7,19 +7,25 @@ import axios from "axios";
 export default function CheckAndUpdateStock() {
   const { productData, stockData, updateApi } = useContext(DataContext);
 
-  console.log(stockData);
-
   const [searchId, setSearchId] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(false);
   const [currentStock, setCurrentStock] = useState(false);
   const [currentSKU, setCurrentSKU] = useState(false);
   const [toggle, setToggle] = useState(true);
-  const [submitLoader, setSubmitLoader] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     skuID: "",
     comment: "",
   });
+
+  //take all from to one state variable
+  const handleFormDataChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value, // update only the changed field
+    }));
+  };
 
   //handle Form Data change
   const handleSearch = () => {
@@ -267,7 +273,7 @@ export default function CheckAndUpdateStock() {
         <div className="md:mr-2 mr-2 ml-2">
           <div className="h-[600px] overflow-y-auto rounded">
             <table className="w-full min-w-auto">
-              <thead className="bg-gray-100 sticky top-0 z-10">
+              <thead className="bg-gray-200 sticky top-0 z-10">
                 <tr className="flex justify-between">
                   <th className="py-2 px-4">SKU-ID</th>
                   <th className="py-2 px-4">Available</th>
@@ -279,27 +285,31 @@ export default function CheckAndUpdateStock() {
                 </div>
               )}
               <tbody>
-                {Object.values(currentStock).map((sku) => (
-                  <tr
-                    key={sku.skuID}
-                    className="cursor-pointer border-b hover:bg-blue-50 transition flex justify-between"
-                    onClick={() => {
-                      handleSelectSKU(sku.skuID);
-                      setToggle(true);
-                    }}
-                  >
-                    <td className="py-1 px-4 text-blue-600 font-medium">
-                      {sku.skuID}
-                    </td>
-                    <td
-                      className={`py-2 px-4 font-semibold text-xs ${
-                        sku.status ? "text-green-600" : "text-red-600"
+                {Object.values(currentStock)
+                  .reverse()
+                  .map((sku) => (
+                    <tr
+                      key={sku.skuID}
+                      className={`cursor-pointer border-b hover:bg-blue-100 transition flex justify-between ${
+                        currentSKU.skuID === sku.skuID ? "bg-blue-100" : ""
                       }`}
+                      onClick={() => {
+                        handleSelectSKU(sku.skuID);
+                        setToggle(true);
+                      }}
                     >
-                      {sku.status ? "YES" : "SOLD"}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="py-1 px-4 text-blue-600 font-medium">
+                        {sku.skuID}
+                      </td>
+                      <td
+                        className={`py-2 px-4 mr-6 font-semibold text-xs ${
+                          sku.status ? "text-green-600" : "text-red-600"
+                        }`}
+                      >
+                        {sku.status ? "YES" : "SOLD"}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -353,7 +363,7 @@ export default function CheckAndUpdateStock() {
                     )}
                   </div>
 
-                  <div className="border border-gray-200  p-1 bg-blue-100">
+                  <div className="border border-gray-200  p-1 bg-gray-200">
                     <span className="text-gray-700 text-lg mb-1">Comment:</span>
                     <p className="text-gray-700 text-sm leading-relaxed">
                       {currentSKU.comment || "No comment available."}
