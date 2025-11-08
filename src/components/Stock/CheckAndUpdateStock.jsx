@@ -1,29 +1,58 @@
 import { DataContext } from "@/Context Api/ApiContext";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FiSearch, FiList, FiBox } from "react-icons/fi"; // Feather search icon
-import { StockOverview } from "./StockOverview";
+import { FaSpinner, FaCheckCircle } from "react-icons/fa";
+import axios from "axios";
 
 export default function CheckAndUpdateStock() {
   const { productData, stockData, updateApi } = useContext(DataContext);
+
+  console.log(stockData);
 
   const [searchId, setSearchId] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(false);
   const [currentStock, setCurrentStock] = useState(false);
   const [currentSKU, setCurrentSKU] = useState(false);
   const [toggle, setToggle] = useState(true);
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    skuID: "",
+    comment: "",
+  });
 
-  //SHOW Product SKU LIST - search
+  //handle Form Data change
   const handleSearch = () => {
-    const foundProduct = productData.find((p) => p.pID === searchId);
+    // First, try to find by Product ID
+    let foundProduct = productData.find((p) => p.pID === searchId);
+    let foundStock = null;
 
-    //if found then sku List check
-    if (foundProduct) {
-      const foundStock = stockData.find(
+    // If not found by Product ID, try to find by SKU ID
+    if (!foundProduct) {
+      const foundStockItem = stockData.find((stock) =>
+        Object.values(stock.SKU).some((sku) => sku.skuID === searchId)
+      );
+
+      if (foundStockItem) {
+        foundProduct = productData.find((p) => p.pID === foundStockItem.pID);
+        foundStock = foundStockItem.SKU;
+      }
+    } else {
+      // Found by Product ID, get stock
+      foundStock = stockData.find(
         (stock) => stock.pID === foundProduct.pID
       ).SKU;
+    }
 
-      setCurrentStock(foundStock || false);
-      setSelectedProduct(foundProduct || false);
+    if (foundProduct && foundStock) {
+      setCurrentStock(foundStock);
+      setSelectedProduct(foundProduct);
+
+      // Directly find the SKU from the stock we just got
+      const selectSKU = Object.values(foundStock).find(
+        (s) => s.skuID === searchId
+      );
+      setCurrentSKU(selectSKU || null);
     } else {
       setCurrentStock(false);
       setSelectedProduct(false);
@@ -37,6 +66,42 @@ export default function CheckAndUpdateStock() {
       (s) => s.skuID === skuID
     );
     setCurrentSKU(selectSKU);
+  };
+
+  useEffect(() => {
+    if (selectedProduct && stockData) {
+      const updatedStock =
+        stockData.find((stock) => stock.pID === selectedProduct.pID)?.SKU ||
+        false;
+      setCurrentStock(updatedStock);
+    }
+  }, [stockData, selectedProduct]);
+
+  //add stock button
+  const addStock = async (e) => {
+    e.preventDefault();
+
+    try {
+      // setSubmitLoader(true);
+      setSuccess(true);
+      const data = {
+        pID: selectedProduct.pID,
+        skuID: formData.skuID,
+        comment: formData.comment,
+      };
+
+      const res = await axios.post(
+        "https://fabribuzz.onrender.com/api/stock/add-stock",
+        data
+      );
+      updateApi();
+      setFormData({ skuID: "", comment: "" });
+      setSuccess(false);
+    } catch (error) {
+      console.error("Error adding stock:", error);
+    } finally {
+      setSuccess(false);
+    }
   };
 
   //find total, available, sold
@@ -199,48 +264,46 @@ export default function CheckAndUpdateStock() {
           </div>
         )}
 
-        <div className="md:mr-4 mr-2">
-          <table className="w-full min-w-auto border border-gray-200 rounded md:mx-2 overflow-hidden">
-            <thead className="bg-gray-100 text-left">
-              <tr className="flex justify-between">
-                <th className="py-2 px-4">SKU-ID</th>
-                <th className="py-2 px-4 md:mr-7 ">Available</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.values(currentStock).map((sku) => (
-                <tr
-                  key={sku.skuID}
-                  className="cursor-pointer border-b hover:bg-blue-50 transition flex justify-between"
-                  onClick={() => {
-                    handleSelectSKU(sku.skuID);
-                    setToggle(true);
-                  }}
-                >
-                  <td className="py-1 px-4 text-blue-600 font-medium">
-                    {sku.skuID}
-                  </td>
-
-                  {sku.status ? (
-                    <td className="py-2 px-4 md:mr-15 text-green-600 font-semibold text-xs">
-                      YES
-                    </td>
-                  ) : (
-                    <td className="py-2 px-4 md:mr-13 text-red-600 font-semibold text-xs">
-                      SOLD
-                    </td>
-                  )}
+        <div className="md:mr-2 mr-2 ml-2">
+          <div className="h-[600px] overflow-y-auto rounded">
+            <table className="w-full min-w-auto">
+              <thead className="bg-gray-100 sticky top-0 z-10">
+                <tr className="flex justify-between">
+                  <th className="py-2 px-4">SKU-ID</th>
+                  <th className="py-2 px-4">Available</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {!currentStock && (
-          <div className="mt-4 p-3 md:ml-2 mr-2 h-50 flex justify-center items-center text-2xl bg-yellow-100 text-yellow-800 border border-yellow-300 rounded">
-            ⚠️ SKU List
+              </thead>
+              {!currentStock && (
+                <div className="mt-4 p-3 h-50 flex justify-center items-center text-2xl bg-yellow-100 text-yellow-800 border border-yellow-300 rounded">
+                  ⚠️ SKU List
+                </div>
+              )}
+              <tbody>
+                {Object.values(currentStock).map((sku) => (
+                  <tr
+                    key={sku.skuID}
+                    className="cursor-pointer border-b hover:bg-blue-50 transition flex justify-between"
+                    onClick={() => {
+                      handleSelectSKU(sku.skuID);
+                      setToggle(true);
+                    }}
+                  >
+                    <td className="py-1 px-4 text-blue-600 font-medium">
+                      {sku.skuID}
+                    </td>
+                    <td
+                      className={`py-2 px-4 font-semibold text-xs ${
+                        sku.status ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {sku.status ? "YES" : "SOLD"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Right Panel */}
@@ -252,25 +315,27 @@ export default function CheckAndUpdateStock() {
               Stock Overview
             </h2>
 
-            <div class=" md:ml-2 md:mt-5 bg-white rounded">
+            <div class=" md:ml-2 md:mt-5 bg-white">
               <h3 class="text-lg text-center underline font-semibold text-gray-800 mb-5">
                 SKU Information
               </h3>
 
               {currentSKU ? (
-                <div class="space-y-2 p-6">
+                <div class="space-y-2 px-6 py-5">
                   <div class="flex justify-between border-b">
                     <span class="text-gray-600 font-medium">SKU ID :</span>
-                    <span class="text-gray-600 ">{currentSKU.skuID}</span>
+                    <span class="text-gray-600 mr-1">{currentSKU.skuID}</span>
                   </div>
 
                   <div class="flex justify-between border-b">
                     <span class="text-gray-600 font-medium">Status :</span>
 
                     {currentSKU.status ? (
-                      <span class="text-green-600 font-semibold">True</span>
+                      <span class="text-green-600 font-semibold mr-1">
+                        True
+                      </span>
                     ) : (
-                      <span class="text-red-600 font-semibold">False</span>
+                      <span class="text-red-600 font-semibold mr-1">False</span>
                     )}
                   </div>
 
@@ -278,22 +343,20 @@ export default function CheckAndUpdateStock() {
                     <span class="text-gray-600 font-medium">OID :</span>
 
                     {currentSKU.OID ? (
-                      <span class="text-green-600 font-semibold">
+                      <span class="text-green-600 font-semibold mr-1">
                         {currentSKU.OID}
                       </span>
                     ) : (
-                      <span class="text-red-600 text-sm font-semibold">
+                      <span class="text-red-600 text-sm font-semibold mr-1">
                         NULL
                       </span>
                     )}
                   </div>
 
-                  <div className="border-b">
-                    <span class="text-gray-600 font-medium block">
-                      Comment :
-                    </span>
-                    <p class="text-gray-700 text-sm mt-1">
-                      {currentSKU.comment}
+                  <div className="border border-gray-200  p-1 bg-blue-100">
+                    <span className="text-gray-700 text-lg mb-1">Comment:</span>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      {currentSKU.comment || "No comment available."}
                     </p>
                   </div>
                 </div>
@@ -310,55 +373,76 @@ export default function CheckAndUpdateStock() {
               <FiBox className="mr-2 text-gray-600" size={24} />
               Update Stock
             </h2>
-            <div className=" mt-3 ml-2 bg-blue-50 border border-blue-200 rounded p-4">
-              <h2 className="text-lg text-center font-semibold text-blue-700 mb-3 gap-2">
-                + Add New Stock
-              </h2>
-
-              <form>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      SKU - ID
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter SKU ID"
-                      required
-                      className="w-full border border-gray-400 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Comment - primary info
-                    </label>
-                    <textarea
-                      placeholder="Enter comment"
-                      rows={5}
-                      required
-                      className="w-full border border-gray-400  rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                    ></textarea>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => {
-                        setToggle(true);
-                      }}
-                      className="flex items-center gap-2 bg-red-600 text-white px-5 py-2 rounded font-medium hover:bg-red-700 transition"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded font-medium hover:bg-blue-700 transition"
-                    >
-                      Submit
-                    </button>
+            <div className="mt-3 ml-2 bg-blue-50 border border-blue-200 rounded p-4 relative overflow-hidden">
+              {/* ✅ Loader overlay */}
+              {success && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm z-20">
+                  <div className="bg-white md:p-4 md:w-[220px] rounded-lg shadow-md border flex flex-col items-center animate-fadeIn">
+                    <FaSpinner className="text-green-500 text-4xl mb-3 animate-spin" />
+                    <p className="text-gray-700 font-semibold mb-3">
+                      Stock Adding!
+                    </p>
                   </div>
                 </div>
-              </form>
+              )}
+
+              {/* ✅ Blur this content when loading */}
+              <div
+                className={`${success ? "blur-sm pointer-events-none" : ""}`}
+              >
+                <h2 className="text-lg text-center font-semibold text-blue-700 mb-3">
+                  + Add New Stock
+                </h2>
+
+                <form onSubmit={addStock}>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        SKU - ID
+                      </label>
+                      <input
+                        type="text"
+                        name="skuID"
+                        value={formData.skuID}
+                        onChange={handleFormDataChange}
+                        placeholder="Enter SKU ID"
+                        required
+                        className="w-full border border-gray-400 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Comment - primary info
+                      </label>
+                      <textarea
+                        placeholder="Enter comment"
+                        rows={5}
+                        name="comment"
+                        value={formData.comment}
+                        onChange={handleFormDataChange}
+                        required
+                        className="w-full border border-gray-400 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                      ></textarea>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setToggle(true)}
+                        className="flex items-center gap-2 bg-red-600 text-white px-5 py-2 rounded font-medium hover:bg-red-700 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded font-medium hover:bg-blue-700 transition"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </>
         )}
