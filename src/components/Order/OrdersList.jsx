@@ -12,6 +12,7 @@ const OrderList = () => {
   const [selectedStatus, setSelectedStatus] = useState("All Orders");
   const [statusOpen, setStatusOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
+  const [showDetails, setShowDetails] = useState(null);
 
   const statuses = [
     "All Orders",
@@ -147,7 +148,13 @@ const OrderList = () => {
               <tbody>
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
-                    <tr key={order.order_id} className="hover:bg-gray-200">
+                    <tr
+                      onClick={() => {
+                        setShowDetails(order);
+                      }}
+                      key={order.order_id}
+                      className="hover:bg-gray-200"
+                    >
                       <td className="px-4 py-2 border-b">{order.order_id}</td>
                       <td className="px-4 py-2 border-b">
                         {order.shipping_address.recipient_name}
@@ -174,55 +181,56 @@ const OrderList = () => {
         </div>
 
         {/* right side */}
-        <div className="bg-red-600 w-full h-50  rounded">
+        <div className=" w-full h-50  rounded">
           <h1 className="bg-green-200 p-[5px] text-center text-lg font-bold">
             Order Details
           </h1>
-          <div className=" mx-auto ">
-            {/* 1. Product Info Section */}
-            <div className="bg-white border-l">
-              {/* header */}
-              <div className="flex border-b justify-between">
-                <h3 className="text-xl font-semibold mt-4 mx-4">
-                  Product Info
-                </h3>
-                <h3 className="lg:text-2xl font-bold rounded-xl px-3 my-2 bg-red-500 text-white">
-                  Pending
-                </h3>
-              </div>
-
-              {/* Product 1 */}
-              <div className="lg:flex flex-col lg:flex-row p-4 rounded space-x-4 ">
-                <img
-                  src="https://www.mobiledokan.com/media/tecno-camon-40-pro-emerald-lake-green-official-image.webp"
-                  alt="Product"
-                  className="w-20 h-20 object-cover rounded"
-                />
-                <div className="flex-1 space-y-1">
-                  <p>
-                    <span className="font-medium">Product ID:</span> P00001
-                  </p>
-
-                  <p>
-                    <span className="font-medium">Name:</span> Mostakin
-                  </p>
-
-                  <p>
-                    SKU ID:{" "}
-                    <span className="font-bold bg-green-300 px-2 rounded-3xl">
-                      SKU-17278595001
-                    </span>
-                  </p>
+          {showDetails ? (
+            <div className=" mx-auto ">
+              {/* 1. Product Info Section */}
+              <div className="bg-white border-l">
+                {/* header */}
+                <div className="flex border-b justify-between">
+                  <h3 className="text-xl font-semibold mt-4 mx-4">
+                    Product Info
+                  </h3>
+                  <h3 className="lg:text-2xl font-bold rounded-xl px-3 my-2 bg-red-500 text-white">
+                    Pending
+                  </h3>
                 </div>
-                <div>
-                  <p>
-                    <span className="font-medium">Quantity:</span> 1
-                  </p>
-                  <p>
-                    <span className="font-medium">Price:</span> $120
-                  </p>
-                </div>
-                {/* <div>
+
+                {/* Product 1 */}
+                <div className="lg:flex flex-col lg:flex-row p-4 rounded space-x-4 ">
+                  <img
+                    src="https://www.mobiledokan.com/media/tecno-camon-40-pro-emerald-lake-green-official-image.webp"
+                    alt="Product"
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                  <div className="flex-1 space-y-1">
+                    <p>
+                      <span className="font-medium">Product ID:</span> P00001
+                    </p>
+
+                    <p>
+                      <span className="font-medium">Name:</span> Mostakin
+                    </p>
+
+                    <p>
+                      SKU ID:{" "}
+                      <span className="font-bold bg-green-300 px-2 rounded-3xl">
+                        SKU-17278595001
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <span className="font-medium">Quantity:</span> 1
+                    </p>
+                    <p>
+                      <span className="font-medium">Price:</span> $120
+                    </p>
+                  </div>
+                  {/* <div>
                   <label className="font-medium block mb-1">Status</label>
                   <select className="border rounded px-2 py-1">
                     <option>Pending</option>
@@ -230,79 +238,90 @@ const OrderList = () => {
                     <option>Delivered</option>
                   </select>
                 </div> */}
-              </div>
-            </div>
-
-            {/* 2. Customer Info Section */}
-            <div className="bg-white w-full p-4 mr-1 space-y-1 border-l">
-              <h3 className="text-xl font-semibold border-b pb-1 mb-2 -mt-4">
-                Customer Info
-              </h3>
-              <div className="flex flex-col lg:flex-row justify-between">
-                <div className="">
-                  <p>
-                    <span className="font-medium">Customer ID:</span> CUS-0001
-                  </p>
-                  <p>
-                    <span className="font-medium">Name:</span> Rahim Uddin
-                  </p>
-                  <p>
-                    Phone:
-                    <span className="font-medium bg-yellow-300 ml-1 px-2 rounded-xl ">
-                      01773820336
-                    </span>
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    <span className="font-medium">Email:</span>{" "}
-                    rahim@example.com
-                  </p>
-                  <p>
-                    <span className="font-medium">Discount:</span> 10%
-                  </p>
                 </div>
               </div>
-            </div>
 
-            {/* 3. Payment & Address Section */}
-            <div className="bg-white p-4 border-l -mt-5 space-y-1">
-              <h3 className="text-xl font-semibold border-b pb-2 mb-2">
-                Payment & Shipping
-              </h3>
-
-              <div className="flex  flex-col lg:flex-row justify-between mr-6">
-                <div>
-                  <p>
-                    <span className="font-medium">Shipping Address:</span> House
-                    12, Road 5
-                  </p>
-                  <p>
-                    <span className="font-medium">Shipping Cost:</span> $20
-                  </p>
-                  <p className="font-semibold text-lg mt-2 lg:-mb-3">
-                    Total Amount: $300
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    <span className="font-medium">Payment Method:</span> COD
-                  </p>
-                  <p>
-                    <span className="font-medium">Payment Status:</span> Pending
-                  </p>
+              {/* 2. Customer Info Section */}
+              <div className="bg-white w-full p-4 mr-1 space-y-1 border-l">
+                <h3 className="text-xl font-semibold border-b pb-1 mb-2 -mt-4">
+                  Customer Info
+                </h3>
+                <div className="flex flex-col lg:flex-row justify-between">
+                  <div className="">
+                    <p>
+                      <span className="font-medium">Customer ID:</span> CUS-0001
+                    </p>
+                    <p>
+                      <span className="font-medium">Name:</span> Rahim Uddin
+                    </p>
+                    <p>
+                      Phone:
+                      <span className="font-medium bg-yellow-300 ml-1 px-2 rounded-xl ">
+                        01773820336
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      rahim@example.com
+                    </p>
+                    <p>
+                      <span className="font-medium">Discount:</span> 10%
+                    </p>
+                  </div>
                 </div>
               </div>
+
+              {/* 3. Payment & Address Section */}
+              <div className="bg-white p-4 border-l -mt-5 space-y-1">
+                <h3 className="text-xl font-semibold border-b pb-2 mb-2">
+                  Payment & Shipping
+                </h3>
+
+                <div className="flex  flex-col lg:flex-row justify-between mr-6">
+                  <div>
+                    <p>
+                      <span className="font-medium">Shipping Address:</span>{" "}
+                      House 12, Road 5
+                    </p>
+                    <p>
+                      <span className="font-medium">Shipping Cost:</span> $20
+                    </p>
+                    <p className="font-semibold text-lg mt-2 lg:-mb-3">
+                      Total Amount: $300
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      <span className="font-medium">Payment Method:</span> COD
+                    </p>
+                    <p>
+                      <span className="font-medium">Payment Status:</span>{" "}
+                      Pending
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="border-t flex pt-3 pb-3 lg:pb-0 gap-3 justify-end">
+                <button className="bg-red-500 text-lg rounded hover:bg-red-700 text-white p-1 px-3">
+                  cancel
+                </button>
+                <button className="bg-green-500 text-lg rounded hover:bg-green-700 text-white p-1 px-3">
+                  confirmed
+                </button>
+              </div>
             </div>
-            <div className="border-t flex pt-3 pb-3 lg:pb-0 gap-3 justify-end">
-              <button className="bg-red-500 text-lg rounded hover:bg-red-700 text-white p-1 px-3">
-                cancel
-              </button>
-              <button className="bg-green-500 text-lg rounded hover:bg-green-700 text-white p-1 px-3">
-                confirmed
-              </button>
+          ) : (
+            <div className="flex flex-col items-center justify-center bg-yellow-100 h-full border border-yellow-300 text-yellow-800 rounded p-6 mt-10 shadow-sm">
+              <h1 className="text-lg font-semibold mb-1">
+                ⚠️ No Order Selected
+              </h1>
+              <p className="text-sm text-yellow-700">
+                Please choose an order to view its details.
+              </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
