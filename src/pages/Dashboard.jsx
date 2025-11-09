@@ -21,7 +21,7 @@ export default function Dashboard() {
 
         {/* Uncomment this if you want fuzzy text next to the logo */}
 
-        <div className="mt-20 -mr-10 hidden md:flex">
+        <div className="mt-10 -mr-10 hidden md:flex">
           <FuzzyText
             baseIntensity={0.2}
             hoverIntensity={0.5}
