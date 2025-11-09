@@ -28,7 +28,7 @@ export default function Sidebar() {
     { name: "Sales", path: "/sales", icon: <FiTrendingUp /> },
     { name: "Accounts", path: "/accounts", icon: <FiUser /> },
     { name: "Users", path: "/users", icon: <FiUsers /> },
-    { name: "Receipt", path: "/receipt", icon: <FiFileText /> },
+    { name: "Tools", path: "/tools", icon: <FiFileText /> },
   ];
 
   return (

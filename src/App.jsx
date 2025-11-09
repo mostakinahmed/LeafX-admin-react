@@ -10,7 +10,7 @@ import Products from "./pages/Products";
 import Stock from "./pages/Stock";
 import Orders from "./pages/Orders";
 import Users from "./pages/Users";
-import Receipt from "./pages/Receipt";
+import Tools from "./pages/Tools";
 import Category from "./pages/Category";
 import AddProduct from "./components/Products/AddProduct";
 import Sales from "./pages/Sales";
@@ -24,7 +24,6 @@ import ScrollToTop from "./components/ScrollToTop";
 import Accounts from "./pages/Accounts";
 
 function AppLayout() {
-  
   const { user } = useContext(AuthContext);
 
   const location = useLocation();
@@ -145,10 +144,10 @@ function AppLayout() {
             }
           />
           <Route
-            path="/receipt"
+            path="/tools"
             element={
               <PrivateRoute>
-                <Receipt />
+                <Tools />
               </PrivateRoute>
             }
           />

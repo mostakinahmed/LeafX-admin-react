@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../Navbar";
 import jsPDF from "jspdf";
 import { useReactToPrint } from "react-to-print";
 import autoTable from "jspdf-autotable";
 
-export default function ReceiptGenerator() {
+export default function Invoice() {
   const [orderId, setOrderId] = useState("");
   const [order, setOrder] = useState(null);
 
@@ -203,9 +203,7 @@ export default function ReceiptGenerator() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar pageTitle="Receipt Generator" />
-
+    <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto p-4">
         {/* Order ID Input */}
         <div className=" lg:flex mb-6 lg:gap-5">
