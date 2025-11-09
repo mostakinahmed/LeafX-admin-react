@@ -127,7 +127,7 @@ const OrderList = () => {
         <div className="lg:w-3/4 overflow-x-auto whitespace-nowrap mb-5 lg:mb-0 ">
           <div className="overflow-x-auto w-full">
             <table className="min-w-full table-fixed text-sm text-left border border-gray-200">
-              <thead className="bg-gray-300">
+              <thead className="bg-blue-200">
                 <tr className="">
                   <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
                     Order ID
