@@ -122,9 +122,9 @@ const OrderList = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="flex gap-3">
+      <div className="md:flex gap-3">
         {/* left side */}
-        <div className="w-3/4">
+        <div className="lg:w-3/4 overflow-x-auto whitespace-nowrap mb-5 lg:mb-0 ">
           <div className="overflow-x-auto w-full">
             <table className="min-w-full table-fixed text-sm text-left border border-gray-200">
               <thead className="bg-gray-300">
@@ -186,13 +186,13 @@ const OrderList = () => {
                 <h3 className="text-xl font-semibold mt-4 mx-4">
                   Product Info
                 </h3>
-                <h3 className="text-2xl font-bold rounded-xl px-3 my-2 bg-red-600 text-white">
+                <h3 className="lg:text-2xl font-bold rounded-xl px-3 my-2 bg-red-500 text-white">
                   Pending
                 </h3>
               </div>
 
               {/* Product 1 */}
-              <div className="flex p-4 rounded space-x-4">
+              <div className="lg:flex flex-col lg:flex-row p-4 rounded space-x-4 ">
                 <img
                   src="https://www.mobiledokan.com/media/tecno-camon-40-pro-emerald-lake-green-official-image.webp"
                   alt="Product"
@@ -222,23 +222,23 @@ const OrderList = () => {
                     <span className="font-medium">Price:</span> $120
                   </p>
                 </div>
-                <div>
+                {/* <div>
                   <label className="font-medium block mb-1">Status</label>
                   <select className="border rounded px-2 py-1">
                     <option>Pending</option>
                     <option>Confirmed</option>
                     <option>Delivered</option>
                   </select>
-                </div>
+                </div> */}
               </div>
             </div>
 
             {/* 2. Customer Info Section */}
-            <div className="bg-white p-4 mr-1 space-y-1 border-l">
+            <div className="bg-white w-full p-4 mr-1 space-y-1 border-l">
               <h3 className="text-xl font-semibold border-b pb-1 mb-2 -mt-4">
                 Customer Info
               </h3>
-              <div className="flex justify-between">
+              <div className="flex flex-col lg:flex-row justify-between">
                 <div className="">
                   <p>
                     <span className="font-medium">Customer ID:</span> CUS-0001
@@ -271,7 +271,7 @@ const OrderList = () => {
                 Payment & Shipping
               </h3>
 
-              <div className="flex justify-between mr-6">
+              <div className="flex  flex-col lg:flex-row justify-between mr-6">
                 <div>
                   <p>
                     <span className="font-medium">Shipping Address:</span> House
@@ -280,7 +280,7 @@ const OrderList = () => {
                   <p>
                     <span className="font-medium">Shipping Cost:</span> $20
                   </p>
-                  <p className="font-semibold text-lg mt-2 -mb-3">
+                  <p className="font-semibold text-lg mt-2 lg:-mb-3">
                     Total Amount: $300
                   </p>
                 </div>
@@ -294,7 +294,7 @@ const OrderList = () => {
                 </div>
               </div>
             </div>
-            <div className="border-t flex pt-3 gap-3 justify-end">
+            <div className="border-t flex pt-3 pb-3 lg:pb-0 gap-3 justify-end">
               <button className="bg-red-500 text-lg rounded hover:bg-red-700 text-white p-1 px-3">
                 cancel
               </button>
