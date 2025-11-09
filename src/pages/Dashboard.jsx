@@ -15,13 +15,13 @@ export default function Dashboard() {
       </div>
 
       <div className="flex flex-col justify-center items-center w-full h-full md:mt-40 mt-5">
-        <div className="">
+        {/* <div className="">
           <img className="w-[200px]" src="logo.png" alt="Victus Byte Logo" />
-        </div>
+        </div> */}
 
         {/* Uncomment this if you want fuzzy text next to the logo */}
 
-        <div className="mt-10 -mr-10 hidden md:flex">
+        <div className="mt-20 -mr-10 hidden md:flex">
           <FuzzyText
             baseIntensity={0.2}
             hoverIntensity={0.5}

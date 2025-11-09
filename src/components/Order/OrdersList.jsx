@@ -4,21 +4,23 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDown } from "lucide-react";
 import { dummyOrders } from "./DummyOrder"; // your dummy data
 import { Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const OrderList = () => {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState({ orderId: "", pid: "" });
   const [selectedStatus, setSelectedStatus] = useState("All Orders");
   const [statusOpen, setStatusOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
 
   const statuses = [
+    "All Orders",
     "Pending",
     "Confirmed",
     "Processing",
     "Shipped",
     "Delivered",
     "Cancelled",
-    "All Orders",
   ];
 
   // Filter orders based on status, date, and search
@@ -120,57 +122,188 @@ const OrderList = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="overflow-x-auto bg-white rounded-t">
-        <table className="w-full text-sm text-left border-collapse border border-gray-200">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="px-4 py-2 border-b">Order ID</th>
-              <th className="px-4 py-2 border-b">Customer</th>
-              <th className="px-4 py-2 border-b">Date</th>
-              <th className="px-4 py-2 border-b">Status</th>
-              <th className="px-4 py-2 border-b">Mode</th>
-              <th className="px-4 py-2 border-b">Total Amount</th>
-              <th className="px-4 py-2 border-b">Payment</th>
-              <th className="px-4 py-2 border-b">Items</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOrders.length > 0 ? (
-              filteredOrders.map((order) => (
-                <tr key={order.order_id} className="hover:bg-gray-100">
-                  <td className="px-4 py-2 border-b">{order.order_id}</td>
-                  <td className="px-4 py-2 border-b">
-                    {order.shipping_address.recipient_name}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {new Date(order.order_date).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 border-b">{order.status}</td>
-                  <td className="px-4 py-2 border-b">{order.Mode}</td>
-                  <td className="px-4 py-2 border-b">
-                    ${order.total_amount.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {order.payment.method} ({order.payment.status})
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {order.items.map((item) => (
-                      <div key={item.product_id}>
-                        {item.product_name} x {item.quantity}
-                      </div>
-                    ))}
-                  </td>
+      <div className="flex gap-3">
+        {/* left side */}
+        <div className="w-3/4">
+          <div className="overflow-x-auto w-full">
+            <table className="min-w-full table-fixed text-sm text-left border border-gray-200">
+              <thead className="bg-gray-300">
+                <tr className="">
+                  <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
+                    Order ID
+                  </th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
+                    Customer
+                  </th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
+                    Total Amount
+                  </th>
+                  <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
+                    Status
+                  </th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="text-center px-4 py-6 text-gray-500">
-                  No orders found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+
+              <tbody>
+                {filteredOrders.length > 0 ? (
+                  filteredOrders.map((order) => (
+                    <tr key={order.order_id} className="hover:bg-gray-200">
+                      <td className="px-4 py-2 border-b">{order.order_id}</td>
+                      <td className="px-4 py-2 border-b">
+                        {order.shipping_address.recipient_name}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        ${order.total_amount.toFixed(2)}
+                      </td>
+                      <td className="px-4 py-2 border-b">{order.status}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="text-center px-4 py-6 text-gray-500"
+                    >
+                      No orders found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* right side */}
+        <div className="bg-red-600 w-full h-50  rounded">
+          <h1 className="bg-green-200 p-[5px] text-center text-lg font-bold">
+            Order Details
+          </h1>
+          <div className=" mx-auto ">
+            {/* 1. Product Info Section */}
+            <div className="bg-white border-l">
+              {/* header */}
+              <div className="flex border-b justify-between">
+                <h3 className="text-xl font-semibold mt-4 mx-4">
+                  Product Info
+                </h3>
+                <h3 className="text-2xl font-bold rounded-xl px-3 my-2 bg-red-600 text-white">
+                  Pending
+                </h3>
+              </div>
+
+              {/* Product 1 */}
+              <div className="flex p-4 rounded space-x-4">
+                <img
+                  src="https://www.mobiledokan.com/media/tecno-camon-40-pro-emerald-lake-green-official-image.webp"
+                  alt="Product"
+                  className="w-20 h-20 object-cover rounded"
+                />
+                <div className="flex-1 space-y-1">
+                  <p>
+                    <span className="font-medium">Product ID:</span> P00001
+                  </p>
+
+                  <p>
+                    <span className="font-medium">Name:</span> Mostakin
+                  </p>
+
+                  <p>
+                    SKU ID:{" "}
+                    <span className="font-bold bg-green-300 px-2 rounded-3xl">
+                      SKU-17278595001
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <span className="font-medium">Quantity:</span> 1
+                  </p>
+                  <p>
+                    <span className="font-medium">Price:</span> $120
+                  </p>
+                </div>
+                <div>
+                  <label className="font-medium block mb-1">Status</label>
+                  <select className="border rounded px-2 py-1">
+                    <option>Pending</option>
+                    <option>Confirmed</option>
+                    <option>Delivered</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Customer Info Section */}
+            <div className="bg-white p-4 mr-1 space-y-1 border-l">
+              <h3 className="text-xl font-semibold border-b pb-1 mb-2 -mt-4">
+                Customer Info
+              </h3>
+              <div className="flex justify-between">
+                <div className="">
+                  <p>
+                    <span className="font-medium">Customer ID:</span> CUS-0001
+                  </p>
+                  <p>
+                    <span className="font-medium">Name:</span> Rahim Uddin
+                  </p>
+                  <p>
+                    Phone:
+                    <span className="font-medium bg-yellow-300 ml-1 px-2 rounded-xl ">
+                      01773820336
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <span className="font-medium">Email:</span>{" "}
+                    rahim@example.com
+                  </p>
+                  <p>
+                    <span className="font-medium">Discount:</span> 10%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Payment & Address Section */}
+            <div className="bg-white p-4 border-l -mt-5 space-y-1">
+              <h3 className="text-xl font-semibold border-b pb-2 mb-2">
+                Payment & Shipping
+              </h3>
+
+              <div className="flex justify-between mr-6">
+                <div>
+                  <p>
+                    <span className="font-medium">Shipping Address:</span> House
+                    12, Road 5
+                  </p>
+                  <p>
+                    <span className="font-medium">Shipping Cost:</span> $20
+                  </p>
+                  <p className="font-semibold text-lg mt-2 -mb-3">
+                    Total Amount: $300
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <span className="font-medium">Payment Method:</span> COD
+                  </p>
+                  <p>
+                    <span className="font-medium">Payment Status:</span> Pending
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="border-t flex pt-3 gap-3 justify-end">
+              <button className="bg-red-500 text-lg rounded hover:bg-red-700 text-white p-1 px-3">
+                cancel
+              </button>
+              <button className="bg-green-500 text-lg rounded hover:bg-green-700 text-white p-1 px-3">
+                confirmed
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

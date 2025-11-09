@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Plus, Minus } from "lucide-react";
 import Navbar from "../Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -20,14 +20,8 @@ const mockCustomers = [
   },
 ];
 
-// const mockProducts = [
-//   { id: "P001", name: "iPhone 15 Pro", price: 820 },
-//   { id: "P002", name: "Samsung Galaxy S25", price: 650 },
-// ];
-
 const AdminSaleFull = () => {
   const { productData } = useContext(DataContext);
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,19 +29,20 @@ const AdminSaleFull = () => {
     order_id: `ORD-${Date.now()}`,
     customer_id: "",
     order_date: new Date().toISOString(),
-    status: "processing",
-    Mode: "Offline",
+    status: "Pending",
+    Mode: "Online",
     subtotal: 0,
-    shipping_cost: 0,
-    discount: 0,
+    shipping_cost: "",
+    discount: "",
     total_amount: 0,
-    payment: { method: "cash", status: "pending" },
+    payment: { method: "COD", status: "Pending" },
     shipping_address: { recipient_name: "", phone: "", address_line1: "" },
     items: [
       { product_id: "", product_name: "", quantity: 1, product_price: 0 },
     ],
   });
 
+  // 🧭 handle customer auto-fill by phone
   const handleCustomerPhone = (phone) => {
     const customer = mockCustomers.find((c) => c.phone === phone);
     setOrder((prev) => ({
@@ -62,15 +57,13 @@ const AdminSaleFull = () => {
     }));
   };
 
-  // handle product
+  // 🧮 handle product fields
   const handleItemChange = (idx, field, value) => {
     const items = [...order.items];
 
     if (field === "product_id") {
       items[idx][field] = value;
-
       const product = productData.find((p) => p.pID === value);
-
       if (product) {
         items[idx] = {
           ...items[idx],
@@ -81,54 +74,72 @@ const AdminSaleFull = () => {
       }
     } else if (field === "quantity" || field === "product_price") {
       items[idx][field] = Number(value);
+    } else {
+      items[idx][field] = value;
     }
 
-    setOrder({ ...order, items });
-    calculateTotals(items, order.shipping_cost, order.discount);
+    setOrder((prev) => ({ ...prev, items }));
   };
 
+  // ➕ Add/Remove item
   const addItem = () =>
-    setOrder({
-      ...order,
+    setOrder((prev) => ({
+      ...prev,
       items: [
-        ...order.items,
+        ...prev.items,
         { product_id: "", product_name: "", quantity: 1, product_price: 0 },
       ],
-    });
+    }));
+
   const removeItem = (idx) => {
     const items = order.items.filter((_, i) => i !== idx);
-    setOrder({ ...order, items });
-    calculateTotals(items, order.shipping_cost, order.discount);
+    setOrder((prev) => ({ ...prev, items }));
   };
 
-  const calculateTotals = (
-    items,
-    shipping = order.shipping_cost,
-    discount = order.discount
-  ) => {
-    const subtotal = items.reduce(
-      (acc, i) => acc + i.product_price * i.quantity,
+  // 🧾 Auto calculate subtotal & total
+  useEffect(() => {
+    const subtotal = order.items.reduce(
+      (sum, i) => sum + i.product_price * i.quantity,
       0
     );
+    const shipping = Number(order.shipping_cost || 0);
+    const discount = Number(order.discount || 0);
     const total_amount = subtotal + shipping - discount;
+
     setOrder((prev) => ({ ...prev, subtotal, total_amount }));
+  }, [order.items, order.shipping_cost, order.discount]);
+
+  // 🧮 Input handlers for shipping/discount
+  const handleShippingChange = (e) => {
+    const value = e.target.value === "" ? "" : Number(e.target.value);
+    setOrder((prev) => ({ ...prev, shipping_cost: value }));
   };
 
+  const handleDiscountChange = (e) => {
+    const value = e.target.value === "" ? "" : Number(e.target.value);
+    setOrder((prev) => ({ ...prev, discount: value }));
+  };
+
+  // 💾 Handle submit
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (order.shipping_cost === "" || order.discount === "") {
+      alert("Please fill in Shipping Cost and Discount");
+      return;
+    }
     console.log("Order Saved:", order);
     alert("Order saved successfully!");
   };
 
   return (
-    <div className="max-w-full  mx-auto">
+    <div className="max-w-full mx-auto">
       <Navbar pageTitle="Create New Sale" />
 
       <form
         onSubmit={handleSubmit}
         className="space-y-2 min-h-screen bg-white shadow rounded p-2"
       >
-        {/* Order Info */}
+        {/* 🧾 Order Info */}
         <div className="space-y-2 rounded">
           <h3 className="font-semibold rounded text-gray-700 p-2 bg-gray-200">
             Order Info
@@ -164,9 +175,10 @@ const AdminSaleFull = () => {
                 onChange={(e) => setOrder({ ...order, status: e.target.value })}
                 className="border px-1 py-1 rounded"
               >
-                <option value="processing">Processing</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
               </select>
             </div>
             <div className="flex flex-col w-32">
@@ -176,14 +188,14 @@ const AdminSaleFull = () => {
                 onChange={(e) => setOrder({ ...order, Mode: e.target.value })}
                 className="border px-2 py-1 rounded"
               >
-                <option value="Offline">Offline</option>
                 <option value="Online">Online</option>
+                <option value="Offline">Offline</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Customer Info */}
+        {/* 👨‍👩‍👧 Customer Info */}
         <div className="space-y-2 mt-8">
           <h3 className="font-semibold text-gray-700 p-2 bg-gray-200">
             Customer Info
@@ -240,7 +252,7 @@ const AdminSaleFull = () => {
           </div>
         </div>
 
-        {/* Product */}
+        {/* 📦 Product List */}
         <div className="space-y-2 mt-8">
           <h3 className="font-semibold text-gray-700 p-2 bg-gray-200">
             Products
@@ -273,12 +285,12 @@ const AdminSaleFull = () => {
                   onChange={(e) =>
                     handleItemChange(idx, "product_name", e.target.value)
                   }
-                  className="border px-2 py-1 rounded flex-1 lg:w-[30rem] "
+                  className="border px-2 py-1 rounded flex-1 lg:w-[30rem]"
                   required
                 />
               </div>
 
-              <div className="lg:ml-2 flex gap-4 ">
+              <div className="lg:ml-2 flex gap-4">
                 <div className="flex flex-col">
                   <label className="text-gray-600 text-sm">Price</label>
                   <input
@@ -328,7 +340,7 @@ const AdminSaleFull = () => {
           </button>
         </div>
 
-        {/* Payment & Shipping */}
+        {/* 💳 Payment & Shipping */}
         <div className="space-y-2 mt-8">
           <h3 className="font-semibold text-gray-700 p-2 bg-gray-200">
             Payment & Shipping
@@ -340,15 +352,10 @@ const AdminSaleFull = () => {
               </label>
               <input
                 type="number"
-                placeholder="Shipping Cost"
+                placeholder="0"
+                required
                 value={order.shipping_cost}
-                onChange={(e) =>
-                  calculateTotals(
-                    order.items,
-                    Number(e.target.value),
-                    order.discount
-                  )
-                }
+                onChange={handleShippingChange}
                 className="border px-2 py-1 rounded w-32"
               />
             </div>
@@ -356,15 +363,10 @@ const AdminSaleFull = () => {
               <label className="ml-2 text-gray-600 text-sm">Discount</label>
               <input
                 type="number"
-                placeholder="Discount"
+                placeholder="0"
+                required
                 value={order.discount}
-                onChange={(e) =>
-                  calculateTotals(
-                    order.items,
-                    order.shipping_cost,
-                    Number(e.target.value)
-                  )
-                }
+                onChange={handleDiscountChange}
                 className="border px-2 py-1 rounded w-32"
               />
             </div>
@@ -382,10 +384,11 @@ const AdminSaleFull = () => {
                 }
                 className="border px-2 py-1 rounded w-32"
               >
+                <option value="COD">COD</option>
                 <option value="cash">Cash</option>
+                <option value="card">Card</option>
                 <option value="bkash">bKash</option>
                 <option value="nagad">Nagad</option>
-                <option value="card">Card</option>
               </select>
             </div>
             <div className="flex flex-col">
@@ -402,36 +405,35 @@ const AdminSaleFull = () => {
                 }
                 className="border px-2 py-1 rounded w-32"
               >
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Totals */}
+        {/* 💰 Totals */}
         <div className="flex justify-between rounded mt-8 font-semibold text-lg py-2 px-2 bg-gray-200">
           <span>Subtotal: ${order.subtotal.toFixed(2)}</span>
           <span>Total: ${order.total_amount.toFixed(2)}</span>
         </div>
 
-        {/* Submit */}
-
-        <button
-          type="submit"
-          className="px-6 mt-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
-        >
-          Save Order
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            navigate(-1);
-          }}
-          className="px-6 bg-red-600 ml-4 hover:bg-red-700 text-white py-2 rounded font-semibold"
-        >
-          Cancel
-        </button>
+        {/* 🧾 Buttons */}
+        <div className="mt-2">
+          <button
+            type="submit"
+            className="px-6 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold"
+          >
+            Save Order
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="px-6 bg-red-600 ml-4 hover:bg-red-700 text-white py-2 rounded font-semibold"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );
