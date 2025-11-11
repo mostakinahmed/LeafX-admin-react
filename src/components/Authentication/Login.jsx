@@ -49,8 +49,8 @@ export default function Login() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-blue-600 text-lg font-semibold animate-pulse">
+        <div className="w-16 h-16 border-4 border-[#ff751f] border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-[#ff751f] text-lg font-semibold animate-pulse">
           Loading...
         </p>
       </div>
@@ -61,8 +61,8 @@ export default function Login() {
   if (loginLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <FiLoader className="text-6xl text-blue-500 animate-spin" />
-        <p className="mt-4 text-blue-600 text-lg font-semibold animate-pulse">
+        <FiLoader className="text-6xl text-[#ff751f] animate-spin" />
+        <p className="mt-4 text-[#ff751f] text-lg font-semibold animate-pulse">
           Logging in...
         </p>
       </div>
@@ -77,16 +77,16 @@ export default function Login() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-sm bg-white rounded-md shadow border border-gray-100 overflow-hidden"
       >
-        <div className="bg-blue-600 text-center w-full">
+        <div className="bg-[#ff751f] text-center w-full">
           <p className="text-white p-1 text-xl">Admin Panel</p>
         </div>
 
         {/* Logo */}
         <div className="flex flex-col items-center justify-center py-2 pb-9">
           <img
-            src="/logo victus full.png"
+            src="/logo final.png"
             alt="Victus Byte Logo"
-            className="h-16 w-auto mb-2"
+            className="h-20 w-auto mb-2"
           />
         </div>
 
@@ -167,8 +167,8 @@ export default function Login() {
             disabled={loginLoading}
             className={`w-full py-2 rounded font-medium shadow-md transition-all ${
               loginLoading
-                ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
+                ? "bg-[#ff751f] cursor-not-allowed"
+                : "bg-[#ff751f] hover:bg text-white"
             }`}
           >
             {loginLoading ? "Logging in..." : "Login"}
