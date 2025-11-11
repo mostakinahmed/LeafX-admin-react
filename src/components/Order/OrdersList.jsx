@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDown } from "lucide-react";
 import { dummyOrders } from "./DummyOrder"; // your dummy data
 import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "@/Context Api/ApiContext";
 
 const OrderList = () => {
+  const { productData, orderData, updateApi } = useContext(DataContext);
+
   const navigate = useNavigate();
   const [filter, setFilter] = useState({ orderId: "", pid: "" });
   const [selectedStatus, setSelectedStatus] = useState("All Orders");
   const [statusOpen, setStatusOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDetails, setShowDetails] = useState(null);
+  const [productInfo, setProductInfo] = useState(null);
 
   const statuses = [
     "All Orders",
@@ -25,7 +29,7 @@ const OrderList = () => {
   ];
 
   // Filter orders based on status, date, and search
-  const filteredOrders = dummyOrders.filter((order) => {
+  const filteredOrders = orderData.filter((order) => {
     const statusMatch =
       selectedStatus === "All Orders" || order.status === selectedStatus;
 
@@ -39,6 +43,14 @@ const OrderList = () => {
 
     return statusMatch && dateMatch && orderIdMatch;
   });
+
+  //filter product data for showing image
+  let data = [];
+  if (showDetails && showDetails.items) {
+    data = showDetails.items.map((item) =>
+      productData.find((p) => p.pID === item.product_id)
+    );
+  }
 
   // Reset all filters
   const handleReset = () => {
@@ -182,9 +194,19 @@ const OrderList = () => {
 
         {/* right side */}
         <div className=" w-full h-50  rounded">
-          <h1 className="bg-green-200 p-[5px] text-center text-lg font-bold">
-            Order Details
-          </h1>
+          {showDetails ? (
+            <h1 className="bg-green-200 p-[5px] text-center text-lg font-bold">
+              Order Details -{" "}
+              <span className="bg-white rounded-2xl px-1 text-black">
+                {showDetails.order_id}
+              </span>
+            </h1>
+          ) : (
+            <h1 className="bg-green-200 p-[5px] text-center text-lg font-bold">
+              Order Details
+            </h1>
+          )}
+
           {showDetails ? (
             <div className=" mx-auto ">
               {/* 1. Product Info Section */}
@@ -194,51 +216,64 @@ const OrderList = () => {
                   <h3 className="text-xl font-semibold mt-4 mx-4">
                     Product Info
                   </h3>
-                  <h3 className="lg:text-2xl font-bold rounded-xl px-3 my-2 bg-red-500 text-white">
-                    Pending
-                  </h3>
+                  {showDetails.status === "Pending" && (
+                    <h3 className="lg:text-2xl font-bold rounded-xl px-3 my-2 bg-red-500 text-white">
+                      {showDetails.status}
+                    </h3>
+                  )}
                 </div>
 
                 {/* Product 1 */}
-                <div className="lg:flex flex-col lg:flex-row p-4 rounded space-x-4 ">
-                  <img
-                    src="https://www.mobiledokan.com/media/tecno-camon-40-pro-emerald-lake-green-official-image.webp"
-                    alt="Product"
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                  <div className="flex-1 space-y-1">
-                    <p>
-                      <span className="font-medium">Product ID:</span> P00001
-                    </p>
+                {showDetails.items.map((item, inx) => (
+                  <div className="lg:flex flex-col lg:flex-row p-4 rounded space-x-4 ">
+                    <img
+                      src={data[inx].images}
+                      alt="Product"
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1 space-y-1">
+                      <p>
+                        <span className="font-medium">Product ID:</span>
+                        {item.product_id}
+                      </p>
 
-                    <p>
-                      <span className="font-medium">Name:</span> Mostakin
-                    </p>
+                      <p>
+                        <span className="font-medium">Name:</span>{" "}
+                        {item.product_name}
+                      </p>
 
-                    <p>
-                      SKU ID:{" "}
-                      <span className="font-bold bg-green-300 px-2 rounded-3xl">
-                        SKU-17278595001
-                      </span>
-                    </p>
+                      <p>
+                        Comment:  {" "}
+                        <span className="font-medium bg-yellow-300 rounded-xl px-2">
+                         
+                          {item.product_comments}
+                        </span>{" "}
+                      </p>
+                    </div>
+                    <div>
+                      <p>
+                        <span className="font-medium">Quantity:</span> 1
+                      </p>
+                      <p>
+                        <span className="font-medium">Price:</span>{" "}
+                        {item.product_price}
+                      </p>
+
+                      <p>
+                        SKU ID:{" "}
+                        {item.product_skuID ? (
+                          <span className="font-bold bg-green-300 px-2 rounded-3xl">
+                            {item.product_skuID}
+                          </span>
+                        ) : (
+                          <span className="font-bold bg-red-300 px-2 rounded-3xl">
+                            Not assigned
+                          </span>
+                        )}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p>
-                      <span className="font-medium">Quantity:</span> 1
-                    </p>
-                    <p>
-                      <span className="font-medium">Price:</span> $120
-                    </p>
-                  </div>
-                  {/* <div>
-                  <label className="font-medium block mb-1">Status</label>
-                  <select className="border rounded px-2 py-1">
-                    <option>Pending</option>
-                    <option>Confirmed</option>
-                    <option>Delivered</option>
-                  </select>
-                </div> */}
-                </div>
+                ))}
               </div>
 
               {/* 2. Customer Info Section */}
@@ -249,15 +284,23 @@ const OrderList = () => {
                 <div className="flex flex-col lg:flex-row justify-between">
                   <div className="">
                     <p>
-                      <span className="font-medium">Customer ID:</span> CUS-0001
+                      Customer ID:{" "}
+                      {showDetails.customer_id ? (
+                        <span className="font-medium">
+                          {showDetails.customer_id}
+                        </span>
+                      ) : (
+                        <span className="font-medium">Not Register</span>
+                      )}
                     </p>
                     <p>
-                      <span className="font-medium">Name:</span> Rahim Uddin
+                      <span className="font-medium">Name:</span>{" "}
+                      {showDetails.shipping_address.recipient_name}
                     </p>
                     <p>
                       Phone:
                       <span className="font-medium bg-yellow-300 ml-1 px-2 rounded-xl ">
-                        01773820336
+                        {showDetails.shipping_address.phone}
                       </span>
                     </p>
                   </div>
@@ -267,7 +310,8 @@ const OrderList = () => {
                       rahim@example.com
                     </p>
                     <p>
-                      <span className="font-medium">Discount:</span> 10%
+                      <span className="font-medium">Discount:</span>{" "}
+                      {showDetails.discount}
                     </p>
                   </div>
                 </div>
@@ -283,10 +327,11 @@ const OrderList = () => {
                   <div>
                     <p>
                       <span className="font-medium">Shipping Address:</span>{" "}
-                      House 12, Road 5
+                      {showDetails.shipping_address.address_line1}
                     </p>
                     <p>
-                      <span className="font-medium">Shipping Cost:</span> $20
+                      <span className="font-medium">Shipping Cost:</span>{" "}
+                      {showDetails.shipping_cost}
                     </p>
                     <p className="font-semibold text-lg mt-2 lg:-mb-3">
                       Total Amount: $300
@@ -294,11 +339,12 @@ const OrderList = () => {
                   </div>
                   <div>
                     <p>
-                      <span className="font-medium">Payment Method:</span> COD
+                      <span className="font-medium">Payment Method:</span>{" "}
+                      {showDetails.payment.method}
                     </p>
                     <p>
                       <span className="font-medium">Payment Status:</span>{" "}
-                      Pending
+                      {showDetails.payment.status}
                     </p>
                   </div>
                 </div>

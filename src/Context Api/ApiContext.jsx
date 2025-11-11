@@ -38,7 +38,7 @@ export const ApiContext = ({ children }) => {
       setLoading(false);
     }
   };
-console.log(orderData);
+
 
   // ✅ Automatically fetch once when the component mounts
   useEffect(() => {

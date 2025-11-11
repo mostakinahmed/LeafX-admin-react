@@ -44,7 +44,7 @@ function getOrderDateTime12h() {
 }
 
 const AdminSaleFull = () => {
-  const { productData } = useContext(DataContext);
+  const { productData, updateApi } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -76,7 +76,7 @@ const AdminSaleFull = () => {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  // ✅ Handle customer autofill
+  // Handle customer autofill
   const handleCustomerPhone = (phone) => {
     const customer = mockCustomers.find((c) => c.phone === phone);
     setOrder((prev) => ({
@@ -91,7 +91,7 @@ const AdminSaleFull = () => {
     }));
   };
 
-  // ✅ Product updates
+  // Product updates
   const handleItemChange = (idx, field, value) => {
     const items = [...order.items];
     if (field === "product_id") {
@@ -153,6 +153,7 @@ const AdminSaleFull = () => {
   // ✅ Submit order
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoader(true);
     try {
       const res = await axios.post(
@@ -163,6 +164,7 @@ const AdminSaleFull = () => {
       if (res.status === 201) {
         setSuccess(true);
         setLoader(false);
+        updateApi();
         console.log("Order Saved:", res.data);
       } else {
         console.log("Unexpected response:", res.data);
@@ -188,7 +190,12 @@ const AdminSaleFull = () => {
       discount: "",
       total_amount: 0,
       payment: { method: "COD", status: "Pending" },
-      shipping_address: { recipient_name: "", phone: "", address_line1: "" },
+      shipping_address: {
+        recipient_name: "",
+        phone: "",
+        address_line1: "",
+        email: "",
+      },
       items: [
         {
           product_id: "",
@@ -379,6 +386,25 @@ const AdminSaleFull = () => {
                 className="border px-2 py-1 rounded"
               />
             </div>
+
+            <div className="flex flex-col">
+              <label className="ml-2 text-gray-600 text-sm">Email</label>
+              <input
+                type="email"
+                placeholder="mostakin@victusbyte.com"
+                value={order.shipping_address.email}
+                onChange={(e) =>
+                  setOrder({
+                    ...order,
+                    shipping_address: {
+                      ...order.shipping_address,
+                      email: e.target.value,
+                    },
+                  })
+                }
+                className="border px-2 py-1 rounded"
+              />
+            </div>
           </div>
         </div>
 
@@ -411,7 +437,7 @@ const AdminSaleFull = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Example: Samsung S24 Ultra"
+                  placeholder="samsung s24 ultra"
                   value={item.product_name}
                   onChange={(e) =>
                     handleItemChange(idx, "product_name", e.target.value)
@@ -458,7 +484,7 @@ const AdminSaleFull = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Example: 8/128 GB , black, USA"
+                  placeholder="8/128 GB , black, USA"
                   required
                   value={item.product_comments}
                   onChange={(e) =>
