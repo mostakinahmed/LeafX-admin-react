@@ -225,7 +225,7 @@ const OrderList = () => {
 
                 {/* Product 1 */}
                 {showDetails.items.map((item, inx) => (
-                  <div className="lg:flex flex-col lg:flex-row p-4 rounded space-x-4 ">
+                  <div className="lg:flex w-full flex-col lg:flex-row p-4 rounded space-x-4 ">
                     <img
                       src={data[inx].images}
                       alt="Product"
@@ -243,14 +243,13 @@ const OrderList = () => {
                       </p>
 
                       <p>
-                        Comment:  {" "}
+                        Comment:{" "}
                         <span className="font-medium bg-yellow-300 rounded-xl px-2">
-                         
                           {item.product_comments}
                         </span>{" "}
                       </p>
                     </div>
-                    <div>
+                    <div className="w-1/4">
                       <p>
                         <span className="font-medium">Quantity:</span> 1
                       </p>
@@ -281,7 +280,7 @@ const OrderList = () => {
                 <h3 className="text-xl font-semibold border-b pb-1 mb-2 -mt-4">
                   Customer Info
                 </h3>
-                <div className="flex flex-col lg:flex-row justify-between">
+                <div className="flex w-full flex-col lg:flex-row justify-between">
                   <div className="">
                     <p>
                       Customer ID:{" "}
@@ -304,10 +303,10 @@ const OrderList = () => {
                       </span>
                     </p>
                   </div>
-                  <div>
+                  <div className="w-1/4">
                     <p>
                       <span className="font-medium">Email:</span>{" "}
-                      rahim@example.com
+                      {showDetails.shipping_address.email}
                     </p>
                     <p>
                       <span className="font-medium">Discount:</span>{" "}
@@ -323,8 +322,8 @@ const OrderList = () => {
                   Payment & Shipping
                 </h3>
 
-                <div className="flex  flex-col lg:flex-row justify-between mr-6">
-                  <div>
+                <div className="flex w-full  flex-col lg:flex-row justify-between mr-6">
+                  <div className="">
                     <p>
                       <span className="font-medium">Shipping Address:</span>{" "}
                       {showDetails.shipping_address.address_line1}
@@ -337,7 +336,7 @@ const OrderList = () => {
                       Total Amount: $300
                     </p>
                   </div>
-                  <div>
+                  <div className="w-1/4">
                     <p>
                       <span className="font-medium">Payment Method:</span>{" "}
                       {showDetails.payment.method}
