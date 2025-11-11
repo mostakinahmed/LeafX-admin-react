@@ -68,14 +68,7 @@ export default function Invoice() {
     const logoHeight = 60;
 
     // If you have a logo, you can use Base64 or image URL like:
-    doc.addImage(
-      "/logo victus full.png",
-      "PNG",
-      margin,
-      30,
-      logoWidth,
-      logoHeight
-    );
+    doc.addImage("/logo final.png", "PNG", margin, 30, logoWidth, logoHeight);
     // doc.setFillColor(0, 70, 140);
     // doc.circle(margin + 30, 60, 25, "F"); // Placeholder circle logo
     // doc.setFontSize(18);

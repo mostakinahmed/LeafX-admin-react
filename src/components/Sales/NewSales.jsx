@@ -25,10 +25,31 @@ const AdminSaleFull = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  //random OID
+  function generateOrderId() {
+    const timestamp = Date.now().toString().slice(-5); // last 5 digits of time
+    const randomNum = Math.floor(10000 + Math.random() * 90000); // 5 random digits
+    return `OID25${timestamp}${randomNum}`; // OID-12345-67890
+  }
+
+  //Order Date and Time
+  function getOrderDateTime12h() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // convert 0 -> 12 for 12 AM
+    const hoursStr = String(hours).padStart(2, "0");
+    return `${year}-${month}-${day}   ${hoursStr}:${minutes} ${ampm}`;
+  }
+
   const [order, setOrder] = useState({
-    order_id: `ORD-${Date.now()}`,
+    order_id: generateOrderId(),
     customer_id: "",
-    order_date: new Date().toISOString(),
+    order_date: getOrderDateTime12h(),
     status: "Pending",
     Mode: "Online",
     subtotal: 0,
@@ -69,6 +90,7 @@ const AdminSaleFull = () => {
           ...items[idx],
           product_id: product.pID,
           product_name: product.name,
+          product_comments: product.comments,
           product_price: product.price || 0,
         };
       }
@@ -154,20 +176,19 @@ const AdminSaleFull = () => {
                 className="border px-2 py-1 rounded w-64 bg-gray-100"
               />
             </div>
+
             <div className="flex flex-col">
-              <label className="ml-2 text-gray-600 text-sm">Order Date</label>
+              <label className="ml-2 text-gray-600 text-sm">
+                Order Date & Time
+              </label>
               <input
-                type="datetime-local"
-                value={order.order_date.slice(0, 16)}
-                onChange={(e) =>
-                  setOrder({
-                    ...order,
-                    order_date: new Date(e.target.value).toISOString(),
-                  })
-                }
-                className="border px-2 py-1 rounded"
+                type="text"
+                value={order.order_date}
+                readOnly
+                className="border px-2 py-1 rounded w-64 bg-gray-100"
               />
             </div>
+
             <div className="flex flex-col w-32">
               <label className="ml-2 text-gray-600 text-sm">Status</label>
               <select
@@ -267,6 +288,7 @@ const AdminSaleFull = () => {
                 <input
                   type="text"
                   placeholder="P00000X"
+                  required
                   value={item.product_id}
                   onChange={(e) =>
                     handleItemChange(idx, "product_id", e.target.value)
@@ -280,7 +302,7 @@ const AdminSaleFull = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Product Name"
+                  placeholder="Example: Samsung S24 Ultra"
                   value={item.product_name}
                   onChange={(e) =>
                     handleItemChange(idx, "product_name", e.target.value)
@@ -318,6 +340,23 @@ const AdminSaleFull = () => {
                     required
                   />
                 </div>
+              </div>
+
+              {/* comments */}
+              <div className="lg:ml-2 flex flex-col lg:w-auto w-full">
+                <label className="ml-2 text-green-600 font-bold text-md">
+                  Comments - Primary Info
+                </label>
+                <input
+                  type="text"
+                  placeholder="Example: 8/128 GB , black, USA"
+                  required
+                  value={item.product_comments}
+                  onChange={(e) =>
+                    handleItemChange(idx, "product_comments", e.target.value)
+                  }
+                  className="border px-2 py-1 rounded flex-1 lg:w-[30rem]"
+                />
               </div>
 
               {order.items.length > 1 && (
