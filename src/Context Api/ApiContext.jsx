@@ -9,6 +9,7 @@ export const ApiContext = ({ children }) => {
   const [categoryData, setCategoryData] = useState([]);
   const [adminData, setAdminData] = useState([]);
   const [stockData, setStockData] = useState([]);
+  const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,17 +17,20 @@ export const ApiContext = ({ children }) => {
   const updateApi = async () => {
     try {
       setLoading(true);
-      const [productRes, categoryRes, adminRes, stockRes] = await Promise.all([
-        axios.get("https://fabribuzz.onrender.com/api/product"),
-        axios.get("https://fabribuzz.onrender.com/api/category"),
-        axios.get("https://fabribuzz.onrender.com/api/user/admin/list"),
-        axios.get("https://fabribuzz.onrender.com/api/stock"),
-      ]);
+      const [productRes, categoryRes, adminRes, stockRes, orderRes] =
+        await Promise.all([
+          axios.get("https://fabribuzz.onrender.com/api/product"),
+          axios.get("https://fabribuzz.onrender.com/api/category"),
+          axios.get("https://fabribuzz.onrender.com/api/user/admin/list"),
+          axios.get("https://fabribuzz.onrender.com/api/stock"),
+          axios.get("https://fabribuzz.onrender.com/api/order"),
+        ]);
 
       setProductData(productRes.data);
       setCategoryData(categoryRes.data);
       setAdminData(adminRes.data);
       setStockData(stockRes.data);
+      setOrderData(orderRes.data);
     } catch (err) {
       console.error("API fetch error:", err);
       setError(err);
@@ -34,6 +38,7 @@ export const ApiContext = ({ children }) => {
       setLoading(false);
     }
   };
+console.log(orderData);
 
   // ✅ Automatically fetch once when the component mounts
   useEffect(() => {
@@ -45,6 +50,7 @@ export const ApiContext = ({ children }) => {
     categoryData,
     adminData,
     stockData,
+    orderData,
     loading,
     error,
     updateApi, // expose for manual refresh (like after adding product)
