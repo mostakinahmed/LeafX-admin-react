@@ -3,6 +3,8 @@ import { Plus, Minus } from "lucide-react";
 import Navbar from "../Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DataContext } from "@/Context Api/ApiContext";
+import axios from "axios";
+import { FaSpinner, FaCheckCircle, FaRegCopy } from "react-icons/fa";
 
 // Mock DB data
 const mockCustomers = [
@@ -20,38 +22,42 @@ const mockCustomers = [
   },
 ];
 
+// ✅ Utility: Generate Order ID
+function generateOrderId() {
+  const timestamp = Date.now().toString().slice(-5);
+  const randomNum = Math.floor(10000 + Math.random() * 90000);
+  return `OID25${timestamp}${randomNum}`;
+}
+
+// ✅ Utility: Format date & time (12-hour)
+function getOrderDateTime12h() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+  const hoursStr = String(hours).padStart(2, "0");
+  return `${year}-${month}-${day}   ${hoursStr}:${minutes} ${ampm}`;
+}
+
 const AdminSaleFull = () => {
   const { productData } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
 
-  //random OID
-  function generateOrderId() {
-    const timestamp = Date.now().toString().slice(-5); // last 5 digits of time
-    const randomNum = Math.floor(10000 + Math.random() * 90000); // 5 random digits
-    return `OID25${timestamp}${randomNum}`; // OID-12345-67890
-  }
-
-  //Order Date and Time
-  function getOrderDateTime12h() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    let hours = now.getHours();
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12; // convert 0 -> 12 for 12 AM
-    const hoursStr = String(hours).padStart(2, "0");
-    return `${year}-${month}-${day}   ${hoursStr}:${minutes} ${ampm}`;
-  }
+  const [copied, setCopied] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const [order, setOrder] = useState({
     order_id: generateOrderId(),
     customer_id: "",
     order_date: getOrderDateTime12h(),
     status: "Pending",
-    Mode: "Online",
+    mode: "Online",
     subtotal: 0,
     shipping_cost: "",
     discount: "",
@@ -63,7 +69,14 @@ const AdminSaleFull = () => {
     ],
   });
 
-  // 🧭 handle customer auto-fill by phone
+  // ✅ Copy OID
+  const handleCopy = () => {
+    navigator.clipboard.writeText(order.order_id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  // ✅ Handle customer autofill
   const handleCustomerPhone = (phone) => {
     const customer = mockCustomers.find((c) => c.phone === phone);
     setOrder((prev) => ({
@@ -78,10 +91,9 @@ const AdminSaleFull = () => {
     }));
   };
 
-  // 🧮 handle product fields
+  // ✅ Product updates
   const handleItemChange = (idx, field, value) => {
     const items = [...order.items];
-
     if (field === "product_id") {
       items[idx][field] = value;
       const product = productData.find((p) => p.pID === value);
@@ -99,11 +111,10 @@ const AdminSaleFull = () => {
     } else {
       items[idx][field] = value;
     }
-
     setOrder((prev) => ({ ...prev, items }));
   };
 
-  // ➕ Add/Remove item
+  // Add/Remove products
   const addItem = () =>
     setOrder((prev) => ({
       ...prev,
@@ -112,13 +123,12 @@ const AdminSaleFull = () => {
         { product_id: "", product_name: "", quantity: 1, product_price: 0 },
       ],
     }));
-
   const removeItem = (idx) => {
     const items = order.items.filter((_, i) => i !== idx);
     setOrder((prev) => ({ ...prev, items }));
   };
 
-  // 🧾 Auto calculate subtotal & total
+  // Auto calculate totals
   useEffect(() => {
     const subtotal = order.items.reduce(
       (sum, i) => sum + i.product_price * i.quantity,
@@ -127,36 +137,135 @@ const AdminSaleFull = () => {
     const shipping = Number(order.shipping_cost || 0);
     const discount = Number(order.discount || 0);
     const total_amount = subtotal + shipping - discount;
-
     setOrder((prev) => ({ ...prev, subtotal, total_amount }));
   }, [order.items, order.shipping_cost, order.discount]);
 
-  // 🧮 Input handlers for shipping/discount
+  // Handle shipping/discount
   const handleShippingChange = (e) => {
     const value = e.target.value === "" ? "" : Number(e.target.value);
     setOrder((prev) => ({ ...prev, shipping_cost: value }));
   };
-
   const handleDiscountChange = (e) => {
     const value = e.target.value === "" ? "" : Number(e.target.value);
     setOrder((prev) => ({ ...prev, discount: value }));
   };
 
-  // 💾 Handle submit
-  const handleSubmit = (e) => {
+  // ✅ Submit order
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (order.shipping_cost === "" || order.discount === "") {
-      alert("Please fill in Shipping Cost and Discount");
-      return;
+    setLoader(true);
+    try {
+      const res = await axios.post(
+        "https://fabribuzz.onrender.com/api/order/create-order",
+        order
+      );
+
+      if (res.status === 201) {
+        setSuccess(true);
+        setLoader(false);
+        console.log("Order Saved:", res.data);
+      } else {
+        console.log("Unexpected response:", res.data);
+      }
+    } catch (error) {
+      console.error(
+        "Error saving order:",
+        error.response ? error.response.data : error.message
+      );
     }
-    console.log("Order Saved:", order);
-    alert("Order saved successfully!");
+  };
+
+  // ✅ Create new order reset
+  const handleNewSale = () => {
+    setOrder({
+      order_id: generateOrderId(),
+      customer_id: "",
+      order_date: getOrderDateTime12h(),
+      status: "Pending",
+      mode: "Online",
+      subtotal: 0,
+      shipping_cost: "",
+      discount: "",
+      total_amount: 0,
+      payment: { method: "COD", status: "Pending" },
+      shipping_address: { recipient_name: "", phone: "", address_line1: "" },
+      items: [
+        {
+          product_id: "",
+          product_name: "",
+          quantity: 1,
+          product_price: 0,
+          product_comments: "",
+        },
+      ],
+    });
+    setSuccess(false);
   };
 
   return (
-    <div className="max-w-full mx-auto">
+    <div className="max-w-full mx-auto relative">
       <Navbar pageTitle="Create New Sale" />
 
+      {/* Loader */}
+      {/* Loader Overlay */}
+      {loader && (
+        <div className="absolute inset-0 lg:-mt-30 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="bg-white/90 shadow-lg border border-gray-300 rounded-xl p-6 flex flex-col items-center">
+            <FaSpinner className="w-10 h-10 text-green-600 animate-spin mb-3" />
+            <p className="text-gray-800 font-semibold text-lg">
+              Processing Order...
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Success Overlay */}
+      {success && (
+        <div className="fixed inset-0 lg:-mt-20 lg:ml-20 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="bg-white shadow-xl border border-gray-200 rounded-2xl p-6 text-center w-[22rem]">
+            <FaCheckCircle className="text-green-500 text-6xl mx-auto mb-3 animate-bounce" />
+            <h2 className="text-xl font-bold text-gray-800">Order Created!</h2>
+
+            {/* Order ID */}
+            <div className="flex items-center justify-center gap-2 mt-3 bg-gray-100 rounded px-3 py-1">
+              <span className="text-green-700 font-medium">
+                {order.order_id}
+              </span>
+              <button
+                onClick={handleCopy}
+                className="text-gray-500 hover:text-green-600 transition"
+                title="Copy Order ID"
+              >
+                <FaRegCopy />
+              </button>
+            </div>
+            {copied && (
+              <span className="text-xs text-green-500 mt-1 block">Copied!</span>
+            )}
+
+            {/* Buttons */}
+            <div className="flex gap-3 mt-6 justify-center">
+              <button
+                className="px-5 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600"
+                onClick={() => navigate("/orders")}
+              >
+                Goto - Order
+              </button>
+              <button
+                className="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300"
+                onClick={() => {
+                  setSuccess(false);
+                  handleNewSale?.(); // optional reset function if you have it
+                }}
+              >
+                New Sale
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* //data form */}
       <form
         onSubmit={handleSubmit}
         className="space-y-2 min-h-screen bg-white shadow rounded p-2"
