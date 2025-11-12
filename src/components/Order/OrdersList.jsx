@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "@/Context Api/ApiContext";
+import axios from "axios";
 
 const OrderList = () => {
   const { productData, orderData, updateApi } = useContext(DataContext);
@@ -16,6 +17,7 @@ const OrderList = () => {
   const [startDate, setStartDate] = useState(null);
   const [showDetails, setShowDetails] = useState(null);
   const [actionBtn, setActionBtn] = useState(null);
+  const [skuInputs, setSkuInputs] = useState({});
 
   const statuses = [
     "All Orders",
@@ -74,10 +76,68 @@ const OrderList = () => {
     setFilter({ orderId: "", pid: "" });
   };
 
+  // handle SKU input changes
+  const handleSkuChange = (product_id, value) => {
+    setSkuInputs((prev) => ({
+      ...prev,
+      [product_id]: value,
+    }));
+  };
+
   //backend handle
-  const submitBtn = (e) => {
+  const submitBtn = async (e) => {
     e.preventDefault();
     console.log(actionBtn);
+
+    // https://fabribuzz.onrender.com/api/order/update/{oid}
+    try {
+      const orderId = showDetails.order_id;
+      let updatedData = {};
+      //MAKE DATA
+      if (actionBtn === "Confirmed") {
+        updatedData = {
+          status: "Confirmed",
+        };
+      } else if (actionBtn === "Shipped") {
+        const skuArray = Object.entries(skuInputs).map(
+          ([product_id, skuID]) => ({
+            product_id,
+            skuID,
+          })
+        );
+
+        updatedData = {
+          status: "Shipped",
+          items: skuArray,
+        };
+      } else if (actionBtn === "Delivered") {
+        updatedData = {
+          status: "Completed",
+          payment: {
+            status: "Paid",
+          },
+        };
+      }
+
+      console.log(showDetails);
+
+      const response = await axios.patch(
+        `https://fabribuzz.onrender.com/api/order/update/${orderId}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Updated Order:", response.data);
+    } catch (error) {
+      console.error(
+        "Error updating order:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   return (
@@ -276,7 +336,7 @@ const OrderList = () => {
                   </h3>
                 </div>
 
-                {/* Product 1 */}
+                {/* Product multiple */}
                 {showDetails.items.map((item, inx) => (
                   <div className="lg:flex w-full flex-col lg:flex-row p-4 rounded space-x-4 ">
                     <img
@@ -316,13 +376,10 @@ const OrderList = () => {
                           <span className="mr- font-medium">SKUID:</span>
                           <input
                             type="text"
-                            // value={skuInputs[item.product_id] || ""} // controlled value
-                            // onChange={(e) =>
-                            //   // setSkuInputs({
-                            //   //   ...skuInputs,
-                            //   //   [item.product_id]: e.target.value,
-                            //   // })
-                            // }
+                            value={skuInputs[item.product_id] || ""} // controlled value
+                            onChange={(e) =>
+                              handleSkuChange(item.product_id, e.target.value)
+                            }
                             className="bg-gray-50 lg:w-full text-lg px-2 border border-green-600 rounded"
                             required
                             placeholder="Input SKU ID"
@@ -331,9 +388,9 @@ const OrderList = () => {
                       ) : (
                         <p>
                           SKU ID:{" "}
-                          {item.product_skuID ? (
+                          {item.skuID ? (
                             <span className="font-bold bg-green-300 px-2 rounded-3xl">
-                              {item.product_skuID}
+                              {item.skuID}
                             </span>
                           ) : (
                             <span className=" bg-red-200 px-2 rounded-3xl">
