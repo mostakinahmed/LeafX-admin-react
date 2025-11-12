@@ -1,36 +1,16 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Navbar from "../Navbar";
 import jsPDF from "jspdf";
 import { useReactToPrint } from "react-to-print";
 import autoTable from "jspdf-autotable";
+import { DataContext } from "@/Context Api/ApiContext";
 
 export default function Invoice() {
+  const { orderData } = useContext(DataContext);
   const [orderId, setOrderId] = useState("");
   const [order, setOrder] = useState(null);
 
   const receiptRef = useRef();
-
-  // Sample orders data
-  const orders = [
-    {
-      id: "1001",
-      customer: "John Doe",
-      date: "2025-10-17",
-      items: [
-        { name: "Laptop Pro", quantity: 1, price: 1200 },
-        { name: "Wireless Mouse", quantity: 2, price: 25 },
-      ],
-    },
-    {
-      id: "1002",
-      customer: "Jane Smith",
-      date: "2025-10-16",
-      items: [
-        { name: "Jeans Classic", quantity: 2, price: 60 },
-        { name: "T-Shirt Casual", quantity: 3, price: 25 },
-      ],
-    },
-  ];
 
   // Generate receipt when button is clicked
   const handleGenerate = () => {
@@ -39,9 +19,13 @@ export default function Invoice() {
       setOrder(null);
       return;
     }
-    const foundOrder = orders.find((o) => o.id.toString() === trimmedId);
+    const foundOrder = orderData.find(
+      (o) => o.order_id.toString() === trimmedId
+    );
     setOrder(foundOrder || null);
   };
+
+  console.log(order);
 
   // Print receipt
   const handlePrint = useReactToPrint({
@@ -66,20 +50,9 @@ export default function Invoice() {
     // --- Logo Section ---
     const logoWidth = 135;
     const logoHeight = 60;
-
-    // If you have a logo, you can use Base64 or image URL like:
     doc.addImage("/logo final.png", "PNG", margin, 30, logoWidth, logoHeight);
-    // doc.setFillColor(0, 70, 140);
-    // doc.circle(margin + 30, 60, 25, "F"); // Placeholder circle logo
-    // doc.setFontSize(18);
-    // doc.setTextColor(0, 70, 140);
-    // doc.setFont("helvetica", "bold");
-    // doc.text("FabriBuzz", margin + 70, 65);
-    // doc.setFontSize(11);
-    // doc.setTextColor(100);
-    // doc.text("E-commerce", margin + 70, 80);
 
-    // --- Company Info (Right side) ---
+    // --- Company Info ---
     const rightX = pageWidth - margin - 200;
     doc.setFontSize(10);
     doc.setTextColor(80);
@@ -89,7 +62,7 @@ export default function Invoice() {
     doc.text("Email: support@victusbyte.com", rightX, 85);
     doc.text("Phone: +880 1234 567890", rightX, 100);
 
-    // --- Horizontal Line ---
+    // --- Divider Line ---
     doc.setDrawColor(180);
     doc.line(margin, 110, pageWidth - margin, 110);
 
@@ -102,10 +75,10 @@ export default function Invoice() {
     // --- Receipt Info ---
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.text(`Order ID: #${order.id}`, margin, 160);
-    doc.text(`Date: ${order.date}`, margin, 175);
+    doc.text(`Order ID: #${order.order_id}`, margin, 160);
+    doc.text(`Date: ${order.order_date}`, margin, 175);
 
-    // --- Customer Info (Left) ---
+    // --- Customer Info ---
     const customerY = 200;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
@@ -113,50 +86,69 @@ export default function Invoice() {
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    doc.text(`Name: ${order.customer}`, margin, customerY + 18);
     doc.text(
-      `Email: ${order.email || "customer@example.com"}`,
+      `Name: ${order.shipping_address.recipient_name}`,
+      margin,
+      customerY + 18
+    );
+    doc.text(
+      `Email: ${order.shipping_address.email || "Not Provided"}`,
       margin,
       customerY + 33
     );
     doc.text(
-      `Phone: ${order.phone || "+880 0000 000000"}`,
+      `Phone: ${order.shipping_address.phone || "+880 0000 000000"}`,
       margin,
       customerY + 48
     );
     doc.text(
-      `Address: ${order.address || "Not Provided"}`,
+      `Address: ${order.shipping_address.address_line1}`,
       margin,
       customerY + 63
     );
 
     // --- Table Header ---
     const startTableY = customerY + 90;
-    const tableColumn = ["Item", "Quantity", "Price", "Total"];
+    const tableColumn = ["Item", "SKU", "Quantity", "Price", "Total"];
     const tableRows = [];
 
+    // Generate table rows
     order.items.forEach((item) => {
-      const total = item.price * item.quantity;
+      const total = item.product_price * item.quantity;
       tableRows.push([
-        item.name,
+        item.product_name,
+        item.skuID,
         item.quantity.toString(),
-        `$${item.price.toFixed(2)}`,
-        `$${total.toFixed(2)}`,
+        `${item.product_price.toFixed(2)}`,
+        `${total.toFixed(2)}`,
       ]);
     });
 
-    const totalAmount = order.items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+    const subtotal = order.items.reduce(
+      (sum, item) => sum + item.product_price * item.quantity,
       0
     );
 
+    // --- Divider Line ---
+    doc.setDrawColor(180);
+    doc.line(margin, 110, pageWidth - margin, 110);
+
+    // --- Add summary rows ---
+    tableRows.push([
+      { content: "Delivery Fee :", colSpan: 4, styles: { halign: "right" } },
+      `${order.shipping_cost.toFixed(2)}`,
+    ]);
+    tableRows.push([
+      { content: "Discount :", colSpan: 4, styles: { halign: "right" } },
+      `- ${order.discount.toFixed(2)}`,
+    ]);
     tableRows.push([
       {
-        content: "Total",
-        colSpan: 3,
+        content: "Total :",
+        colSpan: 4,
         styles: { halign: "right", fontStyle: "bold" },
       },
-      `$${totalAmount.toFixed(2)}`,
+      `${(subtotal + order.shipping_cost - order.discount).toFixed(2)}`,
     ]);
 
     // --- Table Styling ---
@@ -166,22 +158,34 @@ export default function Invoice() {
       body: tableRows,
       theme: "striped",
       headStyles: {
-        fillColor: [0, 70, 140],
+        fillColor: [255, 117, 31],
+
         textColor: 255,
         fontStyle: "bold",
+        halign: "center",
       },
       styles: {
         fontSize: 11,
         cellPadding: 6,
+        valign: "middle",
+        halign: "center",
       },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
+      // Distribute columns evenly like "justify-between"
+      columnStyles: {
+        0: { halign: "left", cellWidth: "auto" },
+        1: { halign: "center", cellWidth: "auto" },
+        2: { halign: "center", cellWidth: "auto" },
+        3: { halign: "center", cellWidth: "auto" },
+        4: { halign: "right", cellWidth: "auto" },
+      },
+      tableWidth: "auto", // allow flexible spacing
+      margin: { left: 40, right: 40 },
     });
 
     // --- Footer ---
     const footerY = doc.internal.pageSize.height - 40;
     doc.setDrawColor(180);
     doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
-
     doc.setFontSize(10);
     doc.setTextColor(120);
     doc.text(
@@ -191,8 +195,7 @@ export default function Invoice() {
       { align: "center" }
     );
 
-    // Save file
-    doc.save(`receipt_${order.id}.pdf`);
+    doc.save(`receipt_${order.order_id}.pdf`);
   };
 
   return (
