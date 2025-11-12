@@ -5,9 +5,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { DataContext } from "@/Context Api/ApiContext";
 import axios from "axios";
 import { FaSpinner, FaCheckCircle, FaRegCopy } from "react-icons/fa";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-const MySwal = withReactContent(Swal);
 
 // Mock DB data
 const mockCustomers = [
@@ -157,54 +154,21 @@ const AdminSaleFull = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ----------------------------------
-    MySwal.fire({
-      title: (
-        <p className="text-xl font-semibold text-blue-600">Processing...</p>
-      ),
-      html: (
-        <p className="text-gray-600">Please wait while we create your order.</p>
-      ),
-      allowOutsideClick: false,
-      didOpen: () => {
-        MySwal.showLoading();
-      },
-      customClass: {
-        popup: "w-[300px] h-[200px] p-4",
-        title: "text-lg font-bold",
-        htmlContainer: "text-sm text-gray-600",
-      },
-    });
-
+    setLoader(true);
     try {
       const res = await axios.post(
         "https://fabribuzz.onrender.com/api/order/create-order",
         order
       );
 
-      // Update success message
-      MySwal.hideLoading();
-      MySwal.update({
-        icon: "success",
-        title: (
-          <p className="text-green-600 text-xl font-bold">Order Created ✅</p>
-        ),
-        html: (
-          <p className="text-gray-700">
-            Order <b>#{res.data.order_id}</b> has been successfully updated!
-          </p>
-        ),
-        showConfirmButton: true,
-
-        confirmButtonText: "OK",
-        customClass: {
-          confirmButton:
-            "bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg",
-        },
-        buttonsStyling: false,
-      });
-      updateApi();
-      handleNewSale();
+      if (res.status === 201) {
+        setSuccess(true);
+        setLoader(false);
+        updateApi();
+        console.log("Order Saved:", res.data);
+      } else {
+        console.log("Unexpected response:", res.data);
+      }
     } catch (error) {
       console.error(
         "Error saving order:",
@@ -214,7 +178,7 @@ const AdminSaleFull = () => {
   };
 
   // ✅ Create new order reset
-  function handleNewSale() {
+  const handleNewSale = () => {
     setOrder({
       order_id: generateOrderId(),
       customer_id: "",
@@ -243,11 +207,71 @@ const AdminSaleFull = () => {
       ],
     });
     setSuccess(false);
-  }
+  };
 
   return (
     <div className="max-w-full mx-auto relative">
       <Navbar pageTitle="Create New Sale" />
+
+      {/* Loader */}
+      {/* Loader Overlay */}
+      {loader && (
+        <div className="absolute inset-0 lg:-mt-30 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="bg-white/90 shadow-lg border border-gray-300 rounded-xl p-6 flex flex-col items-center">
+            <FaSpinner className="w-10 h-10 text-green-600 animate-spin mb-3" />
+            <p className="text-gray-800 font-semibold text-lg">
+              Processing Order...
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Success Overlay */}
+      {success && (
+        <div className="fixed inset-0 lg:-mt-20 lg:ml-20 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="bg-white shadow-xl border border-gray-200 rounded-2xl p-6 text-center w-[22rem]">
+            <FaCheckCircle className="text-green-500 text-6xl mx-auto mb-3 animate-bounce" />
+            <h2 className="text-xl font-bold text-gray-800">Order Created!</h2>
+
+            {/* Order ID */}
+            <div className="flex items-center justify-center gap-2 mt-3 bg-gray-100 rounded px-3 py-1">
+              <span className="text-green-700 font-medium">
+                {order.order_id}
+              </span>
+              <button
+                onClick={handleCopy}
+                className="text-gray-500 hover:text-green-600 transition"
+                title="Copy Order ID"
+              >
+                <FaRegCopy />
+              </button>
+            </div>
+            {copied && (
+              <span className="text-xs text-green-500 mt-1 block">Copied!</span>
+            )}
+
+            {/* Buttons */}
+            <div className="flex gap-3 mt-6 justify-center">
+              <button
+                className="px-5 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600"
+                onClick={() => navigate("/orders")}
+              >
+                Goto - Order
+              </button>
+              <button
+                className="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300"
+                onClick={() => {
+                  setSuccess(false);
+                  handleNewSale?.(); // optional reset function if you have it
+                }}
+              >
+                New Sale
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* //data form */}
       <form
         onSubmit={handleSubmit}
