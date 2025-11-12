@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDown } from "lucide-react";
-import { dummyOrders } from "./DummyOrder"; // your dummy data
 import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "@/Context Api/ApiContext";
@@ -16,13 +15,12 @@ const OrderList = () => {
   const [statusOpen, setStatusOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDetails, setShowDetails] = useState(null);
-  const [productInfo, setProductInfo] = useState(null);
+  const [actionBtn, setActionBtn] = useState(null);
 
   const statuses = [
     "All Orders",
     "Pending",
     "Confirmed",
-    "Processing",
     "Shipped",
     "Delivered",
     "Cancelled",
@@ -52,11 +50,34 @@ const OrderList = () => {
     );
   }
 
+  //handle click order
+  const handleClickOrder = (order) => {
+    setShowDetails(order);
+
+    if (order.status === "Pending") {
+      setActionBtn("Confirmed");
+    } else if (order.status === "Confirmed") {
+      setActionBtn("Shipped");
+    } else if (order.status === "Shipped") {
+      setActionBtn("Delivered");
+    } else if (order.status === "Delivered") {
+      setActionBtn("Completed");
+    } else {
+      setActionBtn(null);
+    }
+  };
+
   // Reset all filters
   const handleReset = () => {
     setSelectedStatus("All Orders");
     setStartDate(null);
     setFilter({ orderId: "", pid: "" });
+  };
+
+  //backend handle
+  const submitBtn = (e) => {
+    e.preventDefault();
+    console.log(actionBtn);
   };
 
   return (
@@ -71,14 +92,14 @@ const OrderList = () => {
           >
             {selectedStatus}
             <ChevronDown
-              className={`w-5 h-5 transition-transform ${
+              className={`w-5 h-5 transition-transform  ${
                 statusOpen ? "rotate-180" : "rotate-0"
               }`}
             />
           </button>
 
           {statusOpen && (
-            <div className="absolute w-full lg:w-52 mt-2 bg-white border border-gray-200 rounded shadow overflow-hidden z-10">
+            <div className="absolute w-full lg:w-52 mt-2 bg-white border border-gray-400 rounded shadow-lg overflow-hidden z-10">
               {statuses.map((status) => (
                 <div
                   key={status}
@@ -146,10 +167,13 @@ const OrderList = () => {
                     Order ID
                   </th>
                   <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
-                    Customer
+                    Customer Name
                   </th>
-                  <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
+                  {/* <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
                     Total Amount
+                  </th> */}
+                  <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
+                    Order Date
                   </th>
                   <th className="px-4 py-2 border-b border-gray-300 text-gray-800 font-semibold">
                     Status
@@ -159,11 +183,9 @@ const OrderList = () => {
 
               <tbody>
                 {filteredOrders.length > 0 ? (
-                  filteredOrders.map((order) => (
+                  [...filteredOrders].reverse().map((order) => (
                     <tr
-                      onClick={() => {
-                        setShowDetails(order);
-                      }}
+                      onClick={() => handleClickOrder(order)}
                       key={order.order_id}
                       className="hover:bg-gray-200"
                     >
@@ -171,10 +193,29 @@ const OrderList = () => {
                       <td className="px-4 py-2 border-b">
                         {order.shipping_address.recipient_name}
                       </td>
-                      <td className="px-4 py-2 border-b">
+                      {/* <td className="px-4 py-2 border-b">
                         ${order.total_amount.toFixed(2)}
+                      </td> */}
+                      <td className="px-4 py-2 border-b">{order.order_date}</td>
+                      <td className="px-4 py-1 border-b">
+                        <span
+                          className={`px-2 py-1 rounded-full font-semibold text-white ${
+                            order.status === "Pending"
+                              ? "bg-yellow-500"
+                              : order.status === "Confirmed"
+                              ? "bg-blue-500"
+                              : order.status === "Shipped"
+                              ? "bg-purple-500"
+                              : order.status === "Delivered"
+                              ? "bg-green-500"
+                              : order.status === "Cancelled"
+                              ? "bg-red-500"
+                              : "bg-gray-400"
+                          }`}
+                        >
+                          {order.status}
+                        </span>
                       </td>
-                      <td className="px-4 py-2 border-b">{order.status}</td>
                     </tr>
                   ))
                 ) : (
@@ -216,11 +257,23 @@ const OrderList = () => {
                   <h3 className="text-xl font-semibold mt-4 mx-4">
                     Product Info
                   </h3>
-                  {showDetails.status === "Pending" && (
-                    <h3 className="lg:text-2xl font-bold rounded-xl px-3 my-2 bg-red-500 text-white">
-                      {showDetails.status}
-                    </h3>
-                  )}
+                  <h3
+                    className={`lg:text-2xl font-bold rounded-xl px-3 my-2 text-white ${
+                      showDetails.status === "Pending"
+                        ? "bg-yellow-500"
+                        : showDetails.status === "Confirmed"
+                        ? "bg-blue-500"
+                        : showDetails.status === "Shipped"
+                        ? "bg-purple-500"
+                        : showDetails.status === "Delivered"
+                        ? "bg-green-500"
+                        : showDetails.status === "Cancelled"
+                        ? "bg-red-500"
+                        : "bg-gray-400"
+                    }`}
+                  >
+                    {showDetails.status}
+                  </h3>
                 </div>
 
                 {/* Product 1 */}
@@ -258,18 +311,37 @@ const OrderList = () => {
                         {item.product_price}
                       </p>
 
-                      <p>
-                        SKU ID:{" "}
-                        {item.product_skuID ? (
-                          <span className="font-bold bg-green-300 px-2 rounded-3xl">
-                            {item.product_skuID}
-                          </span>
-                        ) : (
-                          <span className="font-bold bg-red-300 px-2 rounded-3xl">
-                            Not assigned
-                          </span>
-                        )}
-                      </p>
+                      {showDetails.status === "Confirmed" ? (
+                        <div className="lg:flex w-full items-center gap-2">
+                          <span className="mr- font-medium">SKUID:</span>
+                          <input
+                            type="text"
+                            // value={skuInputs[item.product_id] || ""} // controlled value
+                            // onChange={(e) =>
+                            //   // setSkuInputs({
+                            //   //   ...skuInputs,
+                            //   //   [item.product_id]: e.target.value,
+                            //   // })
+                            // }
+                            className="bg-gray-50 lg:w-full text-lg px-2 border border-green-600 rounded"
+                            required
+                            placeholder="Input SKU ID"
+                          />
+                        </div>
+                      ) : (
+                        <p>
+                          SKU ID:{" "}
+                          {item.product_skuID ? (
+                            <span className="font-bold bg-green-300 px-2 rounded-3xl">
+                              {item.product_skuID}
+                            </span>
+                          ) : (
+                            <span className=" bg-red-200 px-2 rounded-3xl">
+                              Not assigned
+                            </span>
+                          )}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -322,7 +394,7 @@ const OrderList = () => {
                   Payment & Shipping
                 </h3>
 
-                <div className="flex w-full  flex-col lg:flex-row justify-between mr-6">
+                <div className="flex w-full flex-col lg:flex-row justify-between mr-6">
                   <div className="">
                     <p>
                       <span className="font-medium">Shipping Address:</span>{" "}
@@ -331,9 +403,6 @@ const OrderList = () => {
                     <p>
                       <span className="font-medium">Shipping Cost:</span>{" "}
                       {showDetails.shipping_cost}
-                    </p>
-                    <p className="font-semibold text-lg mt-2 lg:-mb-3">
-                      Total Amount: $300
                     </p>
                   </div>
                   <div className="w-1/4">
@@ -347,14 +416,34 @@ const OrderList = () => {
                     </p>
                   </div>
                 </div>
+
+                <div className="lg:flex justify-between -mt-2">
+                  <div>
+                    <p className="font-semibold text-lg mt-2 lg:-mb-3">
+                      Total Amount: {showDetails.total_amount}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="font-semibold text-lg mt-2 lg:-mb-3">
+                      Date: {showDetails.order_date}
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="border-t flex pt-3 pb-3 lg:pb-0 gap-3 justify-end">
                 <button className="bg-red-500 text-lg rounded hover:bg-red-700 text-white p-1 px-3">
-                  cancel
+                  cancel Order
                 </button>
-                <button className="bg-green-500 text-lg rounded hover:bg-green-700 text-white p-1 px-3">
-                  confirmed
-                </button>
+                {actionBtn && (
+                  <button
+                    type="button"
+                    onClick={submitBtn}
+                    className="bg-green-500 text-lg rounded hover:bg-green-700 text-white p-1 px-3"
+                  >
+                    {actionBtn}
+                  </button>
+                )}
               </div>
             </div>
           ) : (
