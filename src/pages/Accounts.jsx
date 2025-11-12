@@ -1,6 +1,17 @@
 import Navbar from "@/components/Navbar";
 import React, { useState, useRef, useEffect } from "react";
-import { FiUser, FiSettings, FiLogOut, FiDollarSign, FiShoppingCart, FiClock, FiUsers } from "react-icons/fi";
+import {
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiDollarSign,
+  FiShoppingCart,
+  FiClock,
+  FiUsers,
+} from "react-icons/fi";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 const Accounts = () => {
   const [open, setOpen] = useState(false);
@@ -19,17 +30,39 @@ const Accounts = () => {
     };
   }, []);
 
+  const handleAlert = () => {
+    MySwal.fire({
+      title: <p>Hello World 👋</p>,
+      html: (
+        <p>
+          This alert is built with <b>React</b> elements!
+        </p>
+      ),
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Cool 😎",
+      didOpen: () => {
+        MySwal.showLoading();
+        setTimeout(() => {
+          MySwal.hideLoading();
+          MySwal.update({
+            title: <p>Loaded!</p>,
+            text: "Your content has been updated dynamically.",
+          });
+        }, 1500);
+      },
+    }).then(() => {
+      MySwal.fire(<p>✅ Shorthand works too!</p>);
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <Navbar pageTitle="Accounts Section" />
 
- 
-
       {/* ====== Account Summary Section ====== */}
       <div className=" py-2">
-        
-
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           {/* Today’s Income */}
@@ -76,6 +109,15 @@ const Accounts = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="p-6">
+        <button
+          onClick={handleAlert}
+          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+        >
+          Show Alert
+        </button>
       </div>
     </div>
   );
