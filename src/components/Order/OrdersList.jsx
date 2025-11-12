@@ -22,9 +22,8 @@ const OrderList = () => {
   const [showDetails, setShowDetails] = useState(null);
   const [actionBtn, setActionBtn] = useState(null);
   const [skuInputs, setSkuInputs] = useState({});
-  const [loader, setLoader] = useState(false);
-  const [success, setSuccess] = useState(true);
-
+  const [currentOrder, setCurrentOrder] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const statuses = [
     "All Orders",
     "Pending",
@@ -33,6 +32,12 @@ const OrderList = () => {
     "Delivered",
     "Cancelled",
   ];
+
+  //for highlight selection
+  const handleRowClick = (order) => {
+    setSelectedOrderId(order.order_id);
+    handleClickOrder(order);
+  };
 
   // Filter orders based on status, date, and search
   const filteredOrders = orderData.filter((order) => {
@@ -80,6 +85,8 @@ const OrderList = () => {
     setSelectedStatus("All Orders");
     setStartDate(null);
     setFilter({ orderId: "", pid: "" });
+    setShowDetails(null);
+    setSelectedOrderId(null);
   };
 
   // handle SKU input changes
@@ -294,17 +301,19 @@ const OrderList = () => {
                 {filteredOrders.length > 0 ? (
                   [...filteredOrders].reverse().map((order) => (
                     <tr
-                      onClick={() => handleClickOrder(order)}
                       key={order.order_id}
-                      className="hover:bg-gray-200"
+                      onClick={() => handleRowClick(order)}
+                      className={`cursor-pointer transition-colors duration-150 ${
+                        selectedOrderId === order.order_id
+                          ? "bg-blue-100"
+                          : "hover:bg-gray-200"
+                      }`}
                     >
                       <td className="px-4 py-2 border-b">{order.order_id}</td>
                       <td className="px-4 py-2 border-b">
                         {order.shipping_address.recipient_name}
                       </td>
-                      {/* <td className="px-4 py-2 border-b">
-                        ${order.total_amount.toFixed(2)}
-                      </td> */}
+
                       <td className="px-4 py-2 border-b">{order.order_date}</td>
                       <td className="px-4 py-1 border-b">
                         <span

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Package,
   CheckCircle,
@@ -8,49 +8,81 @@ import {
   XCircle,
   Layers,
 } from "lucide-react";
+import { DataContext } from "@/Context Api/ApiContext";
 
 const OrderStatusCards = () => {
+  const { orderData } = useContext(DataContext);
+
+  //filter all for count heading
+  let allCount = orderData.length;
+
+  const pendingCount = orderData.filter(
+    (order) => order.status === "Pending"
+  ).length;
+
+  const confirmedCount = orderData.filter(
+    (order) => order.status === "Confirmed"
+  ).length;
+
+  const shippedCount = orderData.filter(
+    (order) => order.status === "Shipped"
+  ).length;
+
+  const deliveredCount = orderData.filter(
+    (order) => order.status === "Completed"
+  ).length;
+
+  const cancelledCount = orderData.filter(
+    (order) => order.status === "Cancelled"
+  ).length;
+
+  const today = new Date().toISOString().split("T")[0]; // "2025-11-12"
+  const todaysCount = orderData.filter((order) => {
+    const orderDate = order.order_date.split(" ")[0];
+    return orderDate === today;
+  }).length;
+
   // Example data — replace with your dynamic order counts later
   const orderStats = [
     {
       title: "Today's Orders",
-      count: 6,
+      count: todaysCount,
       icon: CalendarDays,
       color: "bg-indigo-100 text-indigo-700 border-indigo-300",
     },
     {
       title: "Pending Orders",
-      count: 12,
+      count: pendingCount,
       icon: Package,
       color: "bg-yellow-100 text-yellow-700 border-yellow-300",
     },
     {
       title: "Confirmed Orders",
-      count: 8,
+      count: confirmedCount,
       icon: CheckCircle,
       color: "bg-blue-100 text-blue-700 border-blue-300",
     },
     {
       title: "Shipped Orders",
-      count: 5,
+      count: shippedCount,
       icon: Truck,
       color: "bg-purple-100 text-purple-700 border-purple-300",
     },
     {
       title: "Delivered Orders",
-      count: 20,
+      count: deliveredCount,
       icon: ShoppingBag,
       color: "bg-green-100 text-green-700 border-green-300",
     },
     {
       title: "Cancelled Orders",
-      count: 2,
+      count: cancelledCount,
       icon: XCircle,
       color: "bg-red-100 text-red-700 border-red-300",
     },
     {
       title: "All Orders",
-      count: 53,
+      count: allCount,
       icon: Layers,
       color: "bg-gray-100 text-gray-700 border-gray-300",
     },
