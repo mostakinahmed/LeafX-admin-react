@@ -6,6 +6,7 @@ import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "@/Context Api/ApiContext";
 import axios from "axios";
+import { FaSpinner, FaCheckCircle, FaRegCopy } from "react-icons/fa";
 
 const OrderList = () => {
   const { productData, orderData, updateApi } = useContext(DataContext);
@@ -18,6 +19,8 @@ const OrderList = () => {
   const [showDetails, setShowDetails] = useState(null);
   const [actionBtn, setActionBtn] = useState(null);
   const [skuInputs, setSkuInputs] = useState({});
+  const [loader, setLoader] = useState(false);
+  const [success, setSuccess] = useState(true);
 
   const statuses = [
     "All Orders",
@@ -309,7 +312,50 @@ const OrderList = () => {
           )}
 
           {showDetails ? (
-            <div className=" mx-auto ">
+            <div className=" mx-auto relative">
+              {/* Loader Overlay */}
+              {loader && (
+                <div className="absolute inset-0 lg:-mt-30 backdrop-blur-xs flex items-center justify-center z-50">
+                  <div className="bg-white/90 shadow-lg border border-gray-300 rounded-xl p-4 flex flex-col items-center">
+                    <FaSpinner className="w-10 h-10 text-green-600 animate-spin mb-3" />
+                    <p className="text-gray-800 font-semibold text-lg">
+                      Processing Order...
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Success Overlay */}
+              {success && (
+                <div className="absolute inset-0 lg:-mt-30 backdrop-blur-xs flex items-center justify-center z-50">
+
+                  <div className="bg-white shadow-xl border border-gray-200 rounded-2xl p-4 text-center w-[18rem]">
+                    <FaCheckCircle className="text-green-500 text-5xl mx-auto mb-1 animate-bounce" />
+                    <h2 className="text-xl font-bold text-gray-800">
+                      Order {actionBtn}
+                    </h2>
+
+                    {/* Order ID */}
+                    <div className="flex items-center justify-center gap-2 mt-2 bg-gray-100 rounded px-3 py-1">
+                      <span className="text-green-700 font-medium">453535</span>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex gap-3 mt-3 justify-center">
+                      <button
+                        className="px-10 py-2 bg-green-500 text-gray-800 rounded font-semibold hover:bg-green-600"
+                        onClick={() => {
+                          setSuccess(false);
+                          handleNewSale?.(); // optional reset function if you have it
+                        }}
+                      >
+                      OK
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* 1. Product Info Section */}
               <div className="bg-white border-l">
                 {/* header */}
