@@ -30,7 +30,7 @@ const OrderList = () => {
     "Confirmed",
     "Shipped",
     "Delivered",
-    "Cancelled",
+    "Completed",
   ];
 
   //for highlight selection
