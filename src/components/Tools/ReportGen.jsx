@@ -24,7 +24,7 @@ export default function SalesReportGenerator() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Report Generator</h1>
+          <h1 className="lg:text-3xl  text-2xl  font-bold text-gray-800">Report Generator</h1>
         </div>
       </div>
 
@@ -35,7 +35,7 @@ export default function SalesReportGenerator() {
             activeTab === "stockTab"
               ? "bg-blue-600"
               : "bg-green-600 hover:bg-green-700 "
-          }  w-32 h-full flex items-center justify-center`}
+          }  w-32 h-full rounded lg:rounded-none flex items-center justify-center`}
         >
           <button
             className="w-full text-lg h-full"
@@ -52,7 +52,7 @@ export default function SalesReportGenerator() {
             activeTab === "salesTab"
               ? "bg-blue-600"
               : "bg-green-600 hover:bg-green-700 "
-          }  w-32 h-full flex items-center justify-center`}
+          }  w-32 h-full rounded lg:rounded-none  flex items-center justify-center`}
         >
           <button
             className="w-full text-lg h-full"
@@ -69,7 +69,7 @@ export default function SalesReportGenerator() {
             activeTab === "productTab"
               ? "bg-blue-600"
               : "bg-green-600 hover:bg-green-700 "
-          }  w-32 h-full flex items-center justify-center`}
+          }  w-32 h-full  rounded lg:rounded-none  flex items-center justify-center`}
         >
           <button
             className="w-full  text-lg h-full"
