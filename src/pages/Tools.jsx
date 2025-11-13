@@ -1,21 +1,21 @@
 import { useContext, useState } from "react";
 import Navbar from "../components/Navbar";
 import Invoice from "../components/Tools/Invoice";
-import SalesReport from "../components/Tools/SalesReport";
+import SalesReport from "../components/Tools/ReportGen";
 
 export default function Users() {
-  const [activeTab, setActiveTab] = useState("customer");
+  const [activeTab, setActiveTab] = useState("invoice");
 
   return (
     <div>
-      <Navbar pageTitle="User Management" />
+      <Navbar pageTitle="Tools" />
       <div className="bg-white shadow-lg  p-3 w-full mx-auto">
         {/* Buttons */}
         <div className="flex justify-center  lg:mb-0 mb-2">
           <button
-            onClick={() => setActiveTab("customer")}
+            onClick={() => setActiveTab("invoice")}
             className={`lg:px-25 px-9  lg:py-2 py-1  font-medium ${
-              activeTab === "customer"
+              activeTab === "invoice"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
@@ -37,7 +37,7 @@ export default function Users() {
 
         {/* Conditional Content */}
         <div className=" min-h-screen">
-          {activeTab === "customer" && <Invoice />}
+          {activeTab === "invoice" && <Invoice />}
           {activeTab === "admin" && <SalesReport />}
         </div>
       </div>

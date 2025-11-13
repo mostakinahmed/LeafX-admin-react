@@ -1,63 +1,4 @@
-import React, { useState } from "react";
-import {
-  FiCalendar,
-  FiDownload,
-  FiBarChart2,
-  FiFileText,
-} from "react-icons/fi";
-
-export default function SalesReportGenerator() {
-  const [dateRange, setDateRange] = useState("Last 7 Days");
-
-  const ranges = [
-    "Today",
-    "Last 7 Days",
-    "Last 30 Days",
-    "This Month",
-    "Custom Range",
-  ];
-
-  return (
-    <div className="max-w-7xl mx-auto p-8 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Sales Report Generator
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Generate insightful reports to analyze sales performance.
-          </p>
-        </div>
-
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
-          <FiDownload className="text-lg" />
-          Export Report
-        </button>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white border border-gray-200 rounded shadow-sm p-6 flex flex-wrap gap-4 items-center">
-        <div className="flex items-center gap-3">
-          <FiCalendar className="text-blue-600 text-xl" />
-          <label className="text-gray-700 font-medium">Date Range:</label>
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-          >
-            {ranges.map((range) => (
-              <option key={range}>{range}</option>
-            ))}
-          </select>
-        </div>
-
-        <button className="ml-auto bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
-          Generate
-        </button>
-      </div>
-
-      {/* Summary Cards */}
+    Summary Cards
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           {
@@ -177,6 +118,3 @@ export default function SalesReportGenerator() {
           </table>
         </div>
       </div>
-    </div>
-  );
-}

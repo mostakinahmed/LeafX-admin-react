@@ -29,8 +29,8 @@ const OrderList = () => {
     "Pending",
     "Confirmed",
     "Shipped",
-    "Delivered",
     "Completed",
+    "Cancelled",
   ];
 
   //for highlight selection
