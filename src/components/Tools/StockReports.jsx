@@ -25,6 +25,7 @@ export const StockReports = () => {
 
   const ranges = [
     "Today",
+    "Yesterday",
     "Last 7 Days",
     "Last 15 Days",
     "Last 30 Days",
@@ -85,7 +86,9 @@ export const StockReports = () => {
 
     let products = [];
     if (value === "All") {
-      products = productData.map((p) => p.productName);
+      products = productData.filter(
+        (p) => p.category === filterValues.category
+      );
     } else {
       products = productData
         .filter(
@@ -94,11 +97,11 @@ export const StockReports = () => {
             (filterValues.category === "All" ||
               p.category === filterValues.category)
         )
-        .map((p) => p.productName);
+        .map((p) => p);
     }
 
     if (products.length > 0) {
-      setProductList(["All", ...products]);
+      setProductList([...products]);
       setVisibleProduct(true);
     } else {
       Swal.fire({
@@ -142,8 +145,57 @@ export const StockReports = () => {
   };
 
   // 🔹 Generate Button Click
-  const handleGenerate = () => {
-    console.log("🔍 Filter Data:", filterValues);
+  const handleGenerate = (e) => {
+    e.preventDefault();
+
+    if (filterValues.category === "Select Category") {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a category",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    if (visibleBrand && filterValues.brand === "Select Brand") {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a brand",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    if (visibleProduct && filterValues.product === "Select Product") {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a product",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    //filter cat data
+    let data;
+    if (filterValues.category === "All") {
+      data = productData.filter((p) => p);
+    } else {
+      data = productData.filter((p) => p.category === filterValues.category);
+    }
+
+    //filter brand
+    let data2;
+    if (filterValues.brand === "All") {
+      data = data.filter((p) => p);
+    } else {
+      data = data.filter((p) => p.brandName === filterValues.brand);
+    }
+
+    console.log(data);
+
     Swal.fire({
       icon: "info",
       title: "Filters Applied!",
@@ -151,150 +203,156 @@ export const StockReports = () => {
     });
   };
 
-  console.log(filterValues);
-
   return (
     <div className=" ">
       <div className="bg-white border border-gray-200 rounded shadow-sm lg:p-6 p-2 flex flex-col gap-5">
         {/* Top Section */}
-        <div className="w-full flex flex-wrap lg:flex-nowrap justify-between items-center gap-4">
-          <div className="lg:flex w-full flex-wrap gap-6 items-center">
-            {/* Date Range */}
-            <div className="lg:flex items-center gap-3">
-              <div className="flex gap-2  lg:flex-none">
-                <FiCalendar className="text-blue-600 text-xl" />
-                <label className="text-gray-700 font-medium">Date Range:</label>
+        <form action="submit">
+          <div className="w-full flex flex-wrap lg:flex-nowrap justify-between items-center gap-4">
+            <div className="lg:flex w-full flex-wrap gap-6 items-center">
+              {/* Date Range */}
+              <div className="lg:flex items-center gap-3">
+                <div className="flex gap-2  lg:flex-none">
+                  <FiCalendar className="text-blue-600 text-xl" />
+                  <label className="text-gray-700 font-medium">
+                    Date Range:
+                  </label>
+                </div>
+
+                <select
+                  value={filterValues.dateRange}
+                  onChange={(e) => handleDateRangeChange(e.target.value)}
+                  className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                >
+                  {ranges.map((range) => (
+                    <option key={range}>{range}</option>
+                  ))}
+                </select>
               </div>
 
+              {/* Custom Range */}
+              {filterValues.dateRange === "Custom Range" && (
+                <div className="lg:flex items-center gap-5">
+                  <div className="lg:flex items-center gap-2  mt-2 lg:mt-0">
+                    <label className="text-gray-700 font-medium">From:</label>
+                    <input
+                      type="date"
+                      value={filterValues.fromDate}
+                      onChange={(e) => handleFromDateChange(e.target.value)}
+                      className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                  <div className="lg:flex items-center gap-2">
+                    <label className="text-gray-700 font-medium">To:</label>
+                    <input
+                      type="date"
+                      value={filterValues.toDate}
+                      onChange={(e) => handleToDateChange(e.target.value)}
+                      className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={handleGenerate}
+              className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Generate
+            </button>
+          </div>
+
+          <div className="border-t border-gray-200 my-2"></div>
+
+          {/* Dropdown Filters */}
+          <div className="lg:flex flex-wrap gap-10 ">
+            {/* Category */}
+            <div className="lg:flex items-center gap-3">
+              <div className="flex gap-2">
+                <FiBox className="text-blue-600 text-xl" />
+                <label className="text-gray-700 font-medium">Category:</label>
+              </div>
               <select
-                value={filterValues.dateRange}
-                onChange={(e) => handleDateRangeChange(e.target.value)}
+                value={filterValues.category}
+                onChange={(e) => handleCategoryChange(e.target.value)}
                 className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
               >
-                {ranges.map((range) => (
-                  <option key={range}>{range}</option>
+                <option>Select Category</option>
+                <option value="All">All</option>
+                {categoryData.map((cat) => (
+                  <option key={cat.catID} value={cat.catID}>
+                    {cat.catID + " - " + cat.catName}
+                  </option>
                 ))}
               </select>
             </div>
 
-            {/* Custom Range */}
-            {filterValues.dateRange === "Custom Range" && (
-              <div className="lg:flex items-center gap-5">
-                <div className="lg:flex items-center gap-2  mt-2 lg:mt-0">
-                  <label className="text-gray-700 font-medium">From:</label>
-                  <input
-                    type="date"
-                    value={filterValues.fromDate}
-                    onChange={(e) => handleFromDateChange(e.target.value)}
-                    className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  />
+            {/* Brand */}
+            {visibleBrand && (
+              <div className="lg:flex items-center gap-3  mt-2 lg:mt-0">
+                <div className="flex gap-2">
+                  <FiActivity className="text-blue-600 text-xl" />
+                  <label className="text-gray-700 font-medium">Brand:</label>
                 </div>
-                <div className="lg:flex items-center gap-2">
-                  <label className="text-gray-700 font-medium">To:</label>
-                  <input
-                    type="date"
-                    value={filterValues.toDate}
-                    onChange={(e) => handleToDateChange(e.target.value)}
-                    className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  />
+                <select
+                  value={filterValues.brand}
+                  onChange={(e) => handleBrandChange(e.target.value)}
+                  className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                >
+                  <option>Select Brand</option>
+                  {brandList.map((b, i) => (
+                    <option key={i}>{b}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Product */}
+            {visibleProduct && (
+              <div className="lg:flex items-center gap-3 mt-2 lg:mt-0">
+                <div className="flex gap-2">
+                  <FiCreditCard className="text-blue-600 text-xl" />
+                  <label className="text-gray-700 font-medium">Product:</label>
                 </div>
+                <select
+                  value={filterValues.product}
+                  onChange={(e) => handleProductChange(e.target.value)}
+                  className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                >
+                  <option>Select Product</option>
+                  <option>All</option>
+                  {productList.map((p, i) => (
+                    <option key={i} value={p.pID}>
+                      {p.pID + " - " + p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Status */}
+            {visibleStatus && (
+              <div className="lg:flex items-center gap-3 mt-2 lg:mt-0">
+                <div className="flex gap-2">
+                  <FiCreditCard className="text-blue-600 text-xl" />
+                  <label className="text-gray-700 font-medium">Status:</label>
+                </div>
+                <select
+                  value={filterValues.status}
+                  onChange={(e) => handleStatusChange(e.target.value)}
+                  className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                >
+                  <option>All</option>
+                  <option>Available</option>
+                  <option>Low Stock</option>
+                  <option>Stock Added</option>
+                  <option>Out Of Stock</option>
+                </select>
               </div>
             )}
           </div>
-
-          <button
-            onClick={handleGenerate}
-            className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Generate
-          </button>
-        </div>
-
-        <div className="border-t border-gray-200 my-2"></div>
-
-        {/* Dropdown Filters */}
-        <div className="lg:flex flex-wrap gap-10 ">
-          {/* Category */}
-          <div className="lg:flex items-center gap-3 ">
-            <div className="flex gap-2">
-              <FiBox className="text-blue-600 text-xl" />
-              <label className="text-gray-700 font-medium">Category:</label>
-            </div>
-            <select
-              value={filterValues.category}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-              className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-            >
-              <option>Select Category</option>
-              <option value="All">All</option>
-              {categoryData.map((cat) => (
-                <option key={cat.catID} value={cat.catID}>
-                  {cat.catID + " - " + cat.catName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Brand */}
-          {visibleBrand && (
-            <div className="lg:flex items-center gap-3  mt-2 lg:mt-0">
-              <div className="flex gap-2">
-                <FiActivity className="text-blue-600 text-xl" />
-              <label className="text-gray-700 font-medium">Brand:</label>
-              </div>
-              <select
-                value={filterValues.brand}
-                onChange={(e) => handleBrandChange(e.target.value)}
-                className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                <option>Select Brand</option>
-                {brandList.map((b, i) => (
-                  <option key={i}>{b}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Product */}
-          {visibleProduct && (
-            <div className="lg:flex items-center gap-3 mt-2 lg:mt-0">
-            <div className="flex gap-2">
-                <FiCreditCard className="text-blue-600 text-xl" />
-              <label className="text-gray-700 font-medium">Product:</label>
-            </div>
-              <select
-                value={filterValues.product}
-                onChange={(e) => handleProductChange(e.target.value)}
-                className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                <option>Select Product</option>
-                {productList.map((p, i) => (
-                  <option key={i}>{p}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Status */}
-          {visibleStatus && (
-            <div className="lg:flex items-center gap-3 mt-2 lg:mt-0">
-              <div className="flex gap-2">
-                <FiCreditCard className="text-blue-600 text-xl" />
-              <label className="text-gray-700 font-medium">Status:</label>
-              </div>
-              <select
-                value={filterValues.status}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                <option>All</option>
-                <option>Available</option>
-                <option>Low Stock</option>
-                <option>Out Of Stock</option>
-              </select>
-            </div>
-          )}
-        </div>
+        </form>
       </div>
     </div>
   );
