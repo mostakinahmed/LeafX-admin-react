@@ -163,7 +163,7 @@ export default function CheckAndUpdateStock() {
                 {/* Product Image */}
                 <div className="w-1/3 flex justify-center">
                   <img
-                    src="https://img.drz.lazcdn.com/static/bd/p/bf01ecf6cf24b6048d23bc175068e9d3.jpg_720x720q80.jpg"
+                    src={selectedProduct.images}
                     alt={selectedProduct.name}
                     className="w-40 h-40 p-2 object-cover rounded border"
                   />
