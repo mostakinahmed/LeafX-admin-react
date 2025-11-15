@@ -11,7 +11,7 @@ export const StockReports = () => {
     category: "Select Category",
     brand: "Select Brand",
     product: "Select Product",
-    status: "All",
+    status: "Select Status",
     dateRange: "Today",
     fromDate: "",
     toDate: "",
@@ -177,6 +177,15 @@ export const StockReports = () => {
       });
       return;
     }
+    if (visibleProduct && filterValues.status === "Select Status") {
+      Swal.fire({
+        icon: "warning",
+        title: "Please select a status",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      return;
+    }
 
     //filter cat data
     let data;
@@ -187,16 +196,18 @@ export const StockReports = () => {
     }
 
     //filter brand
-    let data2;
     if (filterValues.brand === "All") {
       data = data.filter((p) => p);
     } else {
       data = data.filter((p) => p.brandName === filterValues.brand);
     }
 
-    console.log(filterValues.product);
-
-    console.log(data);
+    //genarate part
+    if (filterValues.product !== "All") {
+      console.log(filterValues.product);
+    } else {
+      console.log("Not All");
+    }
 
     Swal.fire({
       icon: "info",
@@ -360,6 +371,7 @@ export const StockReports = () => {
                   onChange={(e) => handleStatusChange(e.target.value)}
                   className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
                 >
+                  <option>Select Status</option>
                   <option>All</option>
                   <option>Available</option>
                   <option>Low Stock</option>
