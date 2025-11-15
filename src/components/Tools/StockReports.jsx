@@ -47,19 +47,17 @@ export const StockReports = () => {
 
     let brands = [];
     if (value === "All") {
-      brands = [...new Set(productData.map((p) => p.brandName))];
+      brands = [...new Set(productData.map((p) => p))];
     } else {
       brands = [
         ...new Set(
-          productData
-            .filter((p) => p.category === value)
-            .map((p) => p.brandName)
+          productData.filter((p) => p.category === value).map((p) => p)
         ),
       ];
     }
 
     if (brands.length > 0) {
-      setBrandList(["All", ...brands]);
+      setBrandList([...brands]);
       setVisibleBrand(true);
     } else {
       Swal.fire({
@@ -85,7 +83,9 @@ export const StockReports = () => {
     }
 
     let products = [];
-    if (value === "All") {
+    if (value === "All" && filterValues.category === "All") {
+      products = productData.filter((p) => p);
+    } else if (value === "All" && filterValues.category !== "All") {
       products = productData.filter(
         (p) => p.category === filterValues.category
       );
@@ -194,6 +194,8 @@ export const StockReports = () => {
       data = data.filter((p) => p.brandName === filterValues.brand);
     }
 
+    console.log(filterValues.product);
+
     console.log(data);
 
     Swal.fire({
@@ -256,6 +258,18 @@ export const StockReports = () => {
             </div>
 
             <button
+              type="button"
+              onClick={() => {
+                setFilterValues({ category: "Select Category" });
+                setVisibleBrand(false);
+                setVisibleProduct(false);
+                setVisibleStatus(false);
+              }}
+              className="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-700 transition"
+            >
+              Reset
+            </button>
+            <button
               onClick={handleGenerate}
               className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
             >
@@ -301,8 +315,11 @@ export const StockReports = () => {
                   className="border w-full border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
                 >
                   <option>Select Brand</option>
+                  <option>All</option>
                   {brandList.map((b, i) => (
-                    <option key={i}>{b}</option>
+                    <option key={i} value={b.brandName}>
+                      {b.brandName}
+                    </option>
                   ))}
                 </select>
               </div>
