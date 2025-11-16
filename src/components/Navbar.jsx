@@ -2,6 +2,8 @@ import { FiBell, FiUser } from "react-icons/fi";
 import { AuthContext } from "../Context Api/AuthContext";
 import { useContext, useState } from "react";
 import { img } from "framer-motion/client";
+import { AiOutlineEye } from "react-icons/ai";
+import { RiBroadcastLine } from "react-icons/ri";
 
 export default function Navbar({ pageTitle }) {
   const { user, logout } = useContext(AuthContext);
@@ -24,6 +26,15 @@ export default function Navbar({ pageTitle }) {
       {/* Right side: Search, Notifications, User */}
       <div className="flex items-center gap-5">
         {/* Notification Icon */}
+        <a
+          href="https://victusbyte.vercel.app/home"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 rounded-2xl"
+        >
+          <RiBroadcastLine className="text-red-600 animate-pulse" size={26} />
+        </a>
+
         <button className=" relative p-2 rounded hover:bg-gray-100">
           <FiBell size={20} />
           <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
