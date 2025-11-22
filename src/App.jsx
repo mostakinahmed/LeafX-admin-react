@@ -22,6 +22,7 @@ import PrivateRoute from "./components/private routes/PrivateRoute";
 import { useContext } from "react";
 import ScrollToTop from "./components/ScrollToTop";
 import Accounts from "./pages/Accounts";
+import { StatusManagement } from "./components/Products/StatusManagement";
 
 function AppLayout() {
   const { user } = useContext(AuthContext);
@@ -68,6 +69,14 @@ function AppLayout() {
             element={
               <PrivateRoute>
                 <AddProduct />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/products/status-management"
+            element={
+              <PrivateRoute>
+                <StatusManagement />
               </PrivateRoute>
             }
           />

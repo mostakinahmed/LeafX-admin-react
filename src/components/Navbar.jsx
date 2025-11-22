@@ -35,7 +35,7 @@ export default function Navbar({ pageTitle }) {
           <RiBroadcastLine className="text-red-600 animate-pulse" size={26} />
         </a>
 
-        <button className=" relative p-2 rounded hover:bg-gray-100">
+        <button className="hidden lg:flex relative p-2 rounded hover:bg-gray-100">
           <FiBell size={20} />
           <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
         </button>

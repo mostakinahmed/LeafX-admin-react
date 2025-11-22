@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../Context Api/ApiContext";
 import { FaEye, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import { StatusManagement } from "@/components/Products/StatusManagement";
 
 export default function Products() {
   const { categoryData, productData, loading } = useContext(DataContext);
@@ -123,7 +124,13 @@ export default function Products() {
           </div>
         </div>
 
-        <div className=" w-full lg:w-60">
+        <div className=" w-full lg:w-60 flex gap-3">
+          <button
+            className="bg-orange-600 w-full  text-white py-2 rounded hover:bg-orange-700"
+            onClick={() => navigate("/products/status-management")}
+          >
+            Status
+          </button>
           <button
             className="bg-blue-600 w-full  text-white py-2 rounded hover:bg-blue-700"
             onClick={() => navigate("/products/add-product")}
@@ -161,7 +168,7 @@ export default function Products() {
                   <td className="px-4 line-clamp-1">{product.name}</td>
                   <td className="px-4 ">{product.brandName}</td>
                   <td className="px-4 ">{product.category}</td>
-                  <td className="px-4 ">${product.price}</td>
+                  <td className="px-4 ">${product?.price?.selling ?? "0"}</td>
                   <td className="px-4 ">{product.stock}</td>
                   <td className="xl:pl-25 px-4">
                     {product.images[0] ? (

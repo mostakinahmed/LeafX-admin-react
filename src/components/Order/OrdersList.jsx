@@ -444,7 +444,7 @@ const OrderList = () => {
                             }
                             className="bg-gray-50 lg:w-full text-lg px-2 border border-green-600 rounded"
                             required
-                            placeholder="Input SKU ID"
+                            placeholder="input sku id"
                           />
                         </div>
                       ) : (

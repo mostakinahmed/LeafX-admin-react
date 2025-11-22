@@ -1,43 +1,36 @@
 import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { DataContext } from "@/Context Api/ApiContext";
-import { data, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaSpinner, FaCheckCircle } from "react-icons/fa";
-import { set } from "date-fns";
+import Swal from "sweetalert2";
 
 const AddProduct = () => {
-  const { updateApi } = useContext(DataContext);
+  const { updateApi, categoryData, loading } = useContext(DataContext);
   const navigate = useNavigate();
-  const { categoryData, loading } = useContext(DataContext);
 
-  const [specification, setSpecification] = useState([]); // spec names
-  const [specValues, setSpecValues] = useState({}); // { specName: [{key:'', value:''}, ...] }
-  const [finalData, setFinalData] = useState([]);
-  const [submitLoader, setSubmitLoader] = useState(false);
-  const [spinner, setSpinner] = useState(false);
-  const [success, setSuccess] = useState(false); // new success state
-  const [formVisible, setFormVisible] = useState(true);
-
+  const [specification, setSpecification] = useState([]);
+  const [specValues, setSpecValues] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     brandName: "",
-    price: "",
+    price: { selling: "" }, // ✅ nested price
     stock: "",
-    images: "",
+    images: [""], // ✅ array for multiple images
     description: "",
     category: "",
   });
 
-  // Update specifications when category changes
+  // Load specifications when category changes
   useEffect(() => {
     const selectedCat = formData.category;
     const category = categoryData.find((cat) => cat.catID === selectedCat);
+
     if (category) {
       setSpecification(category.specifications);
       const newSpecs = {};
       category.specifications.forEach((spec) => {
-        newSpecs[spec] = [{ key: "", value: "" }]; // default one row
+        newSpecs[spec] = [{ key: "", value: "" }];
       });
       setSpecValues(newSpecs);
     } else {
@@ -46,13 +39,50 @@ const AddProduct = () => {
     }
   }, [formData.category, categoryData]);
 
-  // Handle general input change
+  // -------------------
+  // GENERAL INPUT CHANGE
+  // -------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Ignore images here
+    if (name === "images") return;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle key/value change for a spec row
+  // -------------------
+  // PRICE INPUT CHANGE
+  // -------------------
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      price: { ...prev.price, [name]: Number(value) },
+    }));
+  };
+
+  // -------------------
+  // IMAGE HANDLERS
+  // -------------------
+  const addImageField = () => {
+    setFormData((prev) => ({ ...prev, images: [...prev.images, ""] }));
+  };
+
+  const updateImage = (index, value) => {
+    const updated = [...formData.images];
+    updated[index] = value;
+    setFormData((prev) => ({ ...prev, images: updated }));
+  };
+
+  const removeImage = (index) => {
+    const updated = formData.images.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, images: updated }));
+  };
+
+  // -------------------
+  // SPECIFICATIONS
+  // -------------------
   const handleSpecChange = (spec, index, field, value) => {
     setSpecValues((prev) => {
       const updated = { ...prev };
@@ -61,7 +91,6 @@ const AddProduct = () => {
     });
   };
 
-  // Add a new key-value row for a spec
   const addSpecRow = (spec) => {
     setSpecValues((prev) => {
       const updated = { ...prev };
@@ -70,7 +99,6 @@ const AddProduct = () => {
     });
   };
 
-  // Remove a key-value row for a spec
   const removeSpecRow = (spec, index) => {
     setSpecValues((prev) => {
       const updated = { ...prev };
@@ -79,55 +107,42 @@ const AddProduct = () => {
     });
   };
 
-  // Handle form submit
+  // -------------------
+  // FORM SUBMIT
+  // -------------------
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSpinner(true);
-    setSubmitLoader(true);
 
-    // Clean up specValues → remove rows with empty key/value
+    // Clean spec values
     const cleanedSpecs = {};
     Object.keys(specValues).forEach((spec) => {
       const validRows = specValues[spec].filter(
         (row) => row.key.trim() !== "" && row.value.trim() !== ""
       );
-
-      // Only include this spec if it has at least one valid row
-      if (validRows.length > 0) {
-        cleanedSpecs[spec] = validRows;
-      }
+      if (validRows.length) cleanedSpecs[spec] = validRows;
     });
 
     const finalData = {
       ...formData,
+      images: formData.images.filter((img) => img.trim() !== ""), // remove empty
       specifications: cleanedSpecs,
     };
 
-    setFinalData(finalData);
-    saveData(finalData); // pass directly to saveData
+    console.log(finalData);
+    saveData(finalData);
   };
-
-  //console.log(finalData);
-  // const saveData = async (data) => {
-  //   //data sent to backend
-  //   const res = await axios
-  //     .post("https://fabribuzz.onrender.com/api/product", data)
-  //     .then((response) => {
-  //       setSpinner(false);
-  //       setSuccess(true);
-  //       updateApi();
-  //       console.log("Product saved successfully:", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error saving product:", error);
-  //     });
-  //   // Here you can implement the logic to save finalData to your backend or database
-  // };
 
   const saveData = async (data) => {
     try {
-      setSpinner(true);
-
+      // 1️⃣ Show processing alert
+      Swal.fire({
+        title: "Processing...",
+        text: "Please wait while we save your product.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading(); // show spinner
+        },
+      });
       // 1️⃣ Save product
       const productRes = await axios.post(
         "https://fabribuzz.onrender.com/api/product",
@@ -135,13 +150,8 @@ const AddProduct = () => {
       );
 
       const { pID, sID } = productRes.data;
+      updateApi(); // refresh context data
 
-      // 2️⃣ Update UI immediately
-      setSpinner(false);
-      setSuccess(true);
-      updateApi();
-
-      // 3️⃣ Fire stock API call (don't block UI)
       axios
         .post("https://fabribuzz.onrender.com/api/stock/create-stock", {
           pID,
@@ -149,168 +159,197 @@ const AddProduct = () => {
         })
         .then(() => {
           console.log("Stock created successfully");
+          // 4️⃣ Close processing alert & show success
+          Swal.close();
+          Swal.fire({
+            icon: "success",
+            title: "Product Saved!",
+            text: "Your product has been saved successfully.",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          resetForm();
         })
         .catch((err) => {
           console.error("Stock creation failed:", err);
         });
     } catch (error) {
-      setSpinner(false);
       console.error("Error saving product:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to save product. Please try again.",
+      });
     }
   };
 
-  //reset form
   const resetForm = () => {
     setFormData({
       name: "",
       brandName: "",
-      price: "",
+      price: { selling: "" },
       stock: "",
-      images: "",
+      images: [""],
       description: "",
       category: "",
     });
-    setSpecification([]);
-    setSpecValues({});
-    setFinalData([]);
   };
-
   return (
     <div>
       <Navbar pageTitle="Add New Product" />
+
       <div className="mx-auto flex flex-col md:flex-row min-h-screen">
-        {/* ✅ Make this parent relative so the loader stays inside */}
         <div className="relative w-full mx-auto bg-white shadow">
-          {/* ✅ Loader overlay */}
-          {submitLoader && (
-            <div className="absolute inset-0  flex items-center min-h-screen justify-center bg-white/30 backdrop-blur-sm z-20">
-              {!success ? (
-                <div className="bg-white p-8 md:mb-40 rounded-lg shadow-lg flex flex-col items-center animate-fadeIn">
-                  <FaSpinner className="text-blue-500 text-6xl animate-spin mb-4" />
-                  <p className="text-gray-700 font-semibold text-lg">
-                    Please wait...
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-white md:p-8 p-5 md:w-[450px] md:mb-40 rounded-lg shadow-xl border-1 flex flex-col items-center animate-fadeIn">
-                  <FaCheckCircle className="text-green-500 text-6xl mb-4" />
-                  <p className="text-gray-700 font-semibold md:text-lg mb-4">
-                    Product saved successfully!
-                  </p>
-                  <div className="flex w-full gap-2 md:-mb-5">
-                    <button
-                      className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-                      onClick={() => {
-                        setSuccess(false);
-                        setSubmitLoader(false);
-                        resetForm();
-                        navigate("/products");
-                      }}
-                    >
-                       Product
-                    </button>
-
-                      <button
-                      className="flex-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                      onClick={() => {
-                        setSuccess(false);
-                        setSubmitLoader(false);
-                        resetForm();
-                        navigate("/stock");
-                      }}
-                    >
-                       Stock
-                    </button>
-                    <button
-                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                      onClick={() => {
-                        resetForm();
-                        setSuccess(false);
-                        setSubmitLoader(false);
-                        navigate("/products/add-product");
-                      }}
-                    >
-                      Add more
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ✅ The rest of your form */}
-          <form onSubmit={handleSubmit} className="">
+          <form onSubmit={handleSubmit}>
             <div className="gap-3 lg:flex rounded">
-              {/* Left Section */}
-              <div className="rounded lg:w-[800px] max-w-full h-auto">
-                <h2 className="text-lg p-2 mb-2 rounded-t bg-blue-600 text-white sm:text-xl font-semibold">
+              {/* LEFT SECTION */}
+              <div className="rounded lg:w-[800px] max-w-full">
+                <h2 className="text-lg p-2 mb-2 rounded-t bg-blue-600 text-white font-semibold">
                   General Info
                 </h2>
-                <div className="px-2 space-y-4">
-                  {[
-                    { label: "Product Name", name: "name", type: "text" },
-                    { label: "Brand Name", name: "brandName", type: "text" },
-                    { label: "Price", name: "price", type: "number" },
-                    { label: "Product Image", name: "images", type: "text" },
-                    { label: "Description", name: "description", type: "text" },
-                  ].map((input, idx) => (
-                    <div key={idx} className="flex flex-col">
-                      <label className="mb-1 font-medium text-gray-700">
-                        {input.label}
-                      </label>
-                      <input
-                        type={input.type}
-                        name={input.name}
-                        value={formData[input.name]}
-                        onChange={handleChange}
-                        placeholder={`Enter ${input.label.toLowerCase()}`}
-                        required
-                        className="p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  ))}
 
-                  {/* Category Dropdown */}
-                  <div className="flex flex-col bg-gray-200 md:col-span-2">
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      className="w-full text-center text-lg border border-gray-300 p-2 rounded focus:ring-2 focus:ring-indigo-400"
+                <div className="px-2 space-y-4">
+                  {/* Name */}
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Product Name"
+                    className="p-2 border rounded w-full"
+                    required
+                  />
+
+                  {/* Brand */}
+                  <input
+                    type="text"
+                    name="brandName"
+                    value={formData.brandName}
+                    onChange={handleChange}
+                    placeholder="Brand Name"
+                    className="p-2 border rounded w-full"
+                    required
+                  />
+
+                  {/* PRICE */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <input
+                      type="number"
+                      name="selling"
+                      value={formData.price.selling}
+                      onChange={handlePriceChange}
+                      placeholder="Selling Price"
+                      className="p-2 border rounded"
                       required
-                    >
-                      <option className="bg-gray-300" value="">
-                        -- Select Category --
-                      </option>
-                      {!loading &&
-                        categoryData?.map((cat, idx) => (
-                          <option key={idx} value={cat.catID}>
-                            {cat.catID + " - " + cat.catName}
-                          </option>
-                        ))}
-                    </select>
+                    />
+                    {/* <input
+                      type="number"
+                      name="cost"
+                      value={formData.price.cost}
+                      onChange={handlePriceChange}
+                      placeholder="Cost Price"
+                      className="p-2 border rounded"
+                      readOnly
+                    />
+                    <input
+                      type="number"
+                      name="discount"
+                      value={formData.price.discount}
+                      onChange={handlePriceChange}
+                      placeholder="Discount"
+                      className="p-2 border rounded"
+                    /> */}
                   </div>
+
+                  {/* STOCK */}
+                  {/* <input
+                    type="text"
+                    name="stock"
+                    value={formData.stock}
+                    onChange={handleChange}
+                    placeholder="Stock Code"
+                    className="p-2 border rounded w-full"
+                  /> */}
+
+                  {/* IMAGES */}
+                  <div>
+                    {formData.images.map((img, idx) => (
+                      <div key={idx} className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={img}
+                          onChange={(e) => updateImage(idx, e.target.value)}
+                          placeholder={`Image URL ${idx + 1}`}
+                          className="p-2 border rounded flex-1"
+                        />
+                        {formData.images.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeImage(idx)}
+                            className="px-2 py-1 bg-red-500 text-white rounded"
+                          >
+                            −
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={addImageField}
+                      className="bg-gray-300 px-3 py-1 rounded"
+                    >
+                      + Add Image
+                    </button>
+                  </div>
+
+                  {/* DESCRIPTION */}
+                  <input
+                    type="text"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    placeholder="Description"
+                    className="p-2 border rounded w-full"
+                  />
+                </div>
+                {/* CATEGORY */}
+                <div className="px-2">
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="p-2 border mt-4 rounded w-full bg-gray-200"
+                    required
+                  >
+                    <option className="bg-gray-400" value="">
+                      -- Select Category --
+                    </option>
+                    {!loading &&
+                      categoryData.map((cat) => (
+                        <option key={cat.catID} value={cat.catID}>
+                          {cat.catID + " - " + cat.catName}
+                        </option>
+                      ))}
+                  </select>
                 </div>
               </div>
 
-              {/* Right Section: Specifications */}
+              {/* RIGHT SECTION — SPECIFICATIONS */}
               <div className="rounded w-full mt-3 lg:mt-0">
-                <h2 className="text-lg sm:text-xl text-white py-2 px-2 rounded-t bg-blue-600 font-semibold">
+                <h2 className="text-lg text-white py-2 px-2 rounded-t bg-blue-600 font-semibold">
                   Specification
                 </h2>
 
-                {specification.length > 0 ? (
-                  <div className="py-2 rounded-b space-y-3">
+                {specification.length ? (
+                  <div className="py-2 space-y-3">
                     {specification.map((spec, idx) => (
                       <div key={idx} className="flex flex-col gap-1">
-                        <div className="flex justify-between bg-gray-200 pl-2 mx-2 lg:mr-2">
-                          <label className="font-medium text-gray-700">
-                            {spec}
-                          </label>
+                        <div className="flex justify-between bg-gray-200 pl-2 mx-2">
+                          <label>{spec}</label>
                           <button
                             type="button"
                             onClick={() => addSpecRow(spec)}
-                            className="text-sm bg-gray-400 text-black px-2 py-1 w-fit hover:bg-blue-400 transition"
+                            className="text-sm bg-gray-400 px-2 py-1"
                           >
                             + Add more
                           </button>
@@ -319,7 +358,7 @@ const AddProduct = () => {
                         {specValues[spec]?.map((row, i) => (
                           <div
                             key={i}
-                            className="lg:flex gap-3 mx-2 lg:mr-2 items-center"
+                            className="lg:flex gap-3 mx-2 items-center"
                           >
                             <input
                               type="text"
@@ -328,7 +367,7 @@ const AddProduct = () => {
                                 handleSpecChange(spec, i, "key", e.target.value)
                               }
                               placeholder="Key"
-                              className="px-2 w-full py-1 border rounded focus:ring-2 focus:ring-blue-500 flex-1"
+                              className="px-2 py-1 border rounded flex-1"
                             />
                             <input
                               type="text"
@@ -342,13 +381,13 @@ const AddProduct = () => {
                                 )
                               }
                               placeholder="Value"
-                              className="px-2 py-1 mt-1 lg:mt-0 w-full border rounded focus:ring-2 focus:ring-blue-500 flex-1"
+                              className="px-2 py-1 border rounded flex-1"
                             />
                             {specValues[spec].length > 1 && (
                               <button
                                 type="button"
                                 onClick={() => removeSpecRow(spec, i)}
-                                className="text-red-600 font-bold px-2 py-1 rounded hover:bg-red-100"
+                                className="text-red-600 font-bold px-2"
                               >
                                 −
                               </button>
@@ -359,8 +398,8 @@ const AddProduct = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-72 bg-yellow-50 border border-yellow-300 rounded-b">
-                    <p className="text-yellow-700 font-semibold text-xl text-center">
+                  <div className="flex items-center justify-center h-72 bg-yellow-50">
+                    <p className="text-yellow-700 font-semibold text-xl">
                       ⚠ Please select category ⚠
                     </p>
                   </div>
@@ -368,18 +407,19 @@ const AddProduct = () => {
               </div>
             </div>
 
-            {/* Submit Buttons */}
-            <div className="text-right flex lg:justify-end px-2 mb-3 mt-3 lg:mt-0">
+            {/* SUBMIT BUTTON */}
+            <div className="text-right flex justify-end px-2 mb-3 mt-3">
               <button
                 type="button"
                 onClick={() => navigate("/products")}
-                className="px-2 py-1 mr-3 lg:w-40 w-full font-medium text-md text-white bg-red-600 hover:bg-red-800 rounded"
+                className="px-3 py-1 bg-red-600 text-white rounded mr-2"
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
-                className="px-3 py-1 w-full lg:w-40 font-medium text-md text-white bg-blue-600 hover:bg-blue-800 rounded"
+                className="px-3 py-1 bg-blue-600 text-white rounded"
               >
                 Save Product
               </button>
