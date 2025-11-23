@@ -151,6 +151,7 @@ export default function Products() {
               <th className="px-4 py-2">Brand Name</th>
               <th className="px-4 py-2">Category</th>
               <th className="px-4 py-2">Price</th>
+              <th className="px-4 py-2">Discount</th>
               <th className="px-4 py-2">Stock</th>
               <th className="px-4 py-2">Images</th>
               <th className="px-4 py-2">Actions</th>
@@ -168,12 +169,13 @@ export default function Products() {
                   <td className="px-4 line-clamp-1">{product.name}</td>
                   <td className="px-4 ">{product.brandName}</td>
                   <td className="px-4 ">{product.category}</td>
-                  <td className="px-4 ">${product?.price?.selling ?? "0"}</td>
+                  <td className="px-4 ">{product?.price?.selling ?? "0"}</td>
+                  <td className="px-4 ">{product?.price?.discount ?? "0"}</td>
                   <td className="px-4 ">{product.stock}</td>
                   <td className="xl:pl-25 px-4">
                     {product.images[0] ? (
                       <img
-                        src={product.images}
+                        src={product.images[0]}
                         alt={product.name}
                         className="w-10 h-10 object-cover rounded"
                       />
