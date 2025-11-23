@@ -50,25 +50,27 @@ export const StatusManagement = () => {
 
   const mainData = productData.length > 0 ? productData : dummyProducts;
 
+  console.log(selected);
+
   // -------------------------
   // Filter selected category
   // -------------------------
   const filterData = mainData.filter((item) => {
-    if (selected === "featured") return item.status.isFeatured;
-    if (selected === "flash") return item.status.isFlashSale;
+    if (selected === "isFeatured") return item.status.isFeatured;
+    if (selected === "isFlashSale") return item.status.isFlashSale;
     if (selected === "discount") return item.status.isDiscount;
-    if (selected === "bestSelling") return item.status.isBestSelling;
-    if (selected === "newArrival") return item.status.isNewArrival;
+    if (selected === "isBestSelling") return item.status.isBestSelling;
+    if (selected === "isNewArrival") return item.status.isNewArrival;
     return false;
   });
 
   const titleMap = {
     none: "No Status Selected",
-    featured: "Featured Product",
-    flash: "Flash Sale / Hot Deals",
+    isFeatured: "Featured Product",
+    isFlashSale: "Flash Sale / Hot Deals",
     discount: "Discount Products",
-    bestSelling: "Best Selling Products",
-    newArrival: "New Arrival Products",
+    isBestSelling: "Best Selling Products",
+    isNewArrival: "New Arrival Products",
   };
 
   const addProduct = (productID) => {
@@ -96,11 +98,11 @@ export const StatusManagement = () => {
             className="border px-3 py-2 rounded outline-none focus:ring w-full"
           >
             <option value="none">None</option>
-            <option value="featured">Featured Product</option>
-            <option value="flash">Flash Sale / Hot Deals</option>
+            <option value="isFeatured">Featured Product</option>
+            <option value="isFlashSale">Flash Sale / Hot Deals</option>
             <option value="discount">Discount</option>
-            <option value="bestSelling">Best Selling</option>
-            <option value="newArrival">New Arrival</option>
+            <option value="isBestSelling">Best Selling</option>
+            <option value="isNewArrival">New Arrival</option>
           </select>
         </div>
 
