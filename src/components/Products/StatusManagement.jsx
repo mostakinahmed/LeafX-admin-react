@@ -126,9 +126,9 @@ export const StatusManagement = () => {
     <div>
       <Navbar pageTitle="Status Management" />
 
-      <div className="flex gap-20 pt-2">
+      <div className="flex flex-col lg:flex-row lg:gap-20 gap-3 pt-2">
         {/* Dropdown */}
-        <div className="w-1/4 bg-white shadow rounded p-2">
+        <div className="lg:w-1/4 w-full bg-white shadow rounded p-2">
           <select
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
@@ -144,7 +144,7 @@ export const StatusManagement = () => {
         </div>
 
         {/* Title */}
-        <div className="w-1/2 bg-white shadow rounded flex justify-center items-center">
+        <div className="lg:w-1/2 w-full h-10 lg:h-auto bg-white shadow rounded flex justify-center items-center">
           <h1 className="font-semibold text-2xl text-gray-800">
             {titleMap[selected]}
           </h1>
@@ -154,7 +154,7 @@ export const StatusManagement = () => {
           <div className="flex  mb-4 ">
             <button
               onClick={() => setShowModal(true)}
-              className="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700"
+              className="bg-blue-600 w-full text-white px-5 py-2 rounded shadow hover:bg-blue-700"
             >
               + Add More Product
             </button>
@@ -164,39 +164,41 @@ export const StatusManagement = () => {
 
       {/* TABLE SECTION */}
       {selected !== "none" && (
-        <div className="py-5">
+        <div className="lg:py-5">
           {/* Add Button */}
 
           {/* Table */}
           {filterData.length > 0 ? (
-            <table className="w-full border border-gray-300 rounded bg-white">
-              <thead className="bg-gray-200">
-                <tr className="text-left">
-                  <th className="p-2 border">Product ID</th>
-                  <th className="p-2 border">Name</th>
-                  <th className="p-2 border">Price</th>
-                  <th className="p-2 border">Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {filterData.map((item) => (
-                  <tr key={item.pID} className="hover:bg-gray-50">
-                    <td className="p-2 border">{item.pID}</td>
-                    <td className="p-2 border">{item.name}</td>
-                    <td className="p-2 border">{item.price.selling} Tk</td>
-                    <td className="p-2 border">
-                      <button
-                        onClick={() => submit(item.pID, "remove")}
-                        className="bg-red-500 text-white px-4 py-[2px] rounded hover:bg-red-600"
-                      >
-                        Remove
-                      </button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full border border-gray-300 rounded bg-white whitespace-nowrap">
+                <thead className="bg-gray-200">
+                  <tr className="text-left">
+                    <th className="p-2 border">Product ID</th>
+                    <th className="p-2 border">Name</th>
+                    <th className="p-2 border">Price</th>
+                    <th className="p-2 border">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {filterData.map((item) => (
+                    <tr key={item.pID} className="hover:bg-gray-50">
+                      <td className="p-2 border">{item.pID}</td>
+                      <td className="p-2 border">{item.name}</td>
+                      <td className="p-2 border">{item.price.selling} Tk</td>
+                      <td className="p-2 border">
+                        <button
+                          onClick={() => submit(item.pID, "remove")}
+                          className="bg-red-500 text-white px-4 py-[2px] rounded hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
             <p className="text-center text-gray-500 text-lg mt-4">
               No product found for this category.
