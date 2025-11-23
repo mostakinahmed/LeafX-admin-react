@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
 import Navbar from "../Navbar";
 import { DataContext } from "@/Context Api/ApiContext";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 export const StatusManagement = () => {
-  const { productData } = useContext(DataContext);
+  const { productData, updateApi } = useContext(DataContext);
   const [selected, setSelected] = useState("none");
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
@@ -50,8 +52,6 @@ export const StatusManagement = () => {
 
   const mainData = productData.length > 0 ? productData : dummyProducts;
 
-  console.log(selected);
-
   // -------------------------
   // Filter selected category
   // -------------------------
@@ -73,16 +73,53 @@ export const StatusManagement = () => {
     isNewArrival: "New Arrival Products",
   };
 
-  const addProduct = (productID) => {
-    alert(`Added product ${productID} to ${titleMap[selected]}`);
+  const submit = async (productID, action) => {
     setShowModal(false);
+    try {
+      Swal.fire({
+        title: "Processing...",
+        text: "Please wait while we update the product status.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      let value = action === "remove" ? false : true;
+
+      const data = {
+        pID: productID,
+        value,
+        key: selected,
+      };
+      console.log(data);
+
+      // Wait for the API response
+      const res = await axios.patch(
+        "https://fabribuzz.onrender.com/api/product",
+        data
+      );
+
+      // Update UI after successful response
+      updateApi();
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Status updated successfully!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update status. Please try again.",
+      });
+    }
   };
 
-  const removeProduct = (productID) => {
-    alert(`Removed product ${productID} from ${titleMap[selected]}`);
-  };
-
-  // -------------------------
   // Render
   // -------------------------
   return (
@@ -150,7 +187,7 @@ export const StatusManagement = () => {
                     <td className="p-2 border">{item.price.selling} Tk</td>
                     <td className="p-2 border">
                       <button
-                        onClick={() => removeProduct(item.pID)}
+                        onClick={() => submit(item.pID, "remove")}
                         className="bg-red-500 text-white px-4 py-[2px] rounded hover:bg-red-600"
                       >
                         Remove
@@ -200,7 +237,7 @@ export const StatusManagement = () => {
                       {item.pID} - {item.name}
                     </span>
                     <button
-                      onClick={() => addProduct(item.pID)}
+                      onClick={() => submit(item.pID, "add")}
                       className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
                     >
                       Add
