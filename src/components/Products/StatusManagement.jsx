@@ -8,7 +8,11 @@ export const StatusManagement = () => {
   const { productData, updateApi } = useContext(DataContext);
   const [selected, setSelected] = useState("none");
   const [showModal, setShowModal] = useState(false);
+  const [disModel, setDisModel] = useState(false);
+  const [disModel2, setDisModel2] = useState(false);
+  const [currData, setCurrData] = useState("");
   const [search, setSearch] = useState("");
+  const [discount, setDiscount] = useState("");
 
   // Fallback Dummy Data (if API has no data)
   const dummyProducts = [
@@ -58,7 +62,7 @@ export const StatusManagement = () => {
   const filterData = mainData.filter((item) => {
     if (selected === "isFeatured") return item.status.isFeatured;
     if (selected === "isFlashSale") return item.status.isFlashSale;
-    if (selected === "discount") return item.status.isDiscount;
+    if (selected === "discount") return item.price.discount;
     if (selected === "isBestSelling") return item.status.isBestSelling;
     if (selected === "isNewArrival") return item.status.isNewArrival;
     return false;
@@ -75,6 +79,7 @@ export const StatusManagement = () => {
 
   const submit = async (productID, action) => {
     setShowModal(false);
+    let value;
     try {
       Swal.fire({
         title: "Processing...",
@@ -85,14 +90,18 @@ export const StatusManagement = () => {
         },
       });
 
-      let value = action === "remove" ? false : true;
+      if (discount) {
+        value = action;
+      } else {
+        value = action === "remove" ? false : true;
+      }
 
       const data = {
         pID: productID,
         value,
         key: selected,
       };
-      console.log(data);
+     
 
       // Wait for the API response
       const res = await axios.patch(
@@ -120,6 +129,50 @@ export const StatusManagement = () => {
     }
   };
 
+  const addDiscount = async (data) => {
+    setDisModel(false);
+    setCurrData(data);
+    setDisModel2(true);
+    // try {
+    //   Swal.fire({
+    //     title: "Processing...",
+    //     text: "Please wait while we add the discount.",
+    //     allowOutsideClick: false,
+    //     didOpen: () => {
+    //       Swal.showLoading();
+    //     },
+    //   });
+
+    //   const data = {
+    //     pID: productID,
+    //   };
+    //   console.log(data);
+
+    //   // Wait for the API response
+    //   const res = await axios.patch(
+    //     "https://fabribuzz.onrender.com/api/product/discount",
+    //     data
+    //   );
+
+    //   // Update UI after successful response
+    //   updateApi();
+
+    //   Swal.fire({
+    //     icon: "success",
+    //     title: "Success",
+    //     text: "Discount added successfully!",
+    //     timer: 2000,
+    //     showConfirmButton: false,
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Error",
+    //     text: "Failed to add discount. Please try again.",
+    //   });
+    // }
+  };
   // Render
   // -------------------------
   return (
@@ -150,13 +203,25 @@ export const StatusManagement = () => {
           </h1>
         </div>
 
-        {selected !== "none" && (
+        {selected == "none" ||
+          (selected !== "discount" && (
+            <div className="flex  mb-4 ">
+              <button
+                onClick={() => setShowModal(true)}
+                className="bg-blue-600 w-full text-white px-5 py-2 rounded shadow hover:bg-blue-700"
+              >
+                + Add More Product
+              </button>
+            </div>
+          ))}
+
+        {selected === "discount" && (
           <div className="flex  mb-4 ">
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => setDisModel(true)}
               className="bg-blue-600 w-full text-white px-5 py-2 rounded shadow hover:bg-blue-700"
             >
-              + Add More Product
+              + Add Discount
             </button>
           </div>
         )}
@@ -209,8 +274,8 @@ export const StatusManagement = () => {
 
       {/* ADD PRODUCT MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-          <div className="bg-white w-[400px] p-5 rounded shadow-lg">
+        <div className="fixed inset-0 bg-black/40 px-2 lg:px-0 flex justify-center items-center z-50">
+          <div className="bg-white lg:w-1/3 p-5 rounded shadow-lg">
             <h2 className="text-xl font-semibold mb-3">
               Add Product to {titleMap[selected]}
             </h2>
@@ -235,12 +300,15 @@ export const StatusManagement = () => {
                     key={item.pID}
                     className="p-2 border-b flex justify-between items-center hover:bg-gray-50"
                   >
-                    <span>
+                    <span className="lg:hidden">
+                      {item.pID} <br /> {item.name}
+                    </span>
+                    <span className=" hidden lg:flex">
                       {item.pID} - {item.name}
                     </span>
                     <button
                       onClick={() => submit(item.pID, "add")}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                      className="bg-green-500 text-white px-5  py-1 rounded hover:bg-green-600"
                     >
                       Add
                     </button>
@@ -254,6 +322,119 @@ export const StatusManagement = () => {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ADD Discount MODAL */}
+      {disModel && (
+        <div className="fixed inset-0 bg-black/40 lg:px-0 px-2 flex justify-center items-center z-50">
+          <div className="bg-white lg:w-1/3 p-5 rounded shadow-lg">
+            <h2 className="text-xl font-semibold mb-3 text-center">
+              Add Discount
+            </h2>
+
+            <input
+              type="text"
+              placeholder="Search product by name or ID"
+              className="w-full border px-3 py-2 rounded mb-3"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            <div className="max-h-60 overflow-y-auto border rounded">
+              {mainData
+                .filter(
+                  (p) =>
+                    p.name.toLowerCase().includes(search.toLowerCase()) ||
+                    p.pID.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((item) => (
+                  <div
+                    key={item.pID}
+                    className="p-2 border-b flex justify-between items-center hover:bg-gray-50"
+                  >
+                    <span className="lg:hidden">
+                      {item.pID} <br /> {item.name}
+                    </span>
+                    <span className=" hidden lg:flex">
+                      {item.pID} - {item.name}
+                    </span>
+
+                    <button
+                      onClick={() => addDiscount(item)}
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    >
+                      Add Discount
+                    </button>
+                  </div>
+                ))}
+            </div>
+
+            <button
+              onClick={() => setDisModel(false)}
+              className="mt-3 w-full bg-gray-300 py-2 rounded hover:bg-gray-400"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {disModel2 && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+          <div className="bg-white w-[400px] rounded shadow-lg p-5">
+            <h2 className="text-xl font-semibold mb-4">Apply Discount</h2>
+
+            {currData ? (
+              <div className="flex flex-col gap-3">
+                {/* Selected Product */}
+                <div className="flex items-center gap-3 border p-2 rounded">
+                  <img
+                    src={currData.images[0]}
+                    alt={currData.name}
+                    className="w-16 h-16 object-contain"
+                  />
+                  <div>
+                    <p className="font-semibold">{currData.name}</p>
+                    <p className="text-gray-500">
+                      Price: {currData.price.selling} Tk
+                    </p>
+                  </div>
+                </div>
+
+                {/* Discount Input */}
+                <div className="flex flex-col">
+                  <label className="font-medium text-gray-700">
+                    Discount (Tk)
+                  </label>
+                  <input
+                    type="number"
+                    value={discount}
+                    onChange={(e) => setDiscount(Number(e.target.value))}
+                    className="border px-3 py-2 rounded outline-none focus:ring"
+                  />
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end gap-2 mt-4">
+                  <button
+                    onClick={() => setDisModel2(false)}
+                    className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={submit(currData.pID, discount)}
+                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p>No product selected.</p>
+            )}
           </div>
         </div>
       )}
