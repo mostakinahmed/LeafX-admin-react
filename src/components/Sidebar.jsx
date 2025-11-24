@@ -68,7 +68,7 @@ export default function Sidebar() {
         className={`fixed sm:static top-0 left-0 h-full w-50 bg-gray-900 text-white shadow-lg p-4 flex flex-col transition-transform duration-300 z-50
         ${isOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}
       >
-        <div className="flex">
+        <div className="flex cursor-pointer">
           <img className="h-10 w-10" src="/logo.png" alt="Logo" />
           <button
             onClick={() => navigate("/")}
