@@ -3,8 +3,10 @@ import Navbar from "../components/Navbar";
 import CategoryList from "../components/Category/CategoryList";
 import { DataContext } from "../Context Api/ApiContext";
 import AddCategory from "../components/Category/AddCategory";
+import { TopCategory } from "@/components/Category/TopCategory";
 
 export default function Category() {
+  
   const { categoryData, productData, loading } = useContext(DataContext);
 
   const [activeTab, setActiveTab] = useState("catList");
@@ -34,12 +36,24 @@ export default function Category() {
           >
             Add Category
           </button>
+
+          <button
+            onClick={() => setActiveTab("topCategory")}
+            className={`lg:px-20 w-1/2 lg:w-auto  lg:py-2 py-1  font-medium ${
+              activeTab === "topCategory"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Top Category
+          </button>
         </div>
 
         {/* Conditional Content */}
         <div className=" min-h-screen">
           {activeTab === "catList" && <CategoryList data={categoryData} />}
           {activeTab === "addCat" && <AddCategory />}
+          {activeTab === "topCategory" && <TopCategory />}
         </div>
       </div>
     </div>
