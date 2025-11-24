@@ -26,16 +26,21 @@ export const generateProductPDF = async (productData) => {
   const tableBody = [
     [
       { text: "SL", bold: true, alignment: "center", margin: [0, 5, 0, 0] },
-      { text: "P_ID", bold: true, alignment: "center", margin: [0, 5, 0, 0] },
+      {
+        text: "Product_ID",
+        bold: true,
+        alignment: "left",
+        margin: [0, 5, 0, 0],
+      },
       {
         text: "Product Name",
         bold: true,
         alignment: "left",
         margin: [0, 5, 0, 0],
       },
-      { text: "Cat_ID", bold: true, alignment: "center", margin: [0, 5, 0, 0] },
+      { text: "Cat_ID", bold: true, alignment: "left", margin: [0, 5, 0, 0] },
       { text: "Brand", bold: true, alignment: "left", margin: [0, 5, 0, 0] },
-      { text: "Stock", bold: true, alignment: "center", margin: [0, 5, 0, 0] },
+      { text: "Stock_ID", bold: true, alignment: "center", margin: [0, 5, 0, 0] },
       {
         text: "SKU List",
         bold: true,
@@ -59,34 +64,59 @@ export const generateProductPDF = async (productData) => {
 
   productData.forEach((item, index) => {
     tableBody.push([
-      { text: index + 1, alignment: "center", margin: [0, 5, 0, 5] },
-      { text: item.pID, alignment: "center", margin: [0, 5, 0, 5] },
-      { text: item.name, alignment: "left", margin: [0, 5, 0, 5] },
-      { text: item.category, alignment: "center", margin: [0, 5, 0, 5] },
-      { text: item.brandName, alignment: "left", margin: [0, 5, 0, 5] },
+      {
+        text: index + 1,
+        alignment: "center",
+        margin: [0, 5, 0, 5],
+        color: "#111827",
+      },
+      {
+        text: item.pID,
+        alignment: "left",
+        margin: [0, 5, 0, 5],
+        color: "#111827",
+      },
+      {
+        text: item.name,
+        alignment: "left",
+        margin: [0, 5, 0, 5],
+        color: "#111827",
+      },
+      {
+        text: item.category,
+        alignment: "left",
+        margin: [0, 5, 0, 5],
+        color: "#111827",
+      },
+      {
+        text: item.brandName,
+        alignment: "left",
+        margin: [0, 5, 0, 5],
+        color: "#111827",
+      },
       {
         text: item.stock?.toLocaleString() || 0,
         alignment: "center",
         margin: [0, 5, 0, 5],
+        color: "#111827",
       },
-      //   {
-      //     text: (item.skus || ["-"]).join("\n"),
-      //     alignment: "center",
-      //     margin: [0, 5, 0, 5],
-      //   },
       {
         text: "SKU123456789\nSKU325612534\nSKU896574213\nSKU123456789\nSKU325612534\nSKU896574213",
         alignment: "center",
+        margin: [0, 5, 0, 1],
+        color: "#111827",
       },
       {
         text: item.price?.toLocaleString() || 0,
         alignment: "center",
         margin: [0, 5, 0, 5],
+        color: "#111827",
       },
       {
         text: item.totalValue?.toLocaleString() || 0,
         alignment: "center",
         margin: [0, 5, 0, 5],
+        color: "#111827",
       },
     ]);
   });
@@ -106,11 +136,30 @@ export const generateProductPDF = async (productData) => {
         },
       ],
     },
-    footer: (currentPage, pageCount) => ({
-      text: `Page ${currentPage} of ${pageCount}`,
-      alignment: "center",
-      fontSize: 9,
-    }),
+    footer: (currentPage, pageCount) => {
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString(); // e.g., "11/24/2025"
+      const formattedTime = now.toLocaleTimeString(); // e.g., "22:15:30"
+
+      return {
+        columns: [
+          {
+            text: `Generated on: ${formattedDate} ${formattedTime}`,
+            alignment: "left",
+            fontSize: 9,
+            color: "#6B7280", // gray-400
+          },
+          {
+            text: `Page ${currentPage} of ${pageCount}`,
+            alignment: "right",
+            fontSize: 9,
+            color: "#6B7280", // gray-400
+          },
+        ],
+        margin: [20, 0, 20, 0],
+      };
+    },
+
     content: [
       {
         table: {
