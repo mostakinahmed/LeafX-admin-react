@@ -154,7 +154,7 @@ export const StatusManagement = () => {
             onChange={(e) => setSelected(e.target.value)}
             className="border px-3 py-2 rounded outline-none focus:ring w-full"
           >
-            <option value="none">None</option>
+            <option value="none">None - Select Category</option>
             <option value="isFeatured">Featured Product</option>
             <option value="isFlashSale">Flash Sale / Hot Deals</option>
             <option value="discount">Discount</option>
@@ -163,7 +163,7 @@ export const StatusManagement = () => {
           </select>
         </div>
 
-        <div className="lg:w-1/2 w-full h-10 lg:h-auto bg-white shadow rounded flex justify-center items-center">
+        <div className="lg:w-1/2 w-full h-10 lg:h-auto bg-gray-200 shadow rounded flex justify-center items-center">
           <h1 className="font-semibold text-2xl text-gray-800">
             {titleMap[selected]}
           </h1>
@@ -193,10 +193,23 @@ export const StatusManagement = () => {
         )}
       </div>
 
+      {selected == "none" && (
+        <div className="flex items-center h-60 mt-30 justify-center bg-gray-300">
+          <div className="flex w-full  flex-col items-center justify-center bg-yellow-100 border border-yellow-300 text-yellow-800 rounded p-6 shadow-lg">
+            <h1 className="text-lg font-semibold mb-1">
+              ⚠️ No Category is Selected
+            </h1>
+            <p className="text-sm text-yellow-700">
+              Please choose a category to view its details.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* -------------------------
-          Product Table
+          Product Table 
       ------------------------- */}
-      {selected !== "none" && (
+      {selected !== "none" && selected !== "discount" && (
         <div className="lg:py-5 overflow-x-auto">
           {filterData.length > 0 ? (
             <table className="w-full border border-gray-300 rounded bg-white whitespace-nowrap">
@@ -217,6 +230,47 @@ export const StatusManagement = () => {
                     <td className="p-2 border">
                       <button
                         onClick={() => submit(item.pID, "remove")}
+                        className="bg-red-500 text-white px-4 py-[2px] rounded hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-center text-gray-500 text-lg mt-4">
+              No product found for this category.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/*  Product Table for discount------------------------- */}
+      {selected == "discount" && (
+        <div className="lg:py-5 overflow-x-auto">
+          {filterData.length > 0 ? (
+            <table className="w-full border border-gray-300 rounded bg-white whitespace-nowrap">
+              <thead className="bg-gray-200">
+                <tr className="text-left">
+                  <th className="p-2 border">Product ID</th>
+                  <th className="p-2 border">Name</th>
+                  <th className="p-2 border">Price</th>
+                  <th className="p-2 border">Discount</th>
+                  <th className="p-2 border">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filterData.map((item) => (
+                  <tr key={item.pID} className="hover:bg-gray-50">
+                    <td className="p-2 border">{item.pID}</td>
+                    <td className="p-2 border">{item.name}</td>
+                    <td className="p-2 border">{item.price.selling} Tk</td>
+                    <td className="p-2 border">{item.price.discount} Tk</td>
+                    <td className="p-2 border">
+                      <button
+                        onClick={() => submit(item.pID, 0)}
                         className="bg-red-500 text-white px-4 py-[2px] rounded hover:bg-red-600"
                       >
                         Remove
