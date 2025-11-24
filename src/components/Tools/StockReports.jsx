@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { DataContext } from "@/Context Api/ApiContext";
 import { FiCalendar, FiBox, FiActivity, FiCreditCard } from "react-icons/fi";
 import Swal from "sweetalert2";
+import { generateProductPDF } from "./pdfMake";
 
 export const StockReports = () => {
   const { productData, categoryData } = useContext(DataContext);
@@ -33,7 +34,6 @@ export const StockReports = () => {
     "This Year",
     "Custom Range",
   ];
-
   // 🔹 Category Change
   const handleCategoryChange = (value) => {
     setFilterValues((prev) => ({ ...prev, category: value }));
@@ -47,13 +47,22 @@ export const StockReports = () => {
 
     let brands = [];
     if (value === "All") {
-      brands = [...new Set(productData.map((p) => p))];
+      // Get all unique brand names
+      const uniqueBrandNames = [
+        ...new Set(productData.map((p) => p.brandName)),
+      ];
+      // Convert back to objects if needed
+      brands = uniqueBrandNames.map((name) => ({ brandName: name }));
     } else {
-      brands = [
+      // Filter by category and get unique brand names
+      const uniqueBrandNames = [
         ...new Set(
-          productData.filter((p) => p.category === value).map((p) => p)
+          productData
+            .filter((p) => p.category === value)
+            .map((p) => p.brandName)
         ),
       ];
+      brands = uniqueBrandNames.map((name) => ({ brandName: name }));
     }
 
     if (brands.length > 0) {
@@ -202,18 +211,19 @@ export const StockReports = () => {
       data = data.filter((p) => p.brandName === filterValues.brand);
     }
 
-    //genarate part
-    if (filterValues.product !== "All") {
-      console.log(filterValues.product);
+    //filter product
+    if (filterValues.product === "All") {
+      console.log(data);
     } else {
-      console.log("Not All");
+      console.log(filterValues.product);
     }
 
-    Swal.fire({
-      icon: "info",
-      title: "Filters Applied!",
-      text: JSON.stringify(filterValues, null, 2),
-    });
+    // Swal.fire({
+    //   icon: "info",
+    //   title: "Filters Applied!",
+    //   text: JSON.stringify(filterValues, null, 2),
+    // });
+    generateProductPDF(productData);
   };
 
   return (
