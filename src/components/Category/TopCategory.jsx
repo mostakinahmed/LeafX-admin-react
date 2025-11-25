@@ -72,7 +72,7 @@ export const TopCategory = () => {
                   <td className="p-2 border text-center">{item.catID}</td>
                   <td className="p-2 border">{item.catName}</td>
                   <td className="p-2 border mx-5 text-center">
-                    {item.TopCategory === true ? "True" : "False"}{" "}
+                    {item.topCategory === true ? "True" : "False"}{" "}
                   </td>
                   <td className="p-2 border text-center ">
                     <button
