@@ -66,24 +66,26 @@ export const TopCategory = () => {
               </tr>
             </thead>
             <tbody>
-              {categoryData.map((item, inx) => (
-                <tr key={item.pID} className="hover:bg-gray-100">
-                  <td className="p-2 border text-center">{++inx}</td>
-                  <td className="p-2 border text-center">{item.catID}</td>
-                  <td className="p-2 border">{item.catName}</td>
-                  <td className="p-2 border mx-5 text-center">
-                    {item.topCategory === true ? "True" : "False"}{" "}
-                  </td>
-                  <td className="p-2 border text-center ">
-                    <button
-                      onClick={() => submit(item.pID, "remove")}
-                      className="bg-red-500 text-white px-4 py-[2px] text-sm rounded hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {categoryData
+                .filter((data) => data.topCategory === true)
+                .map((item, inx) => (
+                  <tr key={item.pID} className="hover:bg-gray-100">
+                    <td className="p-2 border text-center">{++inx}</td>
+                    <td className="p-2 border text-center">{item.catID}</td>
+                    <td className="p-2 border">{item.catName}</td>
+                    <td className="p-2 border mx-5 text-center">
+                      {item.topCategory === true ? "True" : "False"}{" "}
+                    </td>
+                    <td className="p-2 border text-center ">
+                      <button
+                        onClick={() => submit(item.catID, false)}
+                        className="bg-red-500 text-white px-4 py-[2px] text-sm rounded hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -115,8 +117,9 @@ export const TopCategory = () => {
                 {categoryData
                   .filter(
                     (p) =>
-                      p.catName.toLowerCase().includes(search.toLowerCase()) ||
-                      p.catID.toLowerCase().includes(search.toLowerCase())
+                      (p.catName.toLowerCase().includes(search.toLowerCase()) ||
+                        p.catID.toLowerCase().includes(search.toLowerCase())) &&
+                      p.topCategory === false
                   )
                   .map((item) => (
                     <div
