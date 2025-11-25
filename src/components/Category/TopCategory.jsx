@@ -26,7 +26,11 @@ export const TopCategory = () => {
         action: action,
       };
 
-      await axios.patch("https://fabribuzz.onrender.com/api/category", data);
+      console.log(data);
+
+      await axios.patch("https://fabribuzz.onrender.com/api/category", {
+        data,
+      });
 
       updateApi();
 
