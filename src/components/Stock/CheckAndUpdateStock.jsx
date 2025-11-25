@@ -135,7 +135,7 @@ export default function CheckAndUpdateStock() {
           />
           <button
             onClick={handleSearch}
-            className="bg-blue-600 text-white lg:w-[128px] w-[147px] px-6 py-2 rounded hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white lg:w-[128px] w-[147px] py-2 rounded hover:bg-blue-700 transition"
           >
             Search
           </button>

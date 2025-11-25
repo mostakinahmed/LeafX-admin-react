@@ -13,10 +13,10 @@ export default function Users() {
       <Navbar pageTitle="User Management" />
       <div className="bg-white shadow-lg  p-3 w-full mx-auto">
         {/* Buttons */}
-        <div className="flex justify-center  lg:mb-0 mb-2">
+        <div className="flex justify-center w-full lg:mb-0 mb-2">
           <button
             onClick={() => setActiveTab("customer")}
-            className={`lg:px-15 px-2  lg:py-2 py-1  font-medium ${
+            className={`lg:px-15 px-4  lg:py-2 py-1  font-medium ${
               activeTab === "customer"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -27,7 +27,7 @@ export default function Users() {
 
           <button
             onClick={() => setActiveTab("admin")}
-            className={`lg:px-19 px-4  text-md ${
+            className={`lg:px-19 px-4 text-md ${
               activeTab === "admin"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -37,13 +37,23 @@ export default function Users() {
           </button>
           <button
             onClick={() => setActiveTab("addAdmin")}
-            className={` lg:px-9 px-1   font-medium line-clamp-1 ${
+            className={` lg:px-9 px-1 hidden lg:flex justify-center items-center font-medium line-clamp-1 ${
               activeTab === "addAdmin"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Add New Admin
+          </button>
+          <button
+            onClick={() => setActiveTab("addAdmin")}
+            className={` lg:px-9 w-1/3 px-1 lg:hidden font-medium  ${
+              activeTab === "addAdmin"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            New-Admin
           </button>
         </div>
 

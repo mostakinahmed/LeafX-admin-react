@@ -17,7 +17,7 @@ export default function Users() {
       <Navbar pageTitle="Stock Management" />
       <div className="bg-white shadow p-2 md:p-3 w-full mx-auto">
         {/* Buttons */}
-        <div className="flex justify-center  lg:mb-0 mb-2">
+        <div className="hidden lg:flex justify-center  lg:mb-0 mb-2">
           <button
             onClick={() => setActiveTab("checkStock")}
             className={`lg:px-15 px-2  lg:py-2 py-1  font-medium ${
@@ -38,6 +38,32 @@ export default function Users() {
             }`}
           >
             Out Of Stock & Alert
+          </button>
+        </div>
+        {/* 
+for mobile */}
+        {/* Buttons */}
+        <div className="flex w-full lg:hidden justify-center  lg:mb-0 mb-2">
+          <button
+            onClick={() => setActiveTab("checkStock")}
+            className={`w-1/2 py-1 text-md ${
+              activeTab === "checkStock"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Check & Update
+          </button>
+
+          <button
+            onClick={() => setActiveTab("customer")}
+            className={`lg:px-11 w-1/2 px-1  text-md ${
+              activeTab === "customer"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            O. Of Stock & Alert
           </button>
         </div>
 
