@@ -15,55 +15,9 @@ export const StatusManagement = () => {
   const [search, setSearch] = useState("");
   const [discount, setDiscount] = useState("");
 
-  // Fallback Dummy Data
-  const dummyProducts = [
-    {
-      pID: "P001",
-      name: "Gaming Mouse",
-      images: [],
-      price: { selling: 1200 },
-      status: {
-        isFeatured: true,
-        isFlashSale: false,
-        isDiscount: true,
-        isBestSelling: false,
-        isNewArrival: false,
-      },
-    },
-    {
-      pID: "P002",
-      name: "Keyboard RGB",
-      images: [],
-      price: { selling: 2200 },
-      status: {
-        isFeatured: false,
-        isFlashSale: true,
-        isDiscount: false,
-        isBestSelling: true,
-        isNewArrival: false,
-      },
-    },
-    {
-      pID: "P003",
-      name: "Laptop Stand",
-      images: [],
-      price: { selling: 900 },
-      status: {
-        isFeatured: false,
-        isFlashSale: false,
-        isDiscount: false,
-        isBestSelling: false,
-        isNewArrival: true,
-      },
-    },
-  ];
-
-  const mainData = productData.length > 0 ? productData : dummyProducts;
-
-  // -------------------------
   // Filter selected category
   // -------------------------
-  const filterData = mainData.filter((item) => {
+  const filterData = productData.filter((item) => {
     if (selected === "isFeatured") return item.status.isFeatured;
     if (selected === "isFlashSale") return item.status.isFlashSale;
     if (selected === "discount") return item.price.discount;
@@ -307,11 +261,12 @@ export const StatusManagement = () => {
             />
 
             <div className="max-h-60 overflow-y-auto border rounded">
-              {mainData
+              {productData
                 .filter(
                   (p) =>
-                    p.name.toLowerCase().includes(search.toLowerCase()) ||
-                    p.pID.toLowerCase().includes(search.toLowerCase())
+                    (p.name.toLowerCase().includes(search.toLowerCase()) ||
+                      p.pID.toLowerCase().includes(search.toLowerCase())) &&
+                    p.status[selected] === false
                 )
                 .map((item) => (
                   <div
@@ -363,11 +318,12 @@ export const StatusManagement = () => {
             />
 
             <div className="max-h-60 overflow-y-auto border rounded">
-              {mainData
+              {productData
                 .filter(
                   (p) =>
-                    p.name.toLowerCase().includes(search.toLowerCase()) ||
-                    p.pID.toLowerCase().includes(search.toLowerCase())
+                    (p.name.toLowerCase().includes(search.toLowerCase()) ||
+                      p.pID.toLowerCase().includes(search.toLowerCase())) &&
+                    p.price.discount === 0
                 )
                 .map((item) => (
                   <div
