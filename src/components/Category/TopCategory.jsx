@@ -76,7 +76,7 @@ export const TopCategory = () => {
                   </td>
                   <td className="p-2 border text-center ">
                     <button
-                      onClick={() => sbmit(item.pID, "remove")}
+                      onClick={() => submit(item.pID, "remove")}
                       className="bg-red-500 text-white px-4 py-[2px] text-sm rounded hover:bg-red-600"
                     >
                       Remove
