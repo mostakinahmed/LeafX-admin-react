@@ -6,8 +6,7 @@ import Swal from "sweetalert2";
 export const TopCategory = () => {
   const { updateApi, categoryData } = useContext(DataContext);
 
-  const [selected, setSelected] = useState(false);
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
 
   //submit top category
