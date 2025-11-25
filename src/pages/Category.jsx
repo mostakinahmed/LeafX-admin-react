@@ -6,7 +6,6 @@ import AddCategory from "../components/Category/AddCategory";
 import { TopCategory } from "@/components/Category/TopCategory";
 
 export default function Category() {
-  
   const { categoryData, productData, loading } = useContext(DataContext);
 
   const [activeTab, setActiveTab] = useState("catList");
@@ -15,7 +14,7 @@ export default function Category() {
       <Navbar pageTitle="Category Management" />
       <div className="bg-white shadow-lg  p-3 w-full mx-auto">
         {/* Buttons */}
-        <div className="flex w-full justify-center  lg:mb-0 mb-2">
+        <div className="hidden lg:flex w-full justify-center  lg:mb-0 mb-2">
           <button
             onClick={() => setActiveTab("catList")}
             className={`lg:px-20 w-1/2 lg:w-auto   text-md ${
@@ -48,7 +47,40 @@ export default function Category() {
             Top Category
           </button>
         </div>
+        {/* Buttons for mobile */}
+        <div className="lg:hidden flex w-full justify-center  lg:mb-0 mb-2">
+          <button
+            onClick={() => setActiveTab("catList")}
+            className={`w-1/3 lg:w-auto   text-md ${
+              activeTab === "catList"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+             List All
+          </button>
+          <button
+            onClick={() => setActiveTab("addCat")}
+            className={` w-1/3  lg:py-2 py-1  font-medium ${
+              activeTab === "addCat"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Add New
+          </button>
 
+          <button
+            onClick={() => setActiveTab("topCategory")}
+            className={`lg:px-20 w-1/3 lg:w-auto  lg:py-2 py-1  font-medium ${
+              activeTab === "topCategory"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Top Cat
+          </button>
+        </div>
         {/* Conditional Content */}
         <div className=" min-h-screen">
           {activeTab === "catList" && <CategoryList data={categoryData} />}

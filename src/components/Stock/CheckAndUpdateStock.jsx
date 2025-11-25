@@ -198,7 +198,7 @@ export default function CheckAndUpdateStock() {
                       <div>
                         <p class="text-sm text-gray-500">Price</p>
                         <p class="text-lg font-semibold text-green-600">
-                          {selectedProduct.price}
+                          {selectedProduct.price.selling}
                         </p>
                       </div>
                       <div>

@@ -73,7 +73,7 @@ export const TopCategory = () => {
                     <td className="p-2 border text-center">{++inx}</td>
                     <td className="p-2 border text-center">{item.catID}</td>
                     <td className="p-2 border">{item.catName}</td>
-                    <td className="p-2 border mx-5 text-center">
+                    <td className="p-2 border mx-5 text-center text-green-600 font-bold">
                       {item.topCategory === true ? "True" : "False"}{" "}
                     </td>
                     <td className="p-2 border text-center ">
@@ -92,7 +92,7 @@ export const TopCategory = () => {
         <div className="">
           <button
             onClick={() => setShowModal(true)}
-            className="bg-green-600 hover:bg-green-700 text-white py-1 px-3  rounded"
+            className="bg-green-600 mt-4 lg:mt-0 hover:bg-green-700 text-white py-1 px-3  rounded"
           >
             Add More
           </button>

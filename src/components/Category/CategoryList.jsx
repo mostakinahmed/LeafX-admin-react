@@ -31,7 +31,7 @@ const CategoryList = ({ data }) => {
           <FaSearch className="absolute left-2 top-2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by username or phone.."
+            placeholder="Search by catID or name.."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-8 pr-3 py-1 border border-gray-400 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"

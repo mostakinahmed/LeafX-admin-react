@@ -76,9 +76,9 @@ const AddCategory = () => {
 
   return (
     <div className="relative max-w-lg mx-auto mt-10">
-      <Card className="p-6 shadow-md rounded relative z-10">
+      <Card className="lg:p-6 shadow-md rounded relative z-10">
         <CardContent>
-          <h2 className="text-2xl p-1 bg-gray-200 text-center font-semibold mb-4 text-gray-800 rounded">
+          <h2 className="lg:text-2xl text-xl p-1 bg-gray-200 text-center font-semibold mb-4 text-gray-800 rounded">
             Add New Category
           </h2>
 
