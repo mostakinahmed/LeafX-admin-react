@@ -52,8 +52,8 @@ export default function Navbar({ pageTitle }) {
             </span>
           </div> */}
           <div
-            className="bg-gray-700 border border-gray-600  hover:bg-gray-800 transition-all duration-300 
-                flex justify-center items-center flex-col text-gray-300 h-9 w-32 rounded cursor-pointer"
+            className="bg-gray-700 hidden md:flex border border-gray-600  hover:bg-gray-800 transition-all duration-300 
+                 justify-center items-center flex-col text-gray-300 h-9 w-32 rounded cursor-pointer"
           >
             <div className="font-semibold  text-sm mt-2 border-b border-gray-900 w-full text-center">
               Admin
@@ -62,7 +62,7 @@ export default function Navbar({ pageTitle }) {
           </div>
 
           <img
-            className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2"
+            className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-blue-600 border-2"
             src={
               user.images
                 ? user.images
@@ -82,25 +82,25 @@ export default function Navbar({ pageTitle }) {
           {/* Popup content */}
           <div className="relative bg-white rounded shadow-xl lg:w-96 w-85 max-w-full text-left z-10 overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between bg-gray-800 text-white p-4">
+            <div className="flex  items-center justify-between bg-gray-800 text-white p-4">
               <h2 className="text-lg font-semibold">Admin Profile</h2>
               <button
                 onClick={() => setShowPopup(false)}
-                className="text-white font-bold text-3xl hover:text-gray-200"
+                className="text-white cursor-pointer font-bold text-3xl hover:text-green-500"
               >
                 ✕
               </button>
             </div>
 
             {/* Avatar */}
-            <div className="flex justify-center -mt-12">
+            <div className="flex  justify-center -mt-12">
               <img
                 src={
                   user.images ||
                   "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
                 }
                 alt={user.fullName}
-                className="w-26 h-26 rounded-full border-4 border-white shadow-md"
+                className="w-26 h-26  rounded-full border-4 border-white shadow-md"
               />
             </div>
 
@@ -148,7 +148,7 @@ export default function Navbar({ pageTitle }) {
               <div className="flex justify-center mt-6">
                 <button
                   onClick={() => logout()}
-                  className="bg-red-500 text-white text-lg px-6 py-1 rounded-sm hover:bg-red-600 transition-all"
+                  className="bg-red-500 text-white cursor-pointer text-lg px-6 py-1 rounded-sm hover:bg-red-600 transition-all"
                 >
                   Logout
                 </button>
